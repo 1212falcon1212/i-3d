@@ -2,14 +2,12 @@
 .env
 .env.*
 !.env.example
-!.env.deploy.example
-/etc/istanbulvitamin-webhook.env
 
 # --- backend (Go) ---
 backend/bin/
+backend/tmp/
 backend/uploads/*
 !backend/uploads/.gitkeep
-backend/scripts/__pycache__/
 
 # --- frontend (Next.js) ---
 frontend/node_modules/
@@ -20,9 +18,6 @@ frontend/coverage/
 frontend/.vercel/
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
-
-# --- webhook build artifact ---
-deploy/webhook/bin/
 
 # --- editor / OS ---
 .DS_Store

@@ -1,0 +1,6 @@
+bin/
+tmp/
+uploads/*
+!uploads/.gitkeep
+.env
+*.log

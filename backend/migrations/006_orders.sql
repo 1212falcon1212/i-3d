@@ -39,8 +39,12 @@ CREATE TABLE IF NOT EXISTS `orders` (
     `billing_postal_code`   VARCHAR(10)     DEFAULT NULL,
     -- Cargo
     `cargo_company`         VARCHAR(100)    DEFAULT NULL,
-    `cargo_tracking_number` VARCHAR(100)    DEFAULT NULL,
-    `cargo_tracking_url`    VARCHAR(500)    DEFAULT NULL,
+    -- Model bu kolonu `tracking_number` olarak bekliyor (models/order.go).
+    -- Kaynak projede migration `cargo_tracking_number` yaratıyordu; dev'de
+    -- AutoMigrate eksiği kapattığı için fark edilmemişti, ama sadece
+    -- migration'larla kurulan bir veritabanında 027 bu kolonu bulamayıp
+    -- patlıyordu.
+    `tracking_number`       VARCHAR(100)    DEFAULT NULL,
     `shipped_at`            TIMESTAMP       NULL DEFAULT NULL,
     `delivered_at`          TIMESTAMP       NULL DEFAULT NULL,
     -- Payment

@@ -2,7 +2,11 @@ import type { Category, Product, Brand, Banner } from "@/types";
 import type { BrandSpotlightData } from "@/components/home/BrandSpotlight";
 import type { ConcernItem } from "@/components/home/SkinConcerns";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+import { apiBase } from "./api-base";
+
+// Bu dosya server component'ten çağrılır; apiBase() sunucuda compose içi servis
+// adına, tarayıcıda yayınlanan host portuna çözülür.
+const API = apiBase();
 
 // ----------------------------------------------------------------
 // Internal response types (match Go backend)

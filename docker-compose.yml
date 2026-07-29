@@ -1,0 +1,240 @@
+# i-3d — tüm sistem tek stack.
+# Geliştirme:  docker compose up -d
+# Üretim provası: docker compose --profile prod up --build
+#
+# Portlar bilinçli olarak kaydırıldı; aynı makinedeki istanbulvitamin
+# (8080/3100/3306/6380/7700) ve zunapro (3000/3001/5432/6379/8000)
+# stack'leriyle çakışmaz.
+
+name: i3d
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      TZ: Europe/Istanbul
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3316}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6390}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_ENV: development
+    ports:
+      - "127.0.0.1:${MEILI_PORT:-7710}:7700"
+    volumes:
+      - meili_data:/meili_data
+    healthcheck:
+      # Imajda curl yok, wget var.
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:7700/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Şemayı uygular ve çıkar. Uygulanan dosyalar schema_migrations tablosunda
+  # tutulduğu için her açılışta yeniden çalışması güvenli.
+  migrate:
+    image: mysql:8.0
+    restart: "no"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_NAME: ${DB_NAME}
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./backend/migrations:/migrations:ro
+      - ./deploy/migrate-docker.sh:/migrate.sh:ro
+    entrypoint: ["bash", "/migrate.sh"]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_UI_PORT:-8125}:8025"
+    environment:
+      MP_MAX_MESSAGES: 500
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      APP_ENV: development
+      APP_PORT: "8080"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRY: 168h
+      TZ: Europe/Istanbul
+
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME}
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_KEY: ${MEILI_MASTER_KEY}
+      MEILISEARCH_INDEX: i3d_products
+
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: info@i-3d.com.tr
+
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-3200}
+      UPLOAD_DIR: /app/uploads
+      MAX_UPLOAD_SIZE: "10485760"
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8180}:8080"
+    volumes:
+      - ./backend:/app
+      # Yüklenen görseller host'ta kalsın: panelden yüklenen dosya
+      # `docker compose down -v` ile uçmaz, host'tan da incelenebilir.
+      - ./backend/uploads:/app/uploads
+      - go_mod_cache:/go/pkg/mod
+      - go_build_cache:/root/.cache/go-build
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8080/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+      # Tarayıcıdan görünen adres
+      NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8180}/api/v1
+      NEXT_PUBLIC_SITE_URL: http://localhost:${FRONTEND_PORT:-3200}
+      # Sadece sunucu tarafı (server component'ler) — bkz. lib/api-base.ts
+      API_URL_INTERNAL: http://backend:8080/api/v1
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3200}:3000"
+    volumes:
+      - ./frontend:/app
+      # Anonim volume'ler: host'taki (varsa) node_modules ve .next container'ın
+      # kendi platform binary'lerini ezmesin.
+      - /app/node_modules
+      - /app/.next
+
+  # ---- Üretim provası (docker compose --profile prod up --build) ----
+  # Dev servisleriyle aynı anda çalışmaz; portları onlarla paylaşır.
+  # Tek amacı, APP_ENV=production iken AutoMigrate kapalı olduğu için
+  # yalnızca migration'larla ayakta kalıp kalmadığımızı kanıtlamak.
+  backend-prod:
+    profiles: ["prod"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      APP_ENV: production
+      APP_PORT: "8080"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRY: 168h
+      TZ: Europe/Istanbul
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME}
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_KEY: ${MEILI_MASTER_KEY}
+      MEILISEARCH_INDEX: i3d_products
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: info@i-3d.com.tr
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-3200}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8180}:8080"
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  frontend-prod:
+    profiles: ["prod"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8180}/api/v1
+        NEXT_PUBLIC_SITE_URL: http://localhost:${FRONTEND_PORT:-3200}
+    restart: unless-stopped
+    depends_on:
+      - backend-prod
+    environment:
+      NODE_ENV: production
+      API_URL_INTERNAL: http://backend-prod:8080/api/v1
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3200}:3000"
+
+volumes:
+  mysql_data:
+  redis_data:
+  meili_data:
+  go_mod_cache:
+  go_build_cache:

@@ -3,17 +3,14 @@
  * Does NOT use localStorage — safe for Server Components.
  */
 
-const API_URL =
-  process.env.API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:8080/api/v1";
+import { apiBase } from "./api-base";
 
 export async function fetchAPI<T>(
   endpoint: string,
   options?: { revalidate?: number }
 ): Promise<T | null> {
   try {
-    const res = await fetch(`${API_URL}${endpoint}`, {
+    const res = await fetch(`${apiBase()}${endpoint}`, {
       next: { revalidate: options?.revalidate ?? 60 },
     });
     if (!res.ok) return null;
@@ -42,7 +39,7 @@ export async function fetchPaginatedAPI<T>(
   options?: { revalidate?: number }
 ): Promise<{ data: T[]; pagination: { page: number; per_page: number; total: number; total_pages: number } } | null> {
   try {
-    const res = await fetch(`${API_URL}${endpoint}`, {
+    const res = await fetch(`${apiBase()}${endpoint}`, {
       next: { revalidate: options?.revalidate ?? 60 },
     });
     if (!res.ok) return null;

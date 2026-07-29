@@ -22,7 +22,7 @@ export default function AuthShell({ children, title, subtitle }: AuthShellProps)
     ? resolveImageUrl(settings.site_logo_url)
     : "";
 
-  const siteName = settings?.site_name || "İstanbul Vitamin";
+  const siteName = settings?.site_name || "i-3d";
 
   return (
     <div className="min-h-screen w-full relative flex flex-col bg-bg-primary overflow-hidden">

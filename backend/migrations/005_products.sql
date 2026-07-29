@@ -1,7 +1,7 @@
 -- ============================================================
 -- Migration 005: products, product_categories, product_images,
 --                product_variants, product_tags
--- DermoEczane E-Commerce
+-- i-3d E-Commerce
 -- ============================================================
 
 -- UP

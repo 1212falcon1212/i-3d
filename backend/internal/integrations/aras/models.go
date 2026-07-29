@@ -33,7 +33,7 @@ const (
 // Dönen AddressID, sonradan SetOrder çağrılarında SenderAccountAddressId olarak referanslanır.
 type SaveAddressRequest struct {
 	CustomerAddressID string // bizim sistemdeki internal kod (firma + branch için biricik)
-	Name              string // adres etiketi (örn: "İstanbul Vitamin Depo")
+	Name              string // adres etiketi (örn: "i-3d Atölye")
 	CompleteAddress   string
 	PhoneNumber       string // 10 hane, sayısal
 	EMail             string

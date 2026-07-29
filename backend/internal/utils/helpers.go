@@ -78,8 +78,8 @@ func InternalError(c *fiber.Ctx) error {
 	return ErrorResponse(c, fiber.StatusInternalServerError, "Sunucu hatası oluştu")
 }
 
-// GenerateOrderNumber generates an order number like "DE-20260001"
+// GenerateOrderNumber generates an order number like "I3D-20260001"
 func GenerateOrderNumber(lastID uint) string {
 	year := time.Now().Year()
-	return fmt.Sprintf("DE-%d%04d", year, lastID)
+	return fmt.Sprintf("I3D-%d%04d", year, lastID)
 }

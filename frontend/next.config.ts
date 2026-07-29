@@ -14,18 +14,23 @@ const deploymentId =
 const nextConfig: NextConfig = {
   deploymentId,
   images: {
-    // Next 16 SSRF korumasi: dev'de local backend'den (localhost:8080)
-    // gelen gorsellerin optimize edilebilmesi icin sadece dev'de aciyoruz.
+    // Next 16 SSRF korumasi: dev'de local backend'den (localhost:8180 ya da
+    // compose ici backend:8080) gelen gorsellerin optimize edilebilmesi icin
+    // sadece dev'de aciyoruz.
     dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
+    // Seed katalogundaki urun gorselleri SVG. Bu bayrak olmadan next/image
+    // onlari sessizce bos render eder — hata da vermez.
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
     remotePatterns: [
       { hostname: "placehold.co" },
-      { hostname: "cdn.myikas.com" },
-      { hostname: "*.myikas.com" },
-      { hostname: "localhost", port: "8080", pathname: "/uploads/**" },
+      // compose ici servis adi (SSR tarafi bu host uzerinden konusur)
+      { hostname: "backend", port: "8080", pathname: "/uploads/**" },
+      { hostname: "localhost", port: "8180", pathname: "/uploads/**" },
       { hostname: "localhost" },
-      { protocol: "https", hostname: "istanbulvitamin.com", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "www.istanbulvitamin.com", pathname: "/uploads/**" },
-      { protocol: "https", hostname: "api.istanbulvitamin.com", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "i-3d.com.tr", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "www.i-3d.com.tr", pathname: "/uploads/**" },
+      { protocol: "https", hostname: "api.i-3d.com.tr", pathname: "/uploads/**" },
     ],
   },
 };

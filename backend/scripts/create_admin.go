@@ -1,7 +1,7 @@
 //go:build ignore
 
 // Run: go run scripts/create_admin.go <email> <password> [full_name]
-// Example: go run scripts/create_admin.go admin@dermoeczane.com Admin123! "Süper Yönetici"
+// Example: go run scripts/create_admin.go admin@i-3d.com.tr Admin123! "Süper Yönetici"
 
 package main
 

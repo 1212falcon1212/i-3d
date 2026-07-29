@@ -1,6 +1,6 @@
 -- ============================================================
 -- Migration 010: pages, sliders, banners, settings
--- DermoEczane E-Commerce
+-- i-3d E-Commerce
 -- ============================================================
 
 -- UP

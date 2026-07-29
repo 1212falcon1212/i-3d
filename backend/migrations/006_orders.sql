@@ -1,6 +1,6 @@
 -- ============================================================
 -- Migration 006: orders, order_items, order_status_history
--- DermoEczane E-Commerce
+-- i-3d E-Commerce
 -- ============================================================
 
 -- UP

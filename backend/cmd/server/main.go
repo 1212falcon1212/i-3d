@@ -45,7 +45,7 @@ func main() {
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		AppName:      "İstanbul Vitamin API",
+		AppName:      "i-3d API",
 		BodyLimit:    int(cfg.MaxUploadSize),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -126,7 +126,7 @@ func main() {
 		}
 	}()
 
-	log.Printf("İstanbul Vitamin API başlatıldı — port %s", cfg.AppPort)
+	log.Printf("i-3d API başlatıldı — port %s", cfg.AppPort)
 
 	<-quit
 	log.Println("Sunucu kapatılıyor...")
@@ -142,7 +142,7 @@ func setupRoutes(app *fiber.App, cfg *config.Config, db interface{}, arasSvc *ar
 	api.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"success": true,
-			"message": "İstanbul Vitamin API çalışıyor",
+			"message": "i-3d API çalışıyor",
 		})
 	})
 

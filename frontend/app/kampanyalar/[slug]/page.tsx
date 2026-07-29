@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       campaign.meta_description ||
       campaign.description ||
-      `${campaign.name} kampanyasi - İstanbul Vitamin`,
+      `${campaign.name} kampanyasi — i-3d`,
     openGraph: {
       title: campaign.name,
       description: campaign.description || undefined,

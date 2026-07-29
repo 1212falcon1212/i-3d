@@ -10,7 +10,7 @@ import Breadcrumb from "@/components/layout/Breadcrumb";
 export const metadata: Metadata = {
   title: "Markalar",
   description:
-    "İstanbul Vitamin'de bulunan tum dermokozmetik markalari. A'dan Z'ye marka listesi.",
+    "i-3d'de bulunan tum markalar ve tasarimcilar. A'dan Z'ye liste.",
 };
 
 export default async function MarkalarPage() {

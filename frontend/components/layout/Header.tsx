@@ -178,7 +178,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
   const logoUrl = settings.site_logo_url
     ? resolveImageUrl(settings.site_logo_url)
     : "";
-  const siteName = settings.site_name || "İstanbul Vitamin";
+  const siteName = settings.site_name || "i-3d";
   const phone = settings.phone?.trim() || "";
   const phoneHref = `tel:${phone.replace(/[^+\d]/g, "")}`;
   const email = settings.email?.trim() || "";
@@ -357,7 +357,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
                 className="h-10 lg:h-11 w-auto object-contain group-hover:opacity-90 transition-opacity"
               />
             ) : settingsLoading ? (
-              // Settings yüklenirken logo placeholder — fallback metin "İstanbul Vitamin"
+              // Settings yüklenirken logo placeholder — fallback metin "i-3d"
               // birden fazla yerde flash oluşturuyordu, bunun yerine boş alan tutuyoruz.
               <span className="block h-10 lg:h-11 w-32" aria-hidden />
             ) : (

@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/i-3d/backend/internal/config"
 	"github.com/i-3d/backend/internal/models"
 	"github.com/i-3d/backend/internal/utils"
 	"github.com/meilisearch/meilisearch-go"
@@ -30,7 +31,8 @@ func NewSearchService(db *gorm.DB) *SearchService {
 	return &SearchService{db: db, meili: client}
 }
 
-const meiliIndex = "istanbulvitamin_products"
+// meiliIndex config üzerinden tek kaynaktan gelir (MEILISEARCH_INDEX).
+var meiliIndex = config.MeiliIndexName()
 
 // Search Meilisearch üzerinden tam metin arama yapar, başarısız olursa DB LIKE'a düşer.
 //

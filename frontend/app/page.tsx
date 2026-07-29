@@ -20,9 +20,9 @@ import NewArrivals from "@/components/home/NewArrivals";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "İstanbul Vitamin — Dermokozmetik Ürünleri",
+  title: "i-3d — 3D baskı ürünleri, filament ve yedek parça",
   description:
-    "5.200'den fazla orijinal dermokozmetik ürün tek platformda. Cilt bakımı, saç bakımı, güneş ürünleri ve daha fazlası.",
+    "Figürden ev dekoruna, filamentten yedek parçaya 3D baskı ürünleri. Katman katman basılır, kapına gelir.",
 };
 
 // Ana sayfadaki tüm bölümler için tek standart genişlik.

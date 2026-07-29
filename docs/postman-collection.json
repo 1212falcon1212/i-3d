@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "İstanbul Vitamin API",
-    "description": "DermoEczane backend API — public + authenticated endpoints. Import to Postman and set the `baseUrl` variable.",
+    "name": "i-3d API",
+    "description": "i-3d backend API — public + authenticated endpoints. Import to Postman and set the `baseUrl` variable.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -54,7 +54,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"test+{{$timestamp}}@istanbulvitamin.com\",\n  \"password\": \"Test1234\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"User\",\n  \"phone\": \"05550000000\"\n}"
+              "raw": "{\n  \"email\": \"test+{{$timestamp}}@i-3d.com.tr\",\n  \"password\": \"Test1234\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"User\",\n  \"phone\": \"05550000000\"\n}"
             }
           },
           "event": [
@@ -106,7 +106,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@dermoeczane.com\",\n  \"password\": \"Admin123!\"\n}"
+              "raw": "{\n  \"email\": \"admin@i-3d.com.tr\",\n  \"password\": \"Admin123!\"\n}"
             }
           },
           "event": [

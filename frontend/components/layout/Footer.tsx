@@ -103,12 +103,12 @@ export default function Footer() {
     : settings.site_logo_url
       ? resolveImageUrl(settings.site_logo_url)
       : "";
-  const siteName = settings.site_name || "İstanbul Vitamin";
+  const siteName = settings.site_name || "i-3d";
   const siteDesc =
     settings.site_description ||
     "5.200+ orijinal dermokozmetik ürün. Hızlı kargo, kolay iade.";
   const phone = settings.phone || "0850 123 45 67";
-  const email = settings.email || "destek@istanbulvitamin.com";
+  const email = settings.email || "destek@i-3d.com.tr";
 
   const socials: { href?: string; label: string; icon: React.ReactNode }[] = [
     {

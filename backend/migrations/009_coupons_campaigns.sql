@@ -1,6 +1,6 @@
 -- ============================================================
 -- Migration 009: coupons, campaigns, campaign_products
--- DermoEczane E-Commerce
+-- i-3d E-Commerce
 -- ============================================================
 
 -- UP

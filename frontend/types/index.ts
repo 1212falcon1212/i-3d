@@ -1,5 +1,5 @@
 // ============================================================
-// İstanbul Vitamin TypeScript Type Definitions
+// i-3d TypeScript Type Definitions
 // ============================================================
 
 // --- Auth ---

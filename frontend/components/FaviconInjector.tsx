@@ -13,7 +13,7 @@ import { useEffect } from "react";
  * yönlendiriyoruz ve en sona yönetilen linkleri ekliyoruz. Böylece settings veya
  * Next'in otomatik icon linkleri dosyadan okunan favicon'u ezemiyor.
  */
-const FAVICON_HREF = "/favicon.png?v=8";
+const FAVICON_HREF = "/favicon.png?v=1";
 
 export default function FaviconInjector() {
   useEffect(() => {

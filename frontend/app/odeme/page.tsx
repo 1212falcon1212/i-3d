@@ -47,7 +47,7 @@ export default function OdemePage() {
   const logoUrl = settings.site_logo_url
     ? resolveImageUrl(settings.site_logo_url)
     : "";
-  const siteName = settings.site_name || "İstanbul Vitamin";
+  const siteName = settings.site_name || "i-3d";
 
   const [step, setStep] = useState<Step>("address");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);

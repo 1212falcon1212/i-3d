@@ -35,7 +35,7 @@ export async function generateMetadata({
   const description =
     brand.meta_description ||
     brand.description ||
-    `${brand.name} dermokozmetik ürünleri - İstanbul Vitamin`;
+    `${brand.name} 3D baskı ürünleri — i-3d`;
 
   return {
     title: brand.meta_title || `${brand.name} Ürünleri`,

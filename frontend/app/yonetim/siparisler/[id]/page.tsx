@@ -599,7 +599,7 @@ function OrderPrintModal({
           <div className="print-sheet mx-auto max-w-3xl rounded-xl border border-border bg-white p-6 print:max-w-none print:rounded-none print:border-0">
             <div className="flex items-start justify-between gap-6 border-b border-gray-300 pb-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-gray-500">İstanbul Vitamin</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-gray-500">i-3d</p>
                 <h2 className="mt-1 font-display text-2xl text-gray-950">Sipariş Çıktısı</h2>
                 <p className="mt-1 text-sm text-gray-600">#{order.order_number}</p>
               </div>

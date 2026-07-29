@@ -100,7 +100,10 @@ func main() {
 	defer cancel()
 
 	// Index hazırlığı
-	const indexUID = "istanbulvitamin_products"
+	indexUID := os.Getenv("MEILISEARCH_INDEX")
+	if indexUID == "" {
+		indexUID = "i3d_products"
+	}
 	_, _ = client.CreateIndex(&meilisearch.IndexConfig{
 		Uid:        indexUID,
 		PrimaryKey: "id",

@@ -1,15 +1,15 @@
 {
-  "name": "İstanbul Vitamin",
-  "short_name": "İstanbul Vitamin",
-  "description": "Orijinal dermokozmetik ürünleri en uygun fiyatlarla",
+  "name": "i-3d",
+  "short_name": "i-3d",
+  "description": "3D baskı ürünleri, filament ve yedek parça",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f5f0ff",
-  "theme_color": "#7c3aed",
+  "background_color": "#FFF8F1",
+  "theme_color": "#FF6B2C",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.png?v=8",
+      "src": "/favicon.png?v=1",
       "sizes": "64x64",
       "type": "image/png"
     }

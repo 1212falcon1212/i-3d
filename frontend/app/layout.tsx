@@ -6,26 +6,27 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "İstanbul Vitamin — Dermokozmetik Ürünleri",
-    template: "%s | İstanbul Vitamin",
+    default: "i-3d — 3D baskı ürünleri, filament ve yedek parça",
+    template: "%s | i-3d",
   },
   description:
-    "Orijinal dermokozmetik ürünleri en uygun fiyatlarla İstanbul Vitamin'de. Cilt bakımı, saç bakımı, güneş ürünleri ve daha fazlası.",
+    "Figürden ev dekoruna, filamentten yedek parçaya 3D baskı ürünleri i-3d'de. Katman katman basılır, kapına gelir.",
   keywords: [
-    "dermokozmetik",
-    "cilt bakımı",
-    "eczane",
-    "kozmetik",
-    "güneş kremi",
-    "saç bakımı",
+    "3d baskı",
+    "3d yazıcı",
+    "filament",
+    "figür",
+    "3d model",
+    "yedek parça",
+    "hobi",
   ],
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3200"
   ),
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    siteName: "İstanbul Vitamin",
+    siteName: "i-3d",
   },
   robots: {
     index: true,
@@ -33,16 +34,14 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   icons: {
-    icon: [
-      { url: "/favicon.png?v=8", type: "image/png", sizes: "64x64" },
-    ],
-    shortcut: [{ url: "/favicon.png?v=8", type: "image/png" }],
-    apple: [{ url: "/favicon.png?v=8", type: "image/png", sizes: "64x64" }],
+    icon: [{ url: "/favicon.png?v=1", type: "image/png", sizes: "64x64" }],
+    shortcut: [{ url: "/favicon.png?v=1", type: "image/png" }],
+    apple: [{ url: "/favicon.png?v=1", type: "image/png", sizes: "64x64" }],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#7c3aed",
+  themeColor: "#FF6B2C",
 };
 
 export default function RootLayout({

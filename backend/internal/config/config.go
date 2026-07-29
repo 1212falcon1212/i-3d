@@ -31,8 +31,9 @@ type Config struct {
 	RedisDB       int
 
 	// Meilisearch
-	MeilisearchHost string
-	MeilisearchKey  string
+	MeilisearchHost  string
+	MeilisearchKey   string
+	MeilisearchIndex string
 
 	// PayTR
 	PayTRMerchantID   string
@@ -111,8 +112,9 @@ func Load() *Config {
 		RedisPassword: getEnv("REDIS_PASSWORD", ""),
 		RedisDB:       redisDB,
 
-		MeilisearchHost: getEnv("MEILISEARCH_HOST", "http://localhost:7700"),
-		MeilisearchKey:  getEnv("MEILISEARCH_KEY", ""),
+		MeilisearchHost:  getEnv("MEILISEARCH_HOST", "http://localhost:7700"),
+		MeilisearchKey:   getEnv("MEILISEARCH_KEY", ""),
+		MeilisearchIndex: MeiliIndexName(),
 
 		PayTRMerchantID:   getEnv("PAYTR_MERCHANT_ID", ""),
 		PayTRMerchantKey:  getEnv("PAYTR_MERCHANT_KEY", ""),
@@ -142,6 +144,13 @@ func Load() *Config {
 		UploadDir:     getEnv("UPLOAD_DIR", "./uploads"),
 		MaxUploadSize: maxUpload,
 	}
+}
+
+// MeiliIndexName ürün index'inin adını döner. Tek kaynak: eskiden aynı sabit üç
+// ayrı pakette kopyalanmıştı ve derleme hatası vermediği için biri değiştiğinde
+// diğerleri sessizce ayrı bir index'e yazıyordu.
+func MeiliIndexName() string {
+	return getEnv("MEILISEARCH_INDEX", "i3d_products")
 }
 
 func getEnv(key, fallback string) string {

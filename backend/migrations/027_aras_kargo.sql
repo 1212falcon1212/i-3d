@@ -85,7 +85,7 @@ INSERT INTO `settings` (`key`, `value`, `group`, `updated_at`) VALUES
     ('aras.sender_address_id', '',               'aras_kargo', NOW()),
     ('aras.payor_type_code',   '1',              'aras_kargo', NOW()),
     ('aras.parcel_kg_limit',   '30',             'aras_kargo', NOW()),
-    ('city',                   '',               'contact',    NOW()),
-    ('town',                   '',               'contact',    NOW()),
-    ('sender_name',            '',               'contact',    NOW())
+    ('city',                   '',               'iletisim',   NOW()),
+    ('town',                   '',               'iletisim',   NOW()),
+    ('sender_name',            '',               'iletisim',   NOW())
 ON DUPLICATE KEY UPDATE `group` = VALUES(`group`), `updated_at` = NOW();

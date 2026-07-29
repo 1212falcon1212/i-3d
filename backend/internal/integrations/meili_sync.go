@@ -7,12 +7,14 @@ import (
 	"log"
 	"os"
 
+	"github.com/i-3d/backend/internal/config"
 	"github.com/i-3d/backend/internal/database"
 	"github.com/i-3d/backend/internal/models"
 	"github.com/meilisearch/meilisearch-go"
 )
 
-const meiliIndex = "istanbulvitamin_products"
+// meiliIndex config üzerinden tek kaynaktan gelir (MEILISEARCH_INDEX).
+var meiliIndex = config.MeiliIndexName()
 
 // MeiliDoc search_service.go'daki struct ile tutarlı olmalı.
 type MeiliDoc struct {

@@ -23,7 +23,7 @@ type ConfigProvider interface {
 
 // ContactSettings settings.contact grubundaki minimal alanlar — gönderici tarafı için.
 type ContactSettings struct {
-	SenderName string // "İstanbul Vitamin Depo" gibi; boşsa SiteName
+	SenderName string // "i-3d Atölye" gibi; boşsa SiteName
 	SiteName   string
 	Phone      string
 	Email      string

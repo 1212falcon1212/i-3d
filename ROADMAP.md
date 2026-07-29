@@ -104,16 +104,57 @@ Kural: her seed idempotent, `DELETE FROM` yok. Doğal unique key üzerinden
 çözülür.
 
 ### Faz 5 — Vitrin tasarımı
+
+Anasayfa klasik e-ticaret yığını (banner → ızgara → banner → ızgara) olmayacak.
+Kurgu: **tam ekran bir sahne + değişken ritimli bento**. 3D yaklaşımı **hibrit** —
+hero'da gerçek WebGL sahnesi, sayfanın geri kalanında CSS 3D transform.
+
+**3D kuralları** (bunlara uymayan 3D eklenmez):
+- WebGL yalnızca hero'da ve `next/dynamic` ile `ssr: false` olarak yüklenir.
+- Mobil (`< 768px`), `prefers-reduced-motion` ve WebGL desteklenmeyen cihazlarda
+  sahne hiç indirilmez; yerine aynı kadrajın statik SVG posteri gösterilir.
+- Sahne görünür alandan çıkınca render döngüsü durur (`frameloop="demand"` +
+  IntersectionObserver). Arka planda GPU yakmaz.
+- Geometri prosedürel üretilir; gerçek `.glb` dosyaları hazır olduğunda aynı
+  bileşene takılır. Model dosyası beklenmez.
+- Sayfanın geri kalanında 3D = CSS `perspective` + `rotate3d`, sıfır JS.
+
 - [x] S0 — 14 ölü bileşenin silinmesi (~1100 satır)
 - [x] S1 — marka kimliği: logo/wordmark SVG, favicon, `components/brand/Logo.tsx`
-- [ ] S2 — ortak atomlar: Card, Badge, PillButton, SectionLabel, Spinner, Pagination, ProductCard
-- [ ] S3 — chrome: Header, Footer, Breadcrumb, SearchPreview, CartDrawer
-- [ ] S4 — anasayfa
-- [ ] S5 — katalog + ürün detay
-- [ ] S6 — sepet, ödeme, sipariş sonucu
-- [ ] S7 — auth (AuthShell baştan) + hesabım
-- [ ] S8 — CMS tipografisi (`.cms-content`)
-- [ ] S9 — admin panel kontrast geçişi (opsiyonel)
+- [ ] **S2 — ortak atomlar.** `ui/{Card,Badge,PillButton,SectionLabel,Spinner,Pagination}` +
+      `ProductCard`. Kart artık düz kutu değil: baskı tablası karesi üzerinde durur,
+      hover'da `rotate3d` ile hafifçe kalkar ve offset gölgesi kapanır ("eline alma"
+      hissi). `SectionLabel`'ın kullanılmayan `number` prop'u gerçekten uygulanır —
+      ama yalnızca gerçekten sıralı olan içerikte (nasıl basılıyor adımları).
+- [ ] **S3 — chrome.** Header (mega menü, mobil çekmece, arama önizlemesi), Footer,
+      Breadcrumb, CartDrawer. Ücretsiz kargo eşiği `useSettings().min_free_shipping`'e
+      bağlanır (backend #2 ile eş).
+- [ ] **S4 — anasayfa (yeni kurgu).** Bölüm sırası ve yeni bileşenler:
+  - [ ] `PrintScene.tsx` — WebGL hero. Prosedürel bir baskı katman katman oluşur,
+        sonra yavaşça döner; nozul üstte hareket eder. Üstünde display başlık + CTA.
+        `PrintScenePoster.tsx` statik SVG yedeği.
+  - [ ] `FilamentStrip.tsx` — marka şeridi yerine eğik (CSS 3D) filament renk çipleri;
+        tıklanınca o renkteki ürünlere gider.
+  - [ ] `UseCaseBento.tsx` — kullanım alanları, eşit ızgara değil asimetrik bento;
+        kartlar imleç yönüne göre hafif eğilir.
+  - [ ] `ProductShelf.tsx` — dikey ızgara yerine yatay raf (snap scroll). Öne çıkanlar,
+        bu hafta basılanlar ve yeni gelenler bu bileşeni paylaşır.
+  - [ ] `HowItPrints.tsx` — tam genişlik koyu blok: model → dilimleme → baskı → kargo.
+        İzometrik SVG, numaralandırma burada bilgi taşıdığı için var.
+  - [ ] `CategoryBento.tsx` — mevcut bento yeniden ölçeklenir, perspektif eklenir.
+  - [ ] `BrandSpotlight.tsx` — yerinde restyle.
+  - [ ] `app/page.tsx` — kompozisyon yeniden yazılır; bölümler arası `layer-rule`
+        ritmi, tam genişlik koyu bloklar ve `max-w-7xl` alanlar dönüşümlü.
+- [ ] **S5 — katalog + ürün detay.** `ProductListing` (dört sayfayı birden besliyor)
+      yerinde stillenir. PDP'de malzeme/katman/süre çipleri `product_tags` ve varyasyon
+      değerlerinden render edilir; renk seçimi gerçek `color_hex` swatch'larıyla.
+- [ ] **S6 — sepet, ödeme, sipariş sonucu**
+- [ ] **S7 — auth (AuthShell baştan: kozmetik şişe illüstrasyonu → izometrik atölye) + hesabım**
+- [ ] **S8 — CMS tipografisi** (`.cms-content`)
+- [ ] **S9 — admin panel kontrast geçişi** (opsiyonel)
+
+Sonraki adım (bu fazın dışında, gerçek model dosyaları geldiğinde): PDP'de
+döndürülebilir `.glb` görüntüleyici. `PrintScene` bileşeni bunun için hazır kurgulanır.
 
 ### Faz 6 — Backend bug'ları
 Ayrıntı: [docs/BACKEND-BUGS.md](docs/BACKEND-BUGS.md)

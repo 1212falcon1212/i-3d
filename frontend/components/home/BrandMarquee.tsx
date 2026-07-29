@@ -4,18 +4,10 @@ interface BrandMarqueeProps {
   brands: Brand[];
 }
 
-const PLACEHOLDER_BRANDS = [
-  "La Roche-Posay",
-  "Vichy",
-  "CeraVe",
-  "Avène",
-  "SVR",
-  "Bioderma",
-];
-
 export default function BrandMarquee({ brands }: BrandMarqueeProps) {
-  const displayBrands =
-    brands.length > 0 ? brands.map((b) => b.name) : PLACEHOLDER_BRANDS;
+  // Marka yoksa şeridi hiç çizme — uydurma isim göstermektense boş bırak.
+  if (brands.length === 0) return null;
+  const displayBrands = brands.map((b) => b.name);
 
   // Duplicate for seamless loop
   const items = [...displayBrands, ...displayBrands];

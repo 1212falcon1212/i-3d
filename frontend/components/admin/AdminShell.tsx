@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Mark } from "@/components/brand/Logo";
 
 interface AdminShellProps {
   title: string;
@@ -135,7 +136,8 @@ export default function AdminShell({ title, children }: AdminShellProps) {
         )}
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-border shrink-0">
-          <Link href="/yonetim" className="font-display text-lg text-primary">
+          <Link href="/yonetim" className="inline-flex items-center gap-2 font-display text-lg text-text-primary">
+            <Mark size={24} />
             i-3d
           </Link>
           <button

@@ -3,11 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn, resolveImageUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import { useCartDrawer } from "@/lib/cart-drawer";
 import { useSettings } from "@/lib/settings";
 import { categoryIcon } from "@/lib/category-icons";
+import Logo from "@/components/brand/Logo";
 // Offline entry: icons are registered at build time in lib/iconify-bundle.ts
 // so the runtime never reaches out to the Iconify CDN.
 import { Icon } from "@iconify/react/offline";
@@ -106,14 +107,6 @@ function ChevronRightIcon({ className }: { className?: string }) {
   );
 }
 
-function LeafAccent() {
-  return (
-    <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3 text-primary inline-block ml-0.5 -mt-2">
-      <path d="M13 1C9.5 1.5 3 4.5 3 11c0 1.5.5 3 1.5 4 .3-2.5 1.5-5 4-7 .3-.3.6-.2.7.1.1.3-.1.5-.3.7C6.7 10.8 6 13 5.8 15c1-.3 2-.8 2.8-1.5C12 10.5 14 6 14 2c0-.3-.2-.6-.5-.8-.2-.1-.3-.2-.5-.2z" />
-    </svg>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // API
 // ---------------------------------------------------------------------------
@@ -175,9 +168,6 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
 
   // --- Settings (site adı, logo) ---
   const { settings, isLoading: settingsLoading } = useSettings();
-  const logoUrl = settings.site_logo_url
-    ? resolveImageUrl(settings.site_logo_url)
-    : "";
   const siteName = settings.site_name || "i-3d";
   const phone = settings.phone?.trim() || "";
   const phoneHref = `tel:${phone.replace(/[^+\d]/g, "")}`;
@@ -349,27 +339,11 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 lg:gap-6">
           {/* --- Logo (left) --- */}
           <Link href="/" className="shrink-0 group" aria-label={siteName}>
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={logoUrl}
-                alt={siteName}
-                className="h-10 lg:h-11 w-auto object-contain group-hover:opacity-90 transition-opacity"
-              />
-            ) : settingsLoading ? (
-              // Settings yüklenirken logo placeholder — fallback metin "i-3d"
-              // birden fazla yerde flash oluşturuyordu, bunun yerine boş alan tutuyoruz.
+            {settingsLoading ? (
+              // Ayarlar yüklenirken wordmark flash etmesin diye boş alan tutuyoruz.
               <span className="block h-10 lg:h-11 w-32" aria-hidden />
             ) : (
-              <span className="flex items-baseline gap-0.5">
-                <span className="font-display text-2xl lg:text-[1.7rem] font-bold text-text-primary tracking-tight group-hover:text-primary transition-colors">
-                  İstanbul
-                </span>
-                <span className="font-display text-2xl lg:text-[1.7rem] font-bold text-primary tracking-tight">
-                  Vitamin
-                </span>
-                <LeafAccent />
-              </span>
+              <Logo height={30} className="group-hover:opacity-90 transition-opacity" />
             )}
           </Link>
 
@@ -628,21 +602,10 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             onClick={() => setMobileOpen(false)}
             aria-label={siteName}
           >
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={logoUrl}
-                alt={siteName}
-                className="h-8 w-auto object-contain"
-              />
-            ) : settingsLoading ? (
+            {settingsLoading ? (
               <span className="block h-8 w-24" aria-hidden />
             ) : (
-              <span className="flex items-baseline gap-0.5">
-                <span className="font-display text-xl font-bold text-text-primary">İstanbul</span>
-                <span className="font-display text-xl font-bold text-primary">Vitamin</span>
-                <LeafAccent />
-              </span>
+              <Logo height={24} />
             )}
           </Link>
           <button

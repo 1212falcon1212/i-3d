@@ -71,7 +71,7 @@ export default function BrandSpotlight({ spotlight }: BrandSpotlightProps) {
               </SerifHeading>
               <p className="text-white/70 text-sm mt-3 max-w-xs">
                 {brand.description ??
-                  "Dermatoloji uzmanları tarafından formüle edilmiş, hassas ciltler için özel bakım serisi."}
+                  "Bu markanın kataloğundaki baskılar — malzemesinden katman ayarına kadar test edilmiş."}
               </p>
             </div>
 

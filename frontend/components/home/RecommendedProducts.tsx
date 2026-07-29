@@ -22,7 +22,7 @@ export default function RecommendedProducts({ products }: RecommendedProductsPro
               Sizin için <em>seçtiklerimiz.</em>
             </SerifHeading>
             <p className="text-sm text-text-secondary mt-2 max-w-lg">
-              Dermatoloji onaylı, en çok tercih edilen ürünler size özel.
+              Atölyeden yeni çıkanlar ve en çok istenenler.
             </p>
           </div>
 

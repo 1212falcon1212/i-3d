@@ -4,15 +4,13 @@ import Link from "next/link";
 import FooterNewsletter from "./FooterNewsletter";
 import { useSettings } from "@/lib/settings";
 import { resolveImageUrl } from "@/lib/utils";
+import Logo from "@/components/brand/Logo";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Kurumsal",
     links: [
       { label: "Hakkımızda", href: "/hakkimizda" },
-      { label: "Kariyer", href: "/kariyer" },
-      { label: "Blog", href: "/blog" },
-      { label: "Basın", href: "/basin" },
       { label: "İletişim", href: "/iletisim" },
     ],
   },
@@ -20,20 +18,19 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
     title: "Yardım",
     links: [
       { label: "Sipariş Takibi", href: "/hesabim/siparisler" },
-      { label: "Kargo & Teslimat", href: "/kargo-teslimat" },
+      { label: "Kargo ve Teslimat", href: "/kargo-teslimat" },
       { label: "İade ve Değişim", href: "/iade-degisim" },
       { label: "Sıkça Sorulan Sorular", href: "/sss" },
-      { label: "Müşteri Hizmetleri", href: "/musteri-hizmetleri" },
     ],
   },
   {
     title: "Kategoriler",
     links: [
-      { label: "Cilt Bakımı", href: "/cilt-bakimi" },
-      { label: "Saç Bakımı", href: "/sac-bakimi" },
-      { label: "Güneş Ürünleri", href: "/gunes-urunleri" },
-      { label: "Anne & Bebek", href: "/anne-bebek" },
-      { label: "Vitamin & Takviye", href: "/vitamin" },
+      { label: "Figürler & Koleksiyon", href: "/figurler" },
+      { label: "Ev & Dekor", href: "/ev-dekor" },
+      { label: "Oyun & Hobi", href: "/oyun-hobi" },
+      { label: "Masaüstü & Ofis", href: "/masaustu-ofis" },
+      { label: "Filament & Sarf", href: "/filament-sarf" },
     ],
   },
   {
@@ -57,8 +54,8 @@ const LEGAL_LINKS = [
 
 const TRUST_ITEMS = [
   {
-    title: "Orijinal Ürün",
-    desc: "Tedarikçi güvencesi",
+    title: "Atölyeden çıkar",
+    desc: "Her baskı kendi tezgâhımızda",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -66,8 +63,8 @@ const TRUST_ITEMS = [
     ),
   },
   {
-    title: "Hızlı Kargo",
-    desc: "1-3 iş günü teslimat",
+    title: "Hızlı kargo",
+    desc: "Stoktakiler aynı gün",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9-1.5h10.5a1.5 1.5 0 001.5-1.5V6.75a1.5 1.5 0 00-1.5-1.5H4.5A1.5 1.5 0 003 6.75v10.5a1.5 1.5 0 001.5 1.5H6m9.75-6.75h3.375c.621 0 1.125.504 1.125 1.125V17.25a1.5 1.5 0 01-1.5 1.5h-.375m-5.25 0V6.75A1.5 1.5 0 0013.5 5.25h-9" />
@@ -75,7 +72,7 @@ const TRUST_ITEMS = [
     ),
   },
   {
-    title: "Güvenli Ödeme",
+    title: "Güvenli ödeme",
     desc: "256-bit SSL • 3D Secure",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-6 h-6">
@@ -98,16 +95,11 @@ const PAYMENT_LOGOS = ["Visa", "Mastercard", "Troy", "PayTR", "Havale/EFT"];
 
 export default function Footer() {
   const { settings, isLoading: settingsLoading } = useSettings();
-  const logoUrl = settings.site_logo_url_dark
-    ? resolveImageUrl(settings.site_logo_url_dark)
-    : settings.site_logo_url
-      ? resolveImageUrl(settings.site_logo_url)
-      : "";
   const siteName = settings.site_name || "i-3d";
   const siteDesc =
     settings.site_description ||
-    "5.200+ orijinal dermokozmetik ürün. Hızlı kargo, kolay iade.";
-  const phone = settings.phone || "0850 123 45 67";
+    "3D baskı ürünleri, filament ve yedek parça. Katman katman basılır, kapına gelir.";
+  const phone = settings.phone || "";
   const email = settings.email || "destek@i-3d.com.tr";
 
   const socials: { href?: string; label: string; icon: React.ReactNode }[] = [
@@ -158,20 +150,10 @@ export default function Footer() {
           {/* Marka kolonu */}
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="inline-block" aria-label={siteName}>
-              {logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logoUrl}
-                  alt={siteName}
-                  className="h-12 w-auto object-contain bg-white rounded-lg p-2"
-                />
-              ) : settingsLoading ? (
+              {settingsLoading ? (
                 <span className="block h-12 w-40" aria-hidden />
               ) : (
-                <span className="font-display text-2xl text-white">
-                  İstanbul
-                  <span className="text-primary">Vitamin</span>
-                </span>
+                <Logo dark height={30} />
               )}
             </Link>
 

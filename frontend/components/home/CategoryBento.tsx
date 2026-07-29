@@ -71,19 +71,9 @@ const cardThemes: CardTheme[] = [
   },
 ];
 
-const PLACEHOLDER_CATEGORIES: Partial<Category>[] = [
-  { id: -1, name: "Nemlendirici", slug: "nemlendirici" },
-  { id: -2, name: "Güneş Koruyucu", slug: "gunes-koruyucu" },
-  { id: -3, name: "Temizleyici", slug: "temizleyici" },
-  { id: -4, name: "Serum", slug: "serum" },
-  { id: -5, name: "Göz Bakımı", slug: "goz-bakimi" },
-  { id: -6, name: "Dudak Bakımı", slug: "dudak-bakimi" },
-  { id: -7, name: "Maske", slug: "maske" },
-];
-
 export default function CategoryBento({ categories }: CategoryBentoProps) {
-  const rawItems = categories.length > 0 ? categories : PLACEHOLDER_CATEGORIES;
-  const items = rawItems.slice(0, 7) as Category[];
+  if (categories.length === 0) return null;
+  const items = categories.slice(0, 7) as Category[];
 
   // Pad to 7 if needed
   const padded: (Category | null)[] = [...items];

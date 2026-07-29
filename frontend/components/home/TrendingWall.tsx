@@ -19,7 +19,7 @@ export default function TrendingWall({ products }: TrendingWallProps) {
             Bu hafta <em>çok aranan.</em>
           </SerifHeading>
           <p className="text-sm text-text-secondary mt-2 max-w-lg">
-            Bu hafta en çok tercih edilen dermokozmetik ürünler.
+            Bu hafta en çok basılanlar.
           </p>
         </div>
 

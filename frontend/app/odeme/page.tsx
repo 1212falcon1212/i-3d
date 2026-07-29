@@ -14,6 +14,7 @@ import Spinner from "@/components/ui/Spinner";
 import { cn, formatPrice, resolveImageUrl } from "@/lib/utils";
 import { useSettings } from "@/lib/settings";
 import { productImage } from "@/lib/placeholder-image";
+import Logo from "@/components/brand/Logo";
 
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_COST = 39.9;
@@ -45,9 +46,6 @@ export default function OdemePage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { cartId, items, subtotal, updateItem, removeItem } = useCart();
   const { settings } = useSettings();
-  const logoUrl = settings.site_logo_url
-    ? resolveImageUrl(settings.site_logo_url)
-    : "";
   const siteName = settings.site_name || "i-3d";
 
   const [step, setStep] = useState<Step>("address");
@@ -296,18 +294,7 @@ export default function OdemePage() {
               aria-label={siteName}
               className="inline-block mb-10 hover:opacity-80 transition"
             >
-              {logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logoUrl}
-                  alt={siteName}
-                  className="h-10 md:h-12 w-auto object-contain"
-                />
-              ) : (
-                <span className="font-display text-2xl md:text-3xl text-text-primary">
-                  {siteName}
-                </span>
-              )}
+              <Logo height={32} />
             </Link>
 
             {/* Breadcrumb steps */}

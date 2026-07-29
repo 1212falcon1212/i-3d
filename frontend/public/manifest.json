@@ -1,0 +1,17 @@
+{
+  "name": "İstanbul Vitamin",
+  "short_name": "İstanbul Vitamin",
+  "description": "Orijinal dermokozmetik ürünleri en uygun fiyatlarla",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f0ff",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.png?v=8",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}

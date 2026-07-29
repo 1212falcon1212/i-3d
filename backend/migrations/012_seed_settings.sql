@@ -11,11 +11,14 @@
 
 -- UP
 
+-- Bu migration yalnızca anahtarları ve gruplarını oluşturur; marka değerleri
+-- 031_i3d_settings.sql tarafından doldurulur (o dosya panelden düzenlenmiş
+-- değerleri ezmez).
 INSERT INTO `settings` (`key`, `value`, `group`) VALUES
     -- Genel
-    ('site_name', 'i-3d', 'genel'),
+    ('site_name', '', 'genel'),
     ('site_description', '', 'genel'),
-    ('top_header_enabled', 'false', 'genel'),
+    ('top_header_enabled', '', 'genel'),
     ('top_header_text', '', 'genel'),
     ('top_header_link', '', 'genel'),
     -- Marka & Logo
@@ -33,10 +36,10 @@ INSERT INTO `settings` (`key`, `value`, `group`) VALUES
     ('twitter', '', 'sosyal_medya'),
     ('youtube', '', 'sosyal_medya'),
     -- SEO
-    ('meta_title', 'i-3d — 3D baskı ürünleri, filament ve yedek parça', 'seo'),
-    ('meta_description', 'Figürden ev dekoruna, filamentten yedek parçaya 3D baskı ürünleri i-3d''de.', 'seo'),
+    ('meta_title', '', 'seo'),
+    ('meta_description', '', 'seo'),
     ('google_analytics_id', '', 'seo'),
     -- Kargo
-    ('min_free_shipping', '750', 'shipping'),
-    ('default_cargo_fee', '49.90', 'shipping')
+    ('min_free_shipping', '', 'shipping'),
+    ('default_cargo_fee', '', 'shipping')
 ON DUPLICATE KEY UPDATE `group` = VALUES(`group`);

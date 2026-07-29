@@ -15,6 +15,7 @@ import (
 const (
 	cacheKeyCategoriesTree     = "categories:tree"
 	cacheKeyCategoriesShowcase = "categories:showcase"
+	cacheKeyCategoriesUseCases = "categories:use-cases"
 	cacheTTLCategories         = time.Hour
 )
 
@@ -37,6 +38,41 @@ func (s *CategoryService) List(isActive bool) ([]models.Category, error) {
 		return nil, errors.New("kategoriler getirilirken bir hata oluştu")
 	}
 	return categories, nil
+}
+
+// UseCaseItem anasayfadaki "Kullanım Alanları" ızgarası için hafif kayıt.
+type UseCaseItem struct {
+	ID    uint64 `json:"id"`
+	Name  string `json:"name"`
+	Slug  string `json:"slug"`
+	Icon  string `json:"icon"`
+	Count int64  `json:"count"`
+}
+
+// UseCases vitrin (is_showcase) kategorilerini gerçek ürün sayılarıyla döndürür.
+//
+// Kaynak projede bu liste Go içinde sabit bir diziydi ve ürünler isim LIKE
+// eşleşmesiyle sayılıyordu; eşleşme tahminiydi ve DB hataları sessizce 0'a
+// düşüyordu. Burada kategori-ürün M2M tablosu üzerinden kesin sayım yapılıyor.
+func (s *CategoryService) UseCases() ([]UseCaseItem, error) {
+	return cache.Remember(context.Background(), cacheKeyCategoriesUseCases, cacheTTLCategories,
+		func() ([]UseCaseItem, error) {
+			items := make([]UseCaseItem, 0, 8)
+			err := s.db.Model(&models.Category{}).
+				Select(`categories.id AS id, categories.name AS name, categories.slug AS slug,
+				        COALESCE(categories.icon_url, '') AS icon,
+				        COUNT(DISTINCT products.id) AS count`).
+				Joins("LEFT JOIN product_categories ON product_categories.category_id = categories.id").
+				Joins("LEFT JOIN products ON products.id = product_categories.product_id AND products.is_active = 1").
+				Where("categories.is_active = ? AND categories.is_showcase = ?", true, true).
+				Group("categories.id, categories.name, categories.slug, categories.icon_url").
+				Order("MIN(categories.showcase_sort_order) ASC").
+				Scan(&items).Error
+			if err != nil {
+				return nil, errors.New("kullanım alanları getirilirken bir hata oluştu")
+			}
+			return items, nil
+		})
 }
 
 // Showcase vitrin kategorilerini ürünleriyle birlikte döndürür.

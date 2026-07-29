@@ -24,7 +24,6 @@ const SORT_LABELS: Record<SortOption, string> = {
 interface LockedFilters {
   brand_id?: number;
   category_id?: number;
-  concern?: string;
   campaign_id?: number;
 }
 
@@ -132,7 +131,6 @@ export default function ProductListing({
 
       if (locked.brand_id) params.set("brand_id", String(locked.brand_id));
       if (locked.category_id) params.set("category_id", String(locked.category_id));
-      if (locked.concern) params.set("concern", locked.concern);
       if (locked.campaign_id) params.set("campaign_id", String(locked.campaign_id));
 
       if (selectedBrands.length > 0 && !locked.brand_id) {

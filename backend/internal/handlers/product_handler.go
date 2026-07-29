@@ -106,9 +106,6 @@ func (h *ProductHandler) List(c *fiber.Ctx) error {
 			params.MaxPrice = &p
 		}
 	}
-	if v := strings.TrimSpace(c.Query("concern")); v != "" {
-		params.ConcernKeywords = ConcernKeywords(v)
-	}
 
 	products, total, err := h.service.List(params)
 	if err != nil {

@@ -229,6 +229,8 @@ func setupRoutes(app *fiber.App, cfg *config.Config, db interface{}, arasSvc *ar
 	api.Get("/categories", categoryHandler.List)
 	api.Get("/categories/tree", categoryHandler.Tree)
 	api.Get("/categories/showcase", categoryHandler.Showcase)
+	// use-cases de /:slug'dan önce kayıtlı olmalı, aksi halde slug olarak yakalanır
+	api.Get("/categories/use-cases", categoryHandler.UseCases)
 	api.Get("/categories/:slug", categoryHandler.GetBySlug)
 
 	// Brands (public)
@@ -238,11 +240,6 @@ func setupRoutes(app *fiber.App, cfg *config.Config, db interface{}, arasSvc *ar
 	brandSpotlightHandler := handlers.NewBrandSpotlightHandler()
 	api.Get("/brands/spotlight", brandSpotlightHandler.GetSpotlight)
 	api.Get("/brands/:slug", brandHandler.GetBySlug)
-
-	// Skin concerns (public, static list with real DB counts)
-	skinConcernsHandler := handlers.NewSkinConcernsHandler()
-	api.Get("/skin-concerns", skinConcernsHandler.List)
-	api.Get("/skin-concerns/:slug", skinConcernsHandler.GetBySlug)
 
 	// Campaigns (public)
 	campaignHandler := handlers.NewCampaignHandler()

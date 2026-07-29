@@ -87,6 +87,18 @@ func (h *CategoryHandler) Showcase(c *fiber.Ctx) error {
 	})
 }
 
+// UseCases anasayfadaki "Kullanım Alanları" ızgarasını besler (public).
+func (h *CategoryHandler) UseCases(c *fiber.Ctx) error {
+	items, err := h.service.UseCases()
+	if err != nil {
+		return utils.InternalError(c)
+	}
+
+	return utils.SuccessResponse(c, fiber.Map{
+		"use_cases": items,
+	})
+}
+
 // GetBySlug slug ile kategori getirir (public).
 func (h *CategoryHandler) GetBySlug(c *fiber.Ctx) error {
 	slug := strings.TrimSpace(c.Params("slug"))

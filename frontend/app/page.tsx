@@ -13,7 +13,7 @@ import RecommendedProducts from "@/components/home/RecommendedProducts";
 import SeasonalBanner from "@/components/home/SeasonalBanner";
 import TrendingWall from "@/components/home/TrendingWall";
 import BrandSpotlight from "@/components/home/BrandSpotlight";
-import SkinConcerns from "@/components/home/SkinConcerns";
+import UseCases from "@/components/home/UseCases";
 import DualBanner from "@/components/home/DualBanner";
 import NewArrivals from "@/components/home/NewArrivals";
 
@@ -57,7 +57,7 @@ export default async function HomePage() {
           <SeasonalBanner banners={data.banners} />
           <TrendingWall products={data.trending} />
           <BrandSpotlight spotlight={data.spotlight} />
-          <SkinConcerns concerns={data.concerns} />
+          <UseCases useCases={data.useCases} />
           <DualBanner banners={data.banners} />
           <NewArrivals products={data.newArrivals} />
 

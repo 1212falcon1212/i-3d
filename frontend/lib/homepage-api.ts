@@ -1,6 +1,6 @@
 import type { Category, Product, Brand, Banner } from "@/types";
 import type { BrandSpotlightData } from "@/components/home/BrandSpotlight";
-import type { ConcernItem } from "@/components/home/SkinConcerns";
+import type { UseCaseItem } from "@/components/home/UseCases";
 
 import { apiBase } from "./api-base";
 
@@ -14,7 +14,7 @@ const API = apiBase();
 
 interface CategoriesResponse { categories: Category[] }
 interface ProductsResponse { products: Product[] }
-interface ConcernsResponse { concerns: ConcernItem[] }
+interface UseCasesResponse { use_cases: UseCaseItem[] }
 interface BannersResponse { banners: Banner[] }
 
 export interface HomepageData {
@@ -22,7 +22,7 @@ export interface HomepageData {
   trending: Product[];
   recommended: Product[];
   spotlight: BrandSpotlightData | null;
-  concerns: ConcernItem[];
+  useCases: UseCaseItem[];
   newArrivals: Product[];
   brands: Brand[];
   banners: Banner[];
@@ -48,13 +48,13 @@ async function safeFetch<T>(url: string): Promise<T | null> {
 // ----------------------------------------------------------------
 
 export async function fetchHomepageData(): Promise<HomepageData> {
-  const [categories, trendingRaw, recommendedRaw, spotlightRaw, concernsRaw,
+  const [categories, trendingRaw, recommendedRaw, spotlightRaw, useCasesRaw,
          newArrivalsRaw, brandsRaw, bannersRaw] = await Promise.all([
     safeFetch<CategoriesResponse>(`${API}/categories/tree`),
     safeFetch<ProductsResponse>(`${API}/products?sort=trending&per_page=18`),
     safeFetch<ProductsResponse>(`${API}/products?sort=featured&per_page=9`),
     safeFetch<BrandSpotlightData>(`${API}/brands/spotlight`),
-    safeFetch<ConcernsResponse>(`${API}/skin-concerns`),
+    safeFetch<UseCasesResponse>(`${API}/categories/use-cases`),
     safeFetch<ProductsResponse>(`${API}/products?sort=newest&per_page=9`),
     safeFetch<Brand[]>(`${API}/brands?limit=15`),
     safeFetch<BannersResponse>(`${API}/banners`),
@@ -81,7 +81,7 @@ export async function fetchHomepageData(): Promise<HomepageData> {
     trending,
     recommended,
     spotlight:   spotlightRaw ?? null,
-    concerns:    concernsRaw?.concerns ?? [],
+    useCases:    useCasesRaw?.use_cases ?? [],
     newArrivals: newArrivalsRaw?.products ?? [],
     brands:      Array.isArray(brandsRaw) ? brandsRaw : [],
     banners:     bannersRaw?.banners ?? [],

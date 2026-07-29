@@ -11,16 +11,15 @@ import (
 )
 
 type ProductListParams struct {
-	Page            int
-	PerPage         int
-	CategoryID      *uint64
-	BrandID         *uint64
-	MinPrice        *float64
-	MaxPrice        *float64
-	SortBy          string
-	Search          string
-	IsActive        *bool
-	ConcernKeywords []string
+	Page       int
+	PerPage    int
+	CategoryID *uint64
+	BrandID    *uint64
+	MinPrice   *float64
+	MaxPrice   *float64
+	SortBy     string
+	Search     string
+	IsActive   *bool
 }
 
 type ProductService struct {
@@ -57,18 +56,6 @@ func (s *ProductService) List(params ProductListParams) ([]models.Product, int64
 	if params.Search != "" {
 		searchTerm := "%" + params.Search + "%"
 		query = query.Where("(products.name LIKE ? OR products.sku LIKE ? OR products.barcode LIKE ?)", searchTerm, searchTerm, searchTerm)
-	}
-
-	if len(params.ConcernKeywords) > 0 {
-		orQ := s.db.Model(&models.Product{})
-		for i, kw := range params.ConcernKeywords {
-			if i == 0 {
-				orQ = orQ.Where("products.name LIKE ? OR products.description LIKE ?", kw, kw)
-			} else {
-				orQ = orQ.Or("products.name LIKE ? OR products.description LIKE ?", kw, kw)
-			}
-		}
-		query = query.Where(orQ)
 	}
 
 	if params.CategoryID != nil {
@@ -439,4 +426,3 @@ func (s *ProductService) descendantCategoryIDs(rootID uint64) ([]uint64, error) 
 	}
 	return ids, nil
 }
-

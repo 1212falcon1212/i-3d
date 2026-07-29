@@ -129,21 +129,21 @@ hero'da gerçek WebGL sahnesi, sayfanın geri kalanında CSS 3D transform.
 - [ ] **S3 — chrome.** Header (mega menü, mobil çekmece, arama önizlemesi), Footer,
       Breadcrumb, CartDrawer. Ücretsiz kargo eşiği `useSettings().min_free_shipping`'e
       bağlanır (backend #2 ile eş).
-- [ ] **S4 — anasayfa (yeni kurgu).** Bölüm sırası ve yeni bileşenler:
-  - [ ] `PrintScene.tsx` — WebGL hero. Prosedürel bir baskı katman katman oluşur,
+- [x] **S4 — anasayfa (yeni kurgu).** Bölüm sırası ve yeni bileşenler:
+  - [x] `PrintScene.tsx` — WebGL hero. Prosedürel bir baskı katman katman oluşur,
         sonra yavaşça döner; nozul üstte hareket eder. Üstünde display başlık + CTA.
         `PrintScenePoster.tsx` statik SVG yedeği.
-  - [ ] `FilamentStrip.tsx` — marka şeridi yerine eğik (CSS 3D) filament renk çipleri;
+  - [x] `FilamentStrip.tsx` — marka şeridi yerine eğik (CSS 3D) filament renk çipleri;
         tıklanınca o renkteki ürünlere gider.
-  - [ ] `UseCaseBento.tsx` — kullanım alanları, eşit ızgara değil asimetrik bento;
+  - [x] `UseCases.tsx` — kullanım alanları, eşit ızgara değil asimetrik bento;
         kartlar imleç yönüne göre hafif eğilir.
-  - [ ] `ProductShelf.tsx` — dikey ızgara yerine yatay raf (snap scroll). Öne çıkanlar,
+  - [x] `ProductShelf.tsx` — dikey ızgara yerine yatay raf (snap scroll). Öne çıkanlar,
         bu hafta basılanlar ve yeni gelenler bu bileşeni paylaşır.
-  - [ ] `HowItPrints.tsx` — tam genişlik koyu blok: model → dilimleme → baskı → kargo.
+  - [x] `HowItPrints.tsx` — tam genişlik koyu blok: model → dilimleme → baskı → kargo.
         İzometrik SVG, numaralandırma burada bilgi taşıdığı için var.
-  - [ ] `CategoryBento.tsx` — mevcut bento yeniden ölçeklenir, perspektif eklenir.
-  - [ ] `BrandSpotlight.tsx` — yerinde restyle.
-  - [ ] `app/page.tsx` — kompozisyon yeniden yazılır; bölümler arası `layer-rule`
+  - [x] `CategoryBento.tsx` — mevcut bento yeniden ölçeklenir, perspektif eklenir.
+  - [x] `BrandSpotlight.tsx` — yerinde restyle.
+  - [x] `app/page.tsx` — kompozisyon yeniden yazılır; bölümler arası `layer-rule`
         ritmi, tam genişlik koyu bloklar ve `max-w-7xl` alanlar dönüşümlü.
 - [ ] **S5 — katalog + ürün detay.** `ProductListing` (dört sayfayı birden besliyor)
       yerinde stillenir. PDP'de malzeme/katman/süre çipleri `product_tags` ve varyasyon

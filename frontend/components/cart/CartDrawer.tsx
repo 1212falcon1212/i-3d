@@ -8,6 +8,7 @@ import { useCartDrawer } from "@/lib/cart-drawer";
 import { formatPrice, cn } from "@/lib/utils";
 import Spinner from "@/components/ui/Spinner";
 import { api } from "@/lib/api";
+import { productImage } from "@/lib/placeholder-image";
 
 const FREE_SHIPPING_THRESHOLD = 500;
 
@@ -189,7 +190,7 @@ export default function CartDrawer() {
                 const img =
                   item.product?.images?.find((i) => i.is_primary)?.image_url ??
                   item.product?.images?.[0]?.image_url ??
-                  "/placeholder-product.png";
+                  productImage(item.product?.slug || item.id);
                 const price = item.variant?.price ?? item.product?.price ?? 0;
                 return (
                   <li key={item.id} className="py-4 flex gap-3">

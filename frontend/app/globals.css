@@ -1,27 +1,49 @@
 @import "tailwindcss";
 
+/* ============================================================
+ * i-3d tasarım token'ları
+ *
+ * Token ADLARI bilinçli olarak korunuyor: kod tabanında ~2300 yerde
+ * `text-text-secondary`, `border-border`, `bg-primary` gibi utility'ler var.
+ * Yeniden adlandırmak yerine değerleri değiştiriyoruz — tema tek dosyadan döner.
+ *
+ * Palet filament dünyasından: sıcak uç turuncusu, tabla kremi, mürekkep
+ * lacivert; üstüne turkuaz ve sarı aksanlar.
+ * ============================================================ */
 @theme inline {
-  --color-primary: #7c3aed;
-  --color-primary-soft: #ede9fe;
-  --color-primary-dark: #5b21b6;
-  --color-primary-hover: #6d28d9;
-  --color-bg-primary: #f5f0ff;
-  --color-bg-footer: #1e103d;
-  --color-text-primary: #1e103d;
-  --color-text-secondary: #8b7aaa;
-  --color-border: #e0d5f5;
-  --color-card-bg: #ffffff;
-  --color-accent-rose: #e11d48;
-  --color-accent-emerald: #059669;
-  --color-accent-amber: #d97706;
+  --color-primary: #ff6b2c;
+  --color-primary-soft: #ffe8da;
+  --color-primary-dark: #d4470f;
+  --color-primary-hover: #f35e20;
 
-  --font-display: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
-  --font-body: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
+  --color-bg-primary: #fff8f1;
+  --color-bg-footer: #141a26;
+  --color-text-primary: #141a26;
+  --color-text-secondary: #6b7386;
+  --color-border: #eadfd3;
+  --color-card-bg: #ffffff;
+
+  --color-accent-rose: #f2465b;
+  --color-accent-emerald: #12b5a5;
+  --color-accent-amber: #ffc53d;
+  --color-accent-sky: #3d9be9;
+
+  /* Baskı tablası yüzeyi — kartların ve görsel kutularının altındaki doku */
+  --color-plate: #f4ece2;
+
+  --font-display: var(--font-baloo), "Trebuchet MS", sans-serif;
+  --font-body: var(--font-figtree), system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+
+  /* Oyuncu dil: yumuşak köşe + kalın offset gölge */
+  --radius-blob: 1.75rem;
+  --shadow-toy: 0 4px 0 0 #141a26;
+  --shadow-toy-soft: 0 6px 18px -6px rgba(20, 26, 38, 0.28);
 }
 
 :root {
-  --background: #f5f0ff;
-  --foreground: #1e103d;
+  --background: #fff8f1;
+  --foreground: #141a26;
 }
 
 body {
@@ -45,7 +67,8 @@ input[type="button"] {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: -0.01em;
 }
 
 /* ============ Animations ============ */
@@ -101,7 +124,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, #e0d5f5 25%, #ede9fe 50%, #e0d5f5 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-plate) 25%,
+    var(--color-primary-soft) 50%,
+    var(--color-plate) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -170,10 +198,74 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #7c3aed, #a78bfa, #c084fc);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark),
+    var(--color-primary),
+    var(--color-accent-amber)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ============================================================
+ * İmza öğesi — katman dolumu
+ *
+ * Başlıklar ve görseller alttan yukarı, bir baskının katmanları gibi belirir.
+ * steps() bilerek kullanılıyor: efekt "fade" değil, "basılıyor" okunmalı.
+ * ============================================================ */
+@keyframes layer-print {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.layer-print {
+  animation: layer-print 0.9s steps(9, end) both;
+}
+
+.layer-print-slow {
+  animation: layer-print 1.4s steps(14, end) both;
+}
+
+/* Baskı tablası zemini */
+.build-plate {
+  background-color: var(--color-plate);
+  background-image:
+    linear-gradient(rgba(20, 26, 38, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 26, 38, 0.05) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* Infill dokusu — hover'da beliren çapraz tarama */
+.infill {
+  background-image:
+    repeating-linear-gradient(60deg, rgba(255, 107, 44, 0.18) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(-60deg, rgba(255, 107, 44, 0.18) 0 1px, transparent 1px 9px);
+}
+
+/* Katman çizgisi ayracı — bölümler arası ritim */
+.layer-rule {
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-border) 0 2px,
+    transparent 2px 4px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer-print,
+  .layer-print-slow,
+  .animate-float,
+  .animate-marquee,
+  .animate-shimmer {
+    animation: none !important;
+  }
+  .layer-print,
+  .layer-print-slow {
+    clip-path: none;
+  }
 }
 
 /* ============ Homepage specific ============ */
@@ -192,21 +284,21 @@ h1, h2, h3, h4, h5, h6 {
   animation-play-state: paused;
 }
 
-/* Gradient backgrounds */
+/* Gradient zeminler — hepsi token türevi */
 .bg-hero-gradient {
-  background: linear-gradient(160deg, #d4c5f9 0%, #ede9fe 100%);
+  background: linear-gradient(160deg, var(--color-primary-soft) 0%, var(--color-bg-primary) 100%);
 }
 .bg-dark-gradient {
-  background: linear-gradient(110deg, #1e103d 0%, #3d2363 60%, #7c3aed 100%);
+  background: linear-gradient(110deg, var(--color-bg-footer) 0%, #23304a 55%, var(--color-primary-dark) 100%);
 }
 .bg-dual-left {
-  background: linear-gradient(135deg, #ede9fe 0%, #d4c5f9 100%);
+  background: linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-accent-amber) 140%);
 }
 .bg-dual-right {
-  background: linear-gradient(135deg, #1e103d 0%, #3d2363 100%);
+  background: linear-gradient(135deg, var(--color-bg-footer) 0%, #23304a 100%);
 }
-.bg-footer { background-color: #1e103d; }
-.bg-bg-footer { background-color: #1e103d; }
+.bg-footer { background-color: var(--color-bg-footer); }
+.bg-bg-footer { background-color: var(--color-bg-footer); }
 
 /* Magnetic hover base */
 .magnetic-wrap {
@@ -220,29 +312,29 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- CMS içerik (admin panelden HTML) ---------- */
 .cms-content {
-  color: var(--color-text-secondary, #5b5268);
+  color: var(--color-text-secondary);
   line-height: 1.7;
   font-size: 15px;
 }
 .cms-content > * + * { margin-top: 1em; }
 .cms-content .lead {
   font-size: 1.15rem;
-  color: var(--color-text-primary, #231b3f);
+  color: var(--color-text-primary);
   font-weight: 500;
   line-height: 1.55;
 }
 .cms-content h2 {
-  font-family: var(--font-display), "Playfair Display", serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 1.6rem;
-  color: var(--color-text-primary, #231b3f);
+  color: var(--color-text-primary);
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   letter-spacing: -0.01em;
 }
 .cms-content h3 {
-  font-family: var(--font-display), "Playfair Display", serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 1.15rem;
-  color: var(--color-text-primary, #231b3f);
+  color: var(--color-text-primary);
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -259,35 +351,36 @@ h1, h2, h3, h4, h5, h6 {
   padding-left: 1.25rem;
   margin: 0.35em 0;
 }
+/* Madde işareti yuvarlak değil küçük kare — katman hissi */
 .cms-content ul li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.65em;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--color-primary, #7c3aed);
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--color-primary);
 }
 .cms-content ol { list-style: decimal; }
 .cms-content ol li { margin: 0.35em 0; padding-left: 0.25rem; }
-.cms-content strong { color: var(--color-text-primary, #231b3f); font-weight: 600; }
+.cms-content strong { color: var(--color-text-primary); font-weight: 600; }
 .cms-content a {
-  color: var(--color-primary, #7c3aed);
+  color: var(--color-primary-dark);
   text-decoration: none;
-  border-bottom: 1px solid rgba(124, 58, 237, 0.25);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-primary) 35%, transparent);
   transition: border-color 0.15s;
 }
-.cms-content a:hover { border-bottom-color: var(--color-primary, #7c3aed); }
+.cms-content a:hover { border-bottom-color: var(--color-primary); }
 .cms-content hr {
   border: 0;
-  border-top: 1px solid rgba(124, 58, 237, 0.15);
+  border-top: 1px solid var(--color-border);
   margin: 2rem 0;
 }
 .cms-content blockquote {
-  border-left: 3px solid var(--color-primary, #7c3aed);
+  border-left: 3px solid var(--color-primary);
   padding-left: 1rem;
-  color: var(--color-text-primary, #231b3f);
+  color: var(--color-text-primary);
   font-style: italic;
   margin: 1rem 0;
 }

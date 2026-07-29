@@ -6,6 +6,7 @@ import type { Product } from "@/types";
 import SerifHeading from "@/components/ui/SerifHeading";
 import FadeUp from "@/components/animations/FadeUp";
 import { formatPrice, cn } from "@/lib/utils";
+import { productImage } from "@/lib/placeholder-image";
 
 interface NewArrivalsProps {
   products: Product[];
@@ -29,7 +30,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
               const img =
                 product.images?.find((i) => i.is_primary)?.image_url ??
                 product.images?.[0]?.image_url ??
-                "/placeholder-product.png";
+                productImage(product.slug || product.id);
 
               return (
                 <div

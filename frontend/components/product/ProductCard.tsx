@@ -9,6 +9,7 @@ import { formatPrice, calcDiscount, cn, resolveImageUrl } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import { useCartDrawer } from "@/lib/cart-drawer";
 import { useFavorites } from "@/lib/favorites";
+import { productImage } from "@/lib/placeholder-image";
 
 interface ProductCardProps {
   product: Product;
@@ -42,7 +43,7 @@ export default function ProductCard({
     product.images?.find((img) => img.is_primary) ?? product.images?.[0];
   const imageUrl = primaryImage?.image_url
     ? resolveImageUrl(primaryImage.image_url)
-    : "/placeholder-product.png";
+    : productImage(product.slug || product.id);
   const discount = product.compare_price
     ? calcDiscount(product.price, product.compare_price)
     : 0;

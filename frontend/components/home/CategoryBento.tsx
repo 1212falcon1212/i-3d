@@ -35,7 +35,7 @@ const cardThemes: CardTheme[] = [
     dark: false,
   },
   {
-    bg: "bg-[#b8a4f0]",
+    bg: "bg-accent-amber",
     textPrimary: "text-white",
     textSecondary: "text-white/60",
     numberColor: "text-white/50",

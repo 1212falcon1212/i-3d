@@ -1,18 +1,28 @@
 /**
- * Local banner image pool. Görseller /public/banners altında.
- * Backend boş dönse bile anlamlı fallback.
+ * Görsel yer tutucuları — hepsi /public altında, dış servise bağımlılık yok.
+ *
+ * Backend banner döndürmediğinde veya bir ürünün görseli yokken kullanılır.
+ * Seçim deterministik: aynı ürün/marka her zaman aynı görseli alır, böylece
+ * liste her yenilemede zıplamaz.
  */
 
 export const LOCAL_BANNERS = [
-  "/banners/slider-hediyeli-avene13-tr-320.jpg",
-  "/banners/slider-hediyeli-vichy-tr-217.jpg",
-  "/banners/papatya-slider-bioderma4-tr-335.jpg",
-  "/banners/mobil-papatya-ducray13-tr-22.jpg",
-  "/banners/mobil-hediyeli-bioxcin-tr-27.jpg",
-  "/banners/marc-anthony-festival-roller-mobil-tr-8.jpg",
-  "/banners/idea-derma-mobil6-tr-22.jpg",
-  "/banners/from-natura-mobil5-tr-20.jpg",
-  "/banners/alls-mobil-1nisan-tr-21.jpg",
+  "/brand/plate-01.svg",
+  "/brand/plate-02.svg",
+  "/brand/plate-03.svg",
+  "/brand/plate-04.svg",
+] as const;
+
+/** Ürün kartı yer tutucuları — marka paletinde düz illüstrasyonlar. */
+export const LOCAL_PRODUCTS = [
+  "/products/benchy.svg",
+  "/products/filament.svg",
+  "/products/vazo.svg",
+  "/products/figur.svg",
+  "/products/organizer.svg",
+  "/products/saksi.svg",
+  "/products/nozzle.svg",
+  "/products/disli.svg",
 ] as const;
 
 function hash(str: string): number {
@@ -21,9 +31,12 @@ function hash(str: string): number {
   return Math.abs(h);
 }
 
+function pick(pool: readonly string[], seed: string | number): string {
+  return pool[hash(String(seed)) % pool.length];
+}
+
 export function pickBanner(seed: string | number): string {
-  const s = String(seed);
-  return LOCAL_BANNERS[hash(s) % LOCAL_BANNERS.length];
+  return pick(LOCAL_BANNERS, seed);
 }
 
 export function bannerImage(_title?: string, seed: string | number = "default"): string {
@@ -36,4 +49,9 @@ export function stockImage(keywords: string, _w = 1200, _h = 600, seed?: string 
 
 export function brandImage(brandName: string): string {
   return pickBanner(brandName);
+}
+
+/** Görseli olmayan ürünler için. */
+export function productImage(seed: string | number = "default"): string {
+  return pick(LOCAL_PRODUCTS, seed);
 }

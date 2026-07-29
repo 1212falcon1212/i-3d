@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Spiral vazo">
+  <rect width="400" height="400" fill="#FFF8F1"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 210)">
+    <path d="M-58 -130 q-42 90 -18 150 q18 46 76 46 q58 0 76 -46 q24 -60 -18 -150 Z" fill="#FFC53D"/>
+    <g stroke="#141A26" stroke-opacity="0.22" stroke-width="3" fill="none">
+      <path d="M-64 -90 q64 22 128 0"/><path d="M-72 -50 q72 24 144 0"/>
+      <path d="M-76 -10 q76 26 152 0"/><path d="M-72 30 q72 24 144 0"/>
+      <path d="M-58 70 q58 20 116 0"/>
+    </g>
+    <ellipse cy="-130" rx="58" ry="14" fill="#FFF8F1" stroke="#141A26" stroke-width="4"/>
+  </g></svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Yazıcı nozulu">
+  <rect width="400" height="400" fill="#FFF3E9"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 200)">
+    <rect x="-52" y="-120" width="104" height="104" rx="10" fill="#141A26"/>
+    <g fill="#FFF8F1" opacity="0.25">
+      <rect x="-40" y="-108" width="80" height="10" rx="5"/>
+      <rect x="-40" y="-88" width="80" height="10" rx="5"/>
+    </g>
+    <path d="M-52 -16 L52 -16 L22 62 L-22 62 Z" fill="#FF6B2C"/>
+    <rect x="-22" y="62" width="44" height="20" rx="6" fill="#141A26"/>
+    <g fill="#FF6B2C" opacity="0.55">
+      <circle cx="0" cy="112" r="9"/>
+      <circle cx="0" cy="142" r="7"/>
+      <circle cx="0" cy="166" r="5"/>
+    </g>
+  </g></svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Geometrik saksı">
+  <rect width="400" height="400" fill="#F2FBF9"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 230)">
+    <path d="M-84 -20 L84 -20 L58 104 L-58 104 Z" fill="#FF6B2C"/>
+    <path d="M-84 -20 L84 -20 L58 104 L-58 104 Z" fill="none" stroke="#141A26" stroke-width="4"/>
+    <path d="M-84 -20 L0 42 L84 -20" fill="none" stroke="#141A26" stroke-opacity="0.3" stroke-width="4"/>
+    <path d="M-58 104 L0 42 L58 104" fill="none" stroke="#141A26" stroke-opacity="0.3" stroke-width="4"/>
+    <g fill="#12B5A5">
+      <ellipse cx="-34" cy="-64" rx="30" ry="18" transform="rotate(-24 -34 -64)"/>
+      <ellipse cx="34" cy="-70" rx="30" ry="18" transform="rotate(22 34 -70)"/>
+      <ellipse cx="0" cy="-104" rx="22" ry="34"/>
+    </g>
+    <path d="M0 -20 V-96" stroke="#12B5A5" stroke-width="8" stroke-linecap="round"/>
+  </g></svg>

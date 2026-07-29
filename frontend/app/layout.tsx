@@ -1,8 +1,33 @@
 import type { Metadata, Viewport } from "next";
+import { Baloo_2, Figtree, Space_Mono } from "next/font/google";
 import Providers from "@/components/Providers";
 import LenisProvider from "@/app/providers/LenisProvider";
 import { Toaster } from "sonner";
 import "./globals.css";
+
+// latin-ext şart: ı/ğ/ş/İ bu subset'te. Yalnızca "latin" ile Türkçe karakterler
+// sistem fontuna düşer ve satır içinde gözle görülür bir sıçrama olur.
+const baloo = Baloo_2({
+  subsets: ["latin", "latin-ext"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-baloo",
+  display: "swap",
+});
+
+const figtree = Figtree({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
+  variable: "--font-figtree",
+  display: "swap",
+});
+
+// Sadece teknik detaylarda: spec çipleri, SKU, sipariş numarası.
+const spaceMono = Space_Mono({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -50,7 +75,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="h-full antialiased">
+    <html
+      lang="tr"
+      className={`h-full antialiased ${baloo.variable} ${figtree.variable} ${spaceMono.variable}`}
+    >
       <body className="min-h-full flex flex-col bg-bg-primary text-text-primary font-body">
         <LenisProvider>
           <Providers>{children}</Providers>

@@ -151,7 +151,7 @@ export default function Footer() {
   ].filter((s) => s.href); // yalnızca URL'si olanları göster
 
   return (
-    <footer className="mt-20 text-white/80 bg-gradient-to-b from-[#0f0a1e] to-[#1a1530]">
+    <footer className="mt-20 text-white/80 bg-gradient-to-b from-bg-footer to-[#1f2a3d]">
       <div className="max-w-7xl mx-auto px-4 lg:px-6 pt-14 pb-6">
         {/* Üst: marka + kolonlar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">

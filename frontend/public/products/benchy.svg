@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="3D baskı test teknesi">
+  <rect width="400" height="400" fill="#FFF3E9"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 230)">
+    <path d="M-110 40 L110 40 L86 96 L-86 96 Z" fill="#FF6B2C"/>
+    <rect x="-70" y="-40" width="120" height="80" rx="8" fill="#12B5A5"/>
+    <rect x="-40" y="-88" width="54" height="48" rx="6" fill="#FFF8F1" stroke="#141A26" stroke-width="4"/>
+    <circle cx="60" cy="-4" r="16" fill="#FFF8F1" stroke="#141A26" stroke-width="4"/>
+    <rect x="-14" y="-124" width="10" height="40" rx="5" fill="#141A26"/>
+  </g>
+  <g stroke="#141A26" stroke-opacity="0.15" stroke-width="2">
+    <path d="M130 210 H250 M130 230 H250 M130 250 H250"/>
+  </g></svg>

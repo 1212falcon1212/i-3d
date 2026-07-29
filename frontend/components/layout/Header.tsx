@@ -481,7 +481,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
         className="hidden lg:block text-white shadow-md relative z-20"
         style={{
           backgroundImage:
-            "linear-gradient(to right, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%)",
+            "linear-gradient(to right, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-accent-amber) 140%)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4">

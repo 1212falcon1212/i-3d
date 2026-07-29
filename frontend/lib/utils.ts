@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * Format price in Turkish Lira: ₺1.234,56
  */
@@ -139,10 +142,15 @@ export function getArasStatusColor(code?: number | null): string {
 }
 
 /**
- * cn utility — simple class name merger
+ * cn — class birleştirici.
+ *
+ * tailwind-merge şart: bileşenlerin `className` prop'uyla varsayılanları ezmesi
+ * bu davranışa bağlı. Düz birleştirmede cn("rounded-2xl", "rounded-full") iki
+ * sınıfı da yazar ve kazananı çağrı sırası değil stylesheet sırası belirler —
+ * sessizce yanlış köşe/renk, ayıklaması zor.
  */
-export function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(" ");
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
 }
 
 /**

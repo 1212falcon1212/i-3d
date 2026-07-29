@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Filament makarası">
+  <rect width="400" height="400" fill="#F2FBF9"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 200)">
+    <circle r="128" fill="#12B5A5"/>
+    <circle r="128" fill="none" stroke="#141A26" stroke-width="8"/>
+    <circle r="56" fill="#FFF8F1" stroke="#141A26" stroke-width="8"/>
+    <circle r="18" fill="#141A26"/>
+    <g stroke="#FFF8F1" stroke-opacity="0.45" stroke-width="6" fill="none">
+      <circle r="72"/><circle r="88"/><circle r="104"/>
+    </g>
+  </g>
+  <path d="M328 200 q40 40 8 96" stroke="#12B5A5" stroke-width="10" fill="none" stroke-linecap="round"/></svg>

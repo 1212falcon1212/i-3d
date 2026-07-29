@@ -13,6 +13,7 @@ import PaymentForm from "@/components/checkout/PaymentForm";
 import Spinner from "@/components/ui/Spinner";
 import { cn, formatPrice, resolveImageUrl } from "@/lib/utils";
 import { useSettings } from "@/lib/settings";
+import { productImage } from "@/lib/placeholder-image";
 
 const FREE_SHIPPING_THRESHOLD = 500;
 const SHIPPING_COST = 39.9;
@@ -801,7 +802,7 @@ export default function OdemePage() {
                   const img =
                     item.product?.images?.find((i) => i.is_primary)?.image_url ??
                     item.product?.images?.[0]?.image_url ??
-                    "/placeholder-product.png";
+                    productImage(item.product?.slug || item.id);
                   const price =
                     item.variant?.price ?? item.product?.price ?? 0;
                   return (

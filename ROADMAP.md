@@ -78,34 +78,34 @@ infill dokusu belirir. Cesaret tek yerde; geri kalan sakin.
 - [x] İzolasyon doğrulandı: istanbulvitamin ile aynı anda çalışıyor
 
 ### Faz 2 — Tasarım temeli
-- [ ] `@theme` token değerleri + `:root` ayna bloğu
-- [ ] `next/font` ile Baloo 2 / Figtree / Space Mono (latin-ext)
-- [ ] `globals.css` içindeki hardcoded mor gradient'lerin token'a çevrilmesi
-- [ ] Kalan inline hex'ler (Header nav gradient, Footer, themeColor, manifest)
-- [ ] `cn()` → `tailwind-merge` + `clsx`
+- [x] `@theme` token değerleri + `:root` ayna bloğu
+- [x] `next/font` ile Baloo 2 / Figtree / Space Mono (latin-ext)
+- [x] `globals.css` içindeki hardcoded mor gradient'lerin token'a çevrilmesi
+- [x] Kalan inline hex'ler (Header nav gradient, Footer, themeColor, manifest)
+- [x] `cn()` → `tailwind-merge` + `clsx`
 
 ### Faz 3 — Dikey yeniden adlandırma
-- [ ] `skin_concerns_handler.go` ve `?concern=` parametresi kaldırılır
-- [ ] "Kullanım Alanları" `categories.is_showcase` dalı olarak kurulur
-- [ ] `app/cilt-sorunlari/[slug]` → `app/kullanim-alanlari/[slug]`
-- [ ] `SkinConcerns.tsx` → `UseCases.tsx`, `homepage-api.ts` → `/categories/showcase`
-- [ ] `category-icons.ts` + `iconify-bundle.ts` 3D ikon setiyle (aynı commit'te)
+- [x] `skin_concerns_handler.go` ve `?concern=` parametresi kaldırılır
+- [x] "Kullanım Alanları" `categories.is_showcase` dalı olarak kurulur
+- [x] `app/cilt-sorunlari/[slug]` → `app/kullanim-alanlari/[slug]`
+- [x] `SkinConcerns.tsx` → `UseCases.tsx`, `homepage-api.ts` → `/categories/use-cases`
+- [x] `category-icons.ts` + `iconify-bundle.ts` 3D ikon setiyle (aynı commit'te)
 
 ### Faz 4 — Seed veri
-- [ ] `031_i3d_settings.sql` — site ayarları
-- [ ] `032_i3d_taxonomy.sql` — markalar, kategori ağacı, varyasyon tipleri
-- [ ] `033_i3d_products.sql` — 40 ürün, varyantlar, görseller, etiketler
-- [ ] `034_i3d_banners.sql` — banner pozisyonları (önce unique key)
-- [ ] `035_i3d_pages.sql` — kurumsal + yasal sayfalar
-- [ ] Ürün görselleri: marka paletinde ~12 illüstrasyon SVG
+- [x] `031_i3d_settings.sql` — site ayarları
+- [x] `032_i3d_taxonomy.sql` — markalar, kategori ağacı, varyasyon tipleri
+- [x] `033_i3d_products.sql` — 43 ürün, 45 varyant, görseller, etiketler
+- [x] `034_i3d_banners.sql` — banner pozisyonları (önce unique key)
+- [x] `035_i3d_pages.sql` — kurumsal + yasal sayfalar
+- [x] Ürün görselleri: marka paletinde ~12 illüstrasyon SVG
 
 Kural: her seed idempotent, `DELETE FROM` yok. Doğal unique key üzerinden
 `INSERT ... ON DUPLICATE KEY UPDATE` / `INSERT IGNORE`; FK'ler slug ile inline
 çözülür.
 
 ### Faz 5 — Vitrin tasarımı
-- [ ] S0 — 14 ölü bileşenin silinmesi (~1100 satır)
-- [ ] S1 — marka kimliği: logo/wordmark SVG, favicon, `components/brand/Logo.tsx`
+- [x] S0 — 14 ölü bileşenin silinmesi (~1100 satır)
+- [x] S1 — marka kimliği: logo/wordmark SVG, favicon, `components/brand/Logo.tsx`
 - [ ] S2 — ortak atomlar: Card, Badge, PillButton, SectionLabel, Spinner, Pagination, ProductCard
 - [ ] S3 — chrome: Header, Footer, Breadcrumb, SearchPreview, CartDrawer
 - [ ] S4 — anasayfa

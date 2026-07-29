@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Gece lambası">
+  <rect width="400" height="400" fill="#FFF8F1"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 210)">
+    <circle r="104" fill="#FFC53D"/>
+    <g fill="#141A26" opacity="0.12">
+      <circle cx="-38" cy="-30" r="20"/><circle cx="26" cy="14" r="28"/>
+      <circle cx="44" cy="-46" r="12"/><circle cx="-16" cy="52" r="16"/>
+    </g>
+    <circle r="104" fill="none" stroke="#141A26" stroke-width="4" stroke-opacity="0.25"/>
+    <rect x="-46" y="104" width="92" height="26" rx="8" fill="#141A26"/>
+    <rect x="-26" y="130" width="52" height="12" rx="6" fill="#3A4560"/>
+  </g></svg>

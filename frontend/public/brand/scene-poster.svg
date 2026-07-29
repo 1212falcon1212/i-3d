@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Baskı tablası üzerinde katman katman oluşan bir vazo">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2536"/>
+      <stop offset="1" stop-color="#141A26"/>
+    </linearGradient>
+    <radialGradient id="glowOrange" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FF6B2C" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#FF6B2C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowTeal" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#12B5A5" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#12B5A5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <ellipse cx="1080" cy="470" rx="420" ry="360" fill="url(#glowOrange)"/>
+  <ellipse cx="520" cy="560" rx="380" ry="300" fill="url(#glowTeal)"/>
+
+  <!-- baskı tablası (izometrik) -->
+  <g transform="translate(940 620)">
+    <path d="M0 0 L440 -190 L0 -380 L-440 -190 Z" fill="#20293B"/>
+    <g stroke="#3A4560" stroke-width="1.5" opacity="0.85">
+      <path d="M-330 -142 L110 -332 M-220 -95 L220 -285 M-110 -47 L330 -237 M110 -48 L-330 -238 M220 -95 L-220 -285 M330 -142 L-110 -332"/>
+    </g>
+    <path d="M0 0 L440 -190 L0 -380 L-440 -190 Z" fill="none" stroke="#FF6B2C" stroke-width="3" opacity="0.6"/>
+  </g>
+
+  <!-- basılan nesne: alttan üste daralıp genişleyen katmanlar -->
+  <g transform="translate(940 430)">
+    <g id="layers">
+      <ellipse cy="0"    rx="150" ry="52" fill="#FF6B2C"/>
+      <ellipse cy="-26"  rx="158" ry="55" fill="#FF6B2C"/>
+      <ellipse cy="-52"  rx="163" ry="57" fill="#FA7A2B"/>
+      <ellipse cy="-78"  rx="164" ry="57" fill="#F7862A"/>
+      <ellipse cy="-104" rx="160" ry="56" fill="#F79429"/>
+      <ellipse cy="-130" rx="152" ry="53" fill="#F9A32B"/>
+      <ellipse cy="-156" rx="140" ry="49" fill="#FBB32F"/>
+      <ellipse cy="-182" rx="126" ry="44" fill="#FFC53D"/>
+      <ellipse cy="-208" rx="112" ry="39" fill="#C9C455"/>
+      <ellipse cy="-234" rx="100" ry="35" fill="#8CBE7A"/>
+      <ellipse cy="-260" rx="92"  ry="32" fill="#4FBA93"/>
+      <ellipse cy="-286" rx="88"  ry="31" fill="#12B5A5"/>
+    </g>
+    <!-- en üstteki yarım katman: baskı sürüyor -->
+    <path d="M-88 -300 a88 31 0 0 1 132 -22 l0 22 a88 31 0 0 1 -132 22 z" fill="#12B5A5" opacity="0.75"/>
+  </g>
+
+  <!-- nozul -->
+  <g transform="translate(1000 100)">
+    <rect x="-34" y="0" width="68" height="86" rx="10" fill="#141A26" stroke="#3A4560" stroke-width="3"/>
+    <rect x="-24" y="16" width="48" height="10" rx="5" fill="#3A4560"/>
+    <rect x="-24" y="36" width="48" height="10" rx="5" fill="#3A4560"/>
+    <path d="M-18 86 h36 l-18 34 z" fill="#8A8F9C"/>
+    <rect x="-5" y="120" width="10" height="88" rx="5" fill="#12B5A5" opacity="0.55"/>
+  </g>
+
+  <!-- filament makarası (arka planda) -->
+  <g transform="translate(330 300)" opacity="0.9">
+    <circle r="118" fill="none" stroke="#FF6B2C" stroke-width="34"/>
+    <circle r="118" fill="none" stroke="#141A26" stroke-width="6" opacity="0.5"/>
+    <circle r="52" fill="#20293B" stroke="#3A4560" stroke-width="6"/>
+    <circle r="14" fill="#141A26"/>
+    <path d="M118 12 q90 60 40 150" stroke="#FF6B2C" stroke-width="10" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

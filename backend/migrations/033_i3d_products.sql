@@ -144,7 +144,7 @@ FROM (
     UNION ALL
     SELECT 'astronot-masa-figuru' AS slug, '/products/figur.svg' AS img
     UNION ALL
-    SELECT 'klasik-araba-maketi' AS slug, '/products/benchy.svg' AS img
+    SELECT 'klasik-araba-maketi' AS slug, '/products/figur.svg' AS img
     UNION ALL
     SELECT 'uzay-gemisi-maketi' AS slug, '/products/benchy.svg' AS img
     UNION ALL
@@ -152,49 +152,49 @@ FROM (
     UNION ALL
     SELECT 'dalga-vazo' AS slug, '/products/vazo.svg' AS img
     UNION ALL
-    SELECT 'gece-lambasi-ay' AS slug, '/products/saksi.svg' AS img
+    SELECT 'gece-lambasi-ay' AS slug, '/products/lamba.svg' AS img
     UNION ALL
-    SELECT 'duvar-panel-dalga' AS slug, '/products/organizer.svg' AS img
+    SELECT 'duvar-panel-dalga' AS slug, '/products/kutu.svg' AS img
     UNION ALL
     SELECT 'geometrik-saksi' AS slug, '/products/saksi.svg' AS img
     UNION ALL
-    SELECT 'asili-saksi' AS slug, '/products/saksi.svg' AS img
+    SELECT 'asili-saksi' AS slug, '/products/kanca.svg' AS img
     UNION ALL
-    SELECT 'mum-fanusu' AS slug, '/products/vazo.svg' AS img
+    SELECT 'mum-fanusu' AS slug, '/products/lamba.svg' AS img
     UNION ALL
-    SELECT 'zar-kulesi' AS slug, '/products/organizer.svg' AS img
+    SELECT 'zar-kulesi' AS slug, '/products/zar.svg' AS img
     UNION ALL
-    SELECT 'zar-tepsisi' AS slug, '/products/organizer.svg' AS img
+    SELECT 'zar-tepsisi' AS slug, '/products/zar.svg' AS img
     UNION ALL
-    SELECT 'kart-tutucu' AS slug, '/products/organizer.svg' AS img
+    SELECT 'kart-tutucu' AS slug, '/products/zar.svg' AS img
     UNION ALL
-    SELECT 'mekanik-bulmaca-kup' AS slug, '/products/disli.svg' AS img
+    SELECT 'mekanik-bulmaca-kup' AS slug, '/products/kutu.svg' AS img
     UNION ALL
     SELECT 'fidget-disli' AS slug, '/products/disli.svg' AS img
     UNION ALL
-    SELECT 'fidget-slider' AS slug, '/products/disli.svg' AS img
+    SELECT 'fidget-slider' AS slug, '/products/organizer.svg' AS img
     UNION ALL
     SELECT 'kablo-organizer' AS slug, '/products/organizer.svg' AS img
     UNION ALL
-    SELECT 'masa-organizer' AS slug, '/products/organizer.svg' AS img
+    SELECT 'masa-organizer' AS slug, '/products/kutu.svg' AS img
     UNION ALL
-    SELECT 'kalemlik-modul' AS slug, '/products/organizer.svg' AS img
+    SELECT 'kalemlik-modul' AS slug, '/products/kutu.svg' AS img
     UNION ALL
     SELECT 'telefon-standi' AS slug, '/products/organizer.svg' AS img
     UNION ALL
-    SELECT 'kulaklik-askisi' AS slug, '/products/organizer.svg' AS img
+    SELECT 'kulaklik-askisi' AS slug, '/products/kanca.svg' AS img
     UNION ALL
-    SELECT 'laptop-yukseltici' AS slug, '/products/organizer.svg' AS img
+    SELECT 'laptop-yukseltici' AS slug, '/products/kutu.svg' AS img
     UNION ALL
     SELECT 'bulasik-sungeri-tutucu' AS slug, '/products/organizer.svg' AS img
     UNION ALL
-    SELECT 'posetkilit-seti' AS slug, '/products/disli.svg' AS img
+    SELECT 'posetkilit-seti' AS slug, '/products/kanca.svg' AS img
     UNION ALL
-    SELECT 'bardak-altligi-seti' AS slug, '/products/organizer.svg' AS img
+    SELECT 'bardak-altligi-seti' AS slug, '/products/kutu.svg' AS img
     UNION ALL
-    SELECT 'duvar-montaj-aparati' AS slug, '/products/disli.svg' AS img
+    SELECT 'duvar-montaj-aparati' AS slug, '/products/kanca.svg' AS img
     UNION ALL
-    SELECT 'supurge-askisi' AS slug, '/products/disli.svg' AS img
+    SELECT 'supurge-askisi' AS slug, '/products/kanca.svg' AS img
     UNION ALL
     SELECT 'pla-filament-1kg' AS slug, '/products/filament.svg' AS img
     UNION ALL
@@ -212,15 +212,108 @@ FROM (
     UNION ALL
     SELECT 'ender-fan-kapagi' AS slug, '/products/disli.svg' AS img
     UNION ALL
-    SELECT 'ender-filament-kilavuzu' AS slug, '/products/disli.svg' AS img
+    SELECT 'ender-filament-kilavuzu' AS slug, '/products/filament.svg' AS img
     UNION ALL
-    SELECT 'prusa-parca-tutucu' AS slug, '/products/disli.svg' AS img
+    SELECT 'prusa-parca-tutucu' AS slug, '/products/nozzle.svg' AS img
     UNION ALL
     SELECT 'genel-kaplin' AS slug, '/products/disli.svg' AS img
 ) AS v
 JOIN `products` p ON p.slug = v.slug
 LEFT JOIN `product_images` pi ON pi.product_id = p.id
 WHERE pi.id IS NULL;
+
+-- Var olan birincil görselleri de güncelle (seed tekrar uygulanabilsin).
+UPDATE `product_images` pi
+JOIN `products` p ON p.id = pi.product_id
+JOIN (
+    SELECT 'benchy-test-teknesi' AS slug, '/products/benchy.svg' AS img
+    UNION ALL
+    SELECT 'low-poly-tilki' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'ejderha-figuru' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'anime-buste-01' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'kedi-figur-seti' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'astronot-masa-figuru' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'klasik-araba-maketi' AS slug, '/products/figur.svg' AS img
+    UNION ALL
+    SELECT 'uzay-gemisi-maketi' AS slug, '/products/benchy.svg' AS img
+    UNION ALL
+    SELECT 'spiral-vazo-buyuk' AS slug, '/products/vazo.svg' AS img
+    UNION ALL
+    SELECT 'dalga-vazo' AS slug, '/products/vazo.svg' AS img
+    UNION ALL
+    SELECT 'gece-lambasi-ay' AS slug, '/products/lamba.svg' AS img
+    UNION ALL
+    SELECT 'duvar-panel-dalga' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'geometrik-saksi' AS slug, '/products/saksi.svg' AS img
+    UNION ALL
+    SELECT 'asili-saksi' AS slug, '/products/kanca.svg' AS img
+    UNION ALL
+    SELECT 'mum-fanusu' AS slug, '/products/lamba.svg' AS img
+    UNION ALL
+    SELECT 'zar-kulesi' AS slug, '/products/zar.svg' AS img
+    UNION ALL
+    SELECT 'zar-tepsisi' AS slug, '/products/zar.svg' AS img
+    UNION ALL
+    SELECT 'kart-tutucu' AS slug, '/products/zar.svg' AS img
+    UNION ALL
+    SELECT 'mekanik-bulmaca-kup' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'fidget-disli' AS slug, '/products/disli.svg' AS img
+    UNION ALL
+    SELECT 'fidget-slider' AS slug, '/products/organizer.svg' AS img
+    UNION ALL
+    SELECT 'kablo-organizer' AS slug, '/products/organizer.svg' AS img
+    UNION ALL
+    SELECT 'masa-organizer' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'kalemlik-modul' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'telefon-standi' AS slug, '/products/organizer.svg' AS img
+    UNION ALL
+    SELECT 'kulaklik-askisi' AS slug, '/products/kanca.svg' AS img
+    UNION ALL
+    SELECT 'laptop-yukseltici' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'bulasik-sungeri-tutucu' AS slug, '/products/organizer.svg' AS img
+    UNION ALL
+    SELECT 'posetkilit-seti' AS slug, '/products/kanca.svg' AS img
+    UNION ALL
+    SELECT 'bardak-altligi-seti' AS slug, '/products/kutu.svg' AS img
+    UNION ALL
+    SELECT 'duvar-montaj-aparati' AS slug, '/products/kanca.svg' AS img
+    UNION ALL
+    SELECT 'supurge-askisi' AS slug, '/products/kanca.svg' AS img
+    UNION ALL
+    SELECT 'pla-filament-1kg' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'pla-plus-filament' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'petg-filament' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'tpu-filament' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'recine-standart' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'nozzle-seti' AS slug, '/products/nozzle.svg' AS img
+    UNION ALL
+    SELECT 'sertlestirilmis-nozzle' AS slug, '/products/nozzle.svg' AS img
+    UNION ALL
+    SELECT 'ender-fan-kapagi' AS slug, '/products/disli.svg' AS img
+    UNION ALL
+    SELECT 'ender-filament-kilavuzu' AS slug, '/products/filament.svg' AS img
+    UNION ALL
+    SELECT 'prusa-parca-tutucu' AS slug, '/products/nozzle.svg' AS img
+    UNION ALL
+    SELECT 'genel-kaplin' AS slug, '/products/disli.svg' AS img
+) AS v ON v.slug = p.slug
+SET pi.image_url = v.img
+WHERE pi.is_primary = 1;
 
 -- ---------- Kategori bağları (ana kategori + kullanım alanı) ----------
 INSERT IGNORE INTO `product_categories` (`product_id`, `category_id`, `is_primary`)

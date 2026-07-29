@@ -18,6 +18,8 @@ interface UseCasesResponse { use_cases: UseCaseItem[] }
 interface BannersResponse { banners: Banner[] }
 
 export interface HomepageData {
+  /** Katalogdaki toplam aktif ürün — hero'daki sayı buradan geliyor. */
+  productTotal: number;
   categories: Category[];
   trending: Product[];
   recommended: Product[];
@@ -32,11 +34,13 @@ export interface HomepageData {
 // Fetcher
 // ----------------------------------------------------------------
 
-async function safeFetch<T>(url: string): Promise<T | null> {
+async function safeFetch<T>(url: string, pagination = false): Promise<T | null> {
   try {
     const res = await fetch(url, { next: { revalidate: 300 } });
     if (!res.ok) return null;
     const json = await res.json();
+    // Toplam ürün sayısı data'da değil, yanındaki pagination bloğunda dönüyor.
+    if (pagination) return (json.pagination ?? null) as T;
     return (json.data ?? json) as T;
   } catch {
     return null;
@@ -49,7 +53,7 @@ async function safeFetch<T>(url: string): Promise<T | null> {
 
 export async function fetchHomepageData(): Promise<HomepageData> {
   const [categories, trendingRaw, recommendedRaw, spotlightRaw, useCasesRaw,
-         newArrivalsRaw, brandsRaw, bannersRaw] = await Promise.all([
+         newArrivalsRaw, brandsRaw, bannersRaw, totalRaw] = await Promise.all([
     safeFetch<CategoriesResponse>(`${API}/categories/tree`),
     safeFetch<ProductsResponse>(`${API}/products?sort=trending&per_page=18`),
     safeFetch<ProductsResponse>(`${API}/products?sort=featured&per_page=9`),
@@ -58,6 +62,8 @@ export async function fetchHomepageData(): Promise<HomepageData> {
     safeFetch<ProductsResponse>(`${API}/products?sort=newest&per_page=9`),
     safeFetch<Brand[]>(`${API}/brands?limit=15`),
     safeFetch<BannersResponse>(`${API}/banners`),
+    // Sadece toplam için: per_page=1, pagination.total okunuyor.
+    safeFetch<{ total?: number }>(`${API}/products?per_page=1`, true),
   ]);
 
   const trendingProducts = trendingRaw?.products ?? [];
@@ -77,6 +83,7 @@ export async function fetchHomepageData(): Promise<HomepageData> {
     .slice(0, 9);
 
   return {
+    productTotal: totalRaw?.total ?? 0,
     categories:  categories?.categories ?? [],
     trending,
     recommended,

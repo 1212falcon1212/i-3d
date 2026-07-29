@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Zar kulesi">
+  <rect width="400" height="400" fill="#F1F7FE"/>
+  <g fill="none" stroke="#141A26" stroke-opacity="0.06" stroke-width="1"><path d="M20 0V400"/><path d="M0 20H400"/><path d="M40 0V400"/><path d="M0 40H400"/><path d="M60 0V400"/><path d="M0 60H400"/><path d="M80 0V400"/><path d="M0 80H400"/><path d="M100 0V400"/><path d="M0 100H400"/><path d="M120 0V400"/><path d="M0 120H400"/><path d="M140 0V400"/><path d="M0 140H400"/><path d="M160 0V400"/><path d="M0 160H400"/><path d="M180 0V400"/><path d="M0 180H400"/><path d="M200 0V400"/><path d="M0 200H400"/><path d="M220 0V400"/><path d="M0 220H400"/><path d="M240 0V400"/><path d="M0 240H400"/><path d="M260 0V400"/><path d="M0 260H400"/><path d="M280 0V400"/><path d="M0 280H400"/><path d="M300 0V400"/><path d="M0 300H400"/><path d="M320 0V400"/><path d="M0 320H400"/><path d="M340 0V400"/><path d="M0 340H400"/><path d="M360 0V400"/><path d="M0 360H400"/><path d="M380 0V400"/><path d="M0 380H400"/></g>
+
+  <g transform="translate(200 200)">
+    <path d="M-70 -110 L70 -110 L96 130 L-96 130 Z" fill="#3D9BE9"/>
+    <path d="M-70 -110 L70 -110 L54 -74 L-54 -74 Z" fill="#2B7CC0"/>
+    <rect x="-52" y="60" width="104" height="52" rx="8" fill="#141A26"/>
+    <g fill="#FFF8F1">
+      <circle cx="-24" cy="86" r="7"/><circle cx="0" cy="86" r="7"/><circle cx="24" cy="86" r="7"/>
+    </g>
+    <g transform="translate(0 -20) rotate(12)" >
+      <rect x="-26" y="-26" width="52" height="52" rx="10" fill="#FFF8F1" stroke="#141A26" stroke-width="4"/>
+      <circle cx="-9" cy="-9" r="5" fill="#141A26"/><circle cx="9" cy="9" r="5" fill="#141A26"/>
+      <circle cx="0" cy="0" r="5" fill="#141A26"/>
+    </g>
+  </g></svg>

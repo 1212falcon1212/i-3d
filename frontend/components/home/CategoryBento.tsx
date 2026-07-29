@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Category } from "@/types";
 import SectionLabel from "@/components/ui/SectionLabel";
-import SerifHeading from "@/components/ui/SerifHeading";
+import DisplayHeading from "@/components/ui/DisplayHeading";
 import FadeUp from "@/components/animations/FadeUp";
 
 interface CategoryBentoProps {
@@ -86,9 +86,9 @@ export default function CategoryBento({ categories }: CategoryBentoProps) {
         <div className="flex items-end justify-between mb-8">
           <div>
             <SectionLabel number="002" title="KATEGORİLER" />
-            <SerifHeading size="md" className="mt-2">
+            <DisplayHeading size="md" className="mt-2">
               Favori <em>kategorini</em> bul.
-            </SerifHeading>
+            </DisplayHeading>
           </div>
           <Link
             href="/kategoriler"

@@ -98,16 +98,21 @@ export default function ProductCard({
     return (
       <div
         className={cn(
-          "group relative bg-white rounded-2xl border border-border overflow-hidden",
-          "hover:shadow-md hover:border-primary/40 transition-all duration-300 animate-fade-in",
-          "flex flex-col",
+          // Kart bir baskı tablası karesi üzerinde duruyor: hover'da kalkıyor ve
+          // kalın offset gölgesi kapanıyor — eline alma hissi.
+          "group relative bg-card-bg rounded-2xl border-2 border-text-primary overflow-hidden",
+          "shadow-toy transition-all duration-300 animate-fade-in",
+          "hover:-translate-y-1 hover:shadow-none",
+          "flex flex-col h-full",
           delayClass
         )}
       >
         {/* Image — Link ve button kardeş; <button> hiçbir zaman <a>'nın
             içinde olmamalı (HTML5 invalid → hydration mismatch → ilk
             tıklama sessizce yutuluyor). */}
-        <div className="relative aspect-square bg-white overflow-hidden">
+        <div className="relative aspect-square build-plate overflow-hidden">
+          {/* Hover'da beliren infill dokusu */}
+          <span className="pointer-events-none absolute inset-0 infill opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <Link
             href={`/urun/${product.slug}`}
             className="absolute inset-0 block z-0"

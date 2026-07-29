@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { motion } from "framer-motion";
 import StaggerContainer, { StaggerItem } from "@/components/animations/StaggerContainer";
 import { categoryIcon } from "@/lib/category-icons";
+import { cn } from "@/lib/utils";
 
 export interface UseCaseItem {
   id: number;
@@ -18,64 +18,99 @@ interface UseCasesProps {
   useCases: UseCaseItem[];
 }
 
-function SkeletonGrid() {
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-8">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="aspect-[4/5] rounded-2xl animate-shimmer" />
-      ))}
-    </div>
-  );
-}
+/**
+ * "Ne için lazım?" — asimetrik bento.
+ *
+ * Eşit kolonlu ızgara yerine değişken boyutlar: ilk iki alan geniş, gerisi
+ * küçük. Böylece bölüm bir liste değil, bir vitrin gibi okunuyor ve sayfadaki
+ * diğer ızgaralardan ayrışıyor.
+ *
+ * Kartlar hafif perspektifle duruyor; hover'da düzleşip öne çıkıyorlar.
+ */
+
+// index → bento yerleşimi. 7 öğe için tasarlandı, fazlası küçük hücreye düşer.
+const SPANS = [
+  "sm:col-span-2 sm:row-span-2",
+  "sm:col-span-2",
+  "",
+  "",
+  "sm:col-span-2",
+  "",
+  "",
+];
+
+const TILTS = [-3, 2, -1.5, 2.5, -2, 1.5, -1];
 
 export default function UseCases({ useCases }: UseCasesProps) {
-  if (!useCases || useCases.length === 0) return <SkeletonGrid />;
+  if (!useCases || useCases.length === 0) return null;
 
   return (
     <section>
-      <div className="build-plate border border-border rounded-3xl p-5 md:p-8">
-        <div className="mb-6">
-          <h2 className="font-display text-2xl md:text-3xl text-text-primary">
-            Ne için lazım?
-          </h2>
-          <p className="text-sm text-text-secondary mt-2 max-w-lg">
-            Hediyeden yedek parçaya — aradığın işe göre seç, gerisini biz basalım.
-          </p>
-        </div>
+      <div className="mb-7 max-w-lg">
+        <p className="font-mono text-[11px] tracking-[0.18em] text-primary uppercase">
+          Kullanım alanları
+        </p>
+        <h2 className="mt-3 font-display text-2xl md:text-3xl text-text-primary">
+          Ne için lazım?
+        </h2>
+        <p className="mt-2 text-sm text-text-secondary">
+          Hediyeden yedek parçaya — aradığın işe göre seç, gerisini biz basalım.
+        </p>
+      </div>
 
-        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {useCases.map((useCase) => (
-            <StaggerItem key={useCase.id}>
-              <Link href={`/kullanim-alanlari/${useCase.slug}`} className="block group">
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative aspect-[4/5] rounded-2xl bg-card-bg border-2 border-text-primary overflow-hidden shadow-toy transition-shadow group-hover:shadow-none group-hover:translate-y-1"
-                >
-                  <div className="absolute inset-x-0 top-0 h-3/5 bg-primary-soft flex items-center justify-center">
-                    {/* Hover'da infill dokusu: baskı doluyormuş gibi */}
-                    <span className="absolute inset-0 infill opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <Icon
-                      icon={useCase.icon || categoryIcon(useCase.slug)}
-                      className="relative w-10 h-10 text-primary-dark"
-                      aria-hidden
-                    />
-                  </div>
+      <StaggerContainer
+        className="grid grid-cols-2 sm:grid-cols-4 auto-rows-[130px] sm:auto-rows-[150px] gap-3 md:gap-4"
+        style={{ perspective: "1400px" }}
+      >
+        {useCases.map((useCase, i) => {
+          const big = SPANS[i]?.includes("row-span-2");
+          return (
+            <StaggerItem key={useCase.id} className={cn(SPANS[i] ?? "")}>
+              <Link
+                href={`/kullanim-alanlari/${useCase.slug}`}
+                className={cn(
+                  "group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl",
+                  "border-2 border-text-primary bg-card-bg p-4 md:p-5 shadow-toy",
+                  "transition-transform duration-300 hover:-translate-y-1 hover:shadow-none",
+                  big && "bg-bg-footer"
+                )}
+                style={{ transform: `rotateY(${TILTS[i] ?? 0}deg)` }}
+              >
+                {/* Hover'da beliren infill dokusu */}
+                <span className="pointer-events-none absolute inset-0 infill opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                  <div className="absolute inset-x-0 bottom-0 h-2/5 p-3 flex flex-col justify-center">
-                    <p className="font-display text-sm text-text-primary leading-tight line-clamp-2">
-                      {useCase.name}
-                    </p>
-                    <p className="font-mono text-[10px] text-text-secondary mt-1">
-                      {useCase.count} ürün
-                    </p>
-                  </div>
-                </motion.div>
+                <Icon
+                  icon={useCase.icon || categoryIcon(useCase.slug)}
+                  className={cn(
+                    "relative shrink-0",
+                    big ? "w-14 h-14 text-primary" : "w-9 h-9 text-primary-dark"
+                  )}
+                  aria-hidden
+                />
+
+                <div className="relative">
+                  <p
+                    className={cn(
+                      "font-display leading-tight",
+                      big ? "text-2xl text-white" : "text-base text-text-primary"
+                    )}
+                  >
+                    {useCase.name}
+                  </p>
+                  <p
+                    className={cn(
+                      "font-mono text-[10px] mt-1",
+                      big ? "text-white/50" : "text-text-secondary"
+                    )}
+                  >
+                    {useCase.count} ürün
+                  </p>
+                </div>
               </Link>
             </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
+          );
+        })}
+      </StaggerContainer>
     </section>
   );
 }

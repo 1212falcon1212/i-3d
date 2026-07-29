@@ -6,16 +6,13 @@ import { bannerImage } from "@/lib/placeholder-image";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-import HeroSection from "@/components/home/HeroSection";
-import BrandMarquee from "@/components/home/BrandMarquee";
-import CategoryBento from "@/components/home/CategoryBento";
-import RecommendedProducts from "@/components/home/RecommendedProducts";
-import SeasonalBanner from "@/components/home/SeasonalBanner";
-import TrendingWall from "@/components/home/TrendingWall";
-import BrandSpotlight from "@/components/home/BrandSpotlight";
+import HeroScene from "@/components/home/HeroScene";
+import FilamentStrip from "@/components/home/FilamentStrip";
+import ProductShelf from "@/components/home/ProductShelf";
 import UseCases from "@/components/home/UseCases";
-import DualBanner from "@/components/home/DualBanner";
-import NewArrivals from "@/components/home/NewArrivals";
+import HowItPrints from "@/components/home/HowItPrints";
+import CategoryBento from "@/components/home/CategoryBento";
+import BrandSpotlight from "@/components/home/BrandSpotlight";
 
 export const revalidate = 300;
 
@@ -25,16 +22,14 @@ export const metadata: Metadata = {
     "Figürden ev dekoruna, filamentten yedek parçaya 3D baskı ürünleri. Katman katman basılır, kapına gelir.",
 };
 
-// Ana sayfadaki tüm bölümler için tek standart genişlik.
+// Açık zeminli bölümler için tek standart genişlik.
 const SECTION = "max-w-7xl mx-auto px-4 md:px-6 lg:px-8";
 
 export default async function HomePage() {
   const data = await fetchHomepageData();
 
   const finalBanner =
-    data.banners?.find((b) => b.position === "footer") ??
-    data.banners?.[2] ??
-    data.banners?.[0];
+    data.banners?.find((b) => b.position === "footer") ?? data.banners?.[0];
   const finalSrc = finalBanner?.image_url || bannerImage(undefined, "footer-banner");
   const finalHref = finalBanner?.link_url || "/markalar";
 
@@ -42,37 +37,71 @@ export default async function HomePage() {
     <>
       <Header />
       <main>
-        {/* Hero slider tam genişlik; yan bannerlar kendi içinde 7xl */}
-        <HeroSection
-          banners={data.banners}
-          featuredProducts={data.trending.slice(0, 4)}
-          categories={data.categories}
+        {/* 1 — Sahne: baskı katman katman oluşuyor */}
+        <HeroScene
+          productCount={data.productTotal}
+          useCaseCount={data.useCases.length}
         />
 
-        <BrandMarquee brands={data.brands} />
+        {/* 2 — Koyu şerit: stoktaki filament renkleri */}
+        <FilamentStrip />
 
-        <div className={`${SECTION} py-10 space-y-12`}>
-          <RecommendedProducts products={data.recommended} />
-          <CategoryBento categories={data.categories} />
-          <SeasonalBanner banners={data.banners} />
-          <TrendingWall products={data.trending} />
-          <BrandSpotlight spotlight={data.spotlight} />
+        {/* 3 — Açık alan: raf + bento ritmi */}
+        <div className={`${SECTION} py-16 md:py-20 space-y-16 md:space-y-20`}>
+          <ProductShelf
+            eyebrow="Atölyeden"
+            title={
+              <>
+                Bu hafta <span className="text-primary">tezgâhta</span> olanlar
+              </>
+            }
+            description="Rafta hazır ya da birkaç saat içinde basılıyor."
+            products={data.recommended}
+            href="/one-cikanlar"
+          />
+
           <UseCases useCases={data.useCases} />
-          <DualBanner banners={data.banners} />
-          <NewArrivals products={data.newArrivals} />
 
-          {/* Final big banner */}
+          <CategoryBento categories={data.categories} />
+        </div>
+
+        {/* 4 — Tam genişlik koyu blok: süreç */}
+        <HowItPrints />
+
+        {/* 5 — Açık alan: ikinci raf + marka */}
+        <div className={`${SECTION} py-16 md:py-20 space-y-16 md:space-y-20`}>
+          <ProductShelf
+            eyebrow="Yeni gelenler"
+            title={
+              <>
+                Tabladan <span className="text-primary">yeni</span> çıkanlar
+              </>
+            }
+            products={data.newArrivals}
+            href="/magaza"
+          />
+
+          <BrandSpotlight spotlight={data.spotlight} />
+
+          <ProductShelf
+            eyebrow="Çok basılanlar"
+            title="En çok istenenler"
+            products={data.trending}
+            href="/magaza"
+          />
+
+          {/* Kapanış banner'ı */}
           <Link
             href={finalHref}
             aria-label={finalBanner?.title || "Tüm markalar"}
-            className="block relative w-full max-w-full overflow-hidden rounded-2xl aspect-[1318/358] bg-white group"
+            className="block relative w-full max-w-full overflow-hidden rounded-3xl aspect-[1318/358] border-2 border-text-primary shadow-toy transition-transform hover:translate-y-1 hover:shadow-none"
           >
             <Image
               src={finalSrc}
               alt={finalBanner?.title || "Tüm markalar"}
               fill
-              sizes="(min-width:1024px) 33vw, 100vw"
-              className="object-contain transition-transform duration-700 group-hover:scale-105"
+              sizes="(min-width:1024px) 80vw, 100vw"
+              className="object-cover"
             />
           </Link>
         </div>

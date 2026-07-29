@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 // ----------------------------------------------------------------
 // Variants
@@ -36,6 +36,8 @@ export const staggerItem = {
 interface ContainerProps {
   children: ReactNode;
   className?: string;
+  /** Bento düzenlerinde perspective gibi inline stiller için. */
+  style?: CSSProperties;
 }
 
 /**
@@ -43,7 +45,7 @@ interface ContainerProps {
  * the staggered entrance animation when the container
  * enters the viewport.
  */
-export default function StaggerContainer({ children, className }: ContainerProps) {
+export default function StaggerContainer({ children, className, style }: ContainerProps) {
   return (
     <motion.div
       variants={staggerContainer}
@@ -51,6 +53,7 @@ export default function StaggerContainer({ children, className }: ContainerProps
       whileInView="visible"
       viewport={{ once: true, margin: "-60px" }}
       className={className}
+      style={style}
     >
       {children}
     </motion.div>
@@ -61,9 +64,9 @@ export default function StaggerContainer({ children, className }: ContainerProps
  * Individual item inside a <StaggerContainer>.
  * Each item animates in sequence with a stagger offset.
  */
-export function StaggerItem({ children, className }: ContainerProps) {
+export function StaggerItem({ children, className, style }: ContainerProps) {
   return (
-    <motion.div variants={staggerItem} className={className}>
+    <motion.div variants={staggerItem} className={className} style={style}>
       {children}
     </motion.div>
   );

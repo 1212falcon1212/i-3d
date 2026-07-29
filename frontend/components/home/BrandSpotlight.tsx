@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Product, Brand } from "@/types";
 import SectionLabel from "@/components/ui/SectionLabel";
-import SerifHeading from "@/components/ui/SerifHeading";
+import DisplayHeading from "@/components/ui/DisplayHeading";
 import PillButton from "@/components/ui/PillButton";
 import FadeUp from "@/components/animations/FadeUp";
 import { formatPrice } from "@/lib/utils";
@@ -60,7 +60,7 @@ export default function BrandSpotlight({ spotlight }: BrandSpotlightProps) {
                 title="MARKA SPOTLIGHT"
                 className="text-white/50"
               />
-              <SerifHeading size="md" className="mt-4 text-white">
+              <DisplayHeading size="md" className="mt-4 text-white">
                 {firstName}
                 {restName ? (
                   <>
@@ -68,7 +68,7 @@ export default function BrandSpotlight({ spotlight }: BrandSpotlightProps) {
                     <em>{restName}</em>
                   </>
                 ) : null}
-              </SerifHeading>
+              </DisplayHeading>
               <p className="text-white/70 text-sm mt-3 max-w-xs">
                 {brand.description ??
                   "Bu markanın kataloğundaki baskılar — malzemesinden katman ayarına kadar test edilmiş."}

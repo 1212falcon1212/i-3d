@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/istanbulvitamin/backend/internal/database"
+	"github.com/i-3d/backend/internal/database"
 )
 
 // Get T tipinde JSON cache'den okur. Yoksa (miss) veya hata durumunda

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/services"
-	"github.com/istanbulvitamin/backend/internal/utils"
+	"github.com/i-3d/backend/internal/services"
+	"github.com/i-3d/backend/internal/utils"
 )
 
 // CancellationHandler iptal/iade akışı için müşteri ve admin endpoint'leri.

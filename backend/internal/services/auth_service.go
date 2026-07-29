@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/istanbulvitamin/backend/internal/config"
-	"github.com/istanbulvitamin/backend/internal/integrations"
-	"github.com/istanbulvitamin/backend/internal/middleware"
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/config"
+	"github.com/i-3d/backend/internal/integrations"
+	"github.com/i-3d/backend/internal/middleware"
+	"github.com/i-3d/backend/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

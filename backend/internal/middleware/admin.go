@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/config"
+	"github.com/i-3d/backend/internal/config"
 )
 
 type AdminMiddleware struct {

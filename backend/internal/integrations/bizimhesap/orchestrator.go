@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/models"
 	"gorm.io/gorm"
 )
 

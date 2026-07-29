@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/utils"
+	"github.com/i-3d/backend/internal/utils"
 )
 
 type ImportHandler struct{}

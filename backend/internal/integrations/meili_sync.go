@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/istanbulvitamin/backend/internal/database"
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/database"
+	"github.com/i-3d/backend/internal/models"
 	"github.com/meilisearch/meilisearch-go"
 )
 

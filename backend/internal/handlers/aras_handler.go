@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/integrations/aras"
-	"github.com/istanbulvitamin/backend/internal/services"
-	"github.com/istanbulvitamin/backend/internal/utils"
+	"github.com/i-3d/backend/internal/integrations/aras"
+	"github.com/i-3d/backend/internal/services"
+	"github.com/i-3d/backend/internal/utils"
 )
 
 // ArasHandler Aras Kargo entegrasyonu için admin endpoint'leri.

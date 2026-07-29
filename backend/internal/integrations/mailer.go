@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/istanbulvitamin/backend/internal/config"
+	"github.com/i-3d/backend/internal/config"
 	"gopkg.in/gomail.v2"
 )
 

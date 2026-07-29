@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/istanbulvitamin/backend/internal/config"
+	"github.com/i-3d/backend/internal/config"
 	"github.com/redis/go-redis/v9"
 )
 

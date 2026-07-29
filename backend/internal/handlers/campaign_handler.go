@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/database"
-	"github.com/istanbulvitamin/backend/internal/models"
-	"github.com/istanbulvitamin/backend/internal/services"
-	"github.com/istanbulvitamin/backend/internal/utils"
+	"github.com/i-3d/backend/internal/database"
+	"github.com/i-3d/backend/internal/models"
+	"github.com/i-3d/backend/internal/services"
+	"github.com/i-3d/backend/internal/utils"
 	"gorm.io/gorm"
 )
 

@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/istanbulvitamin/backend/internal/config"
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/config"
+	"github.com/i-3d/backend/internal/models"
 	"gorm.io/gorm"
 )
 

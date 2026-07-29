@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/istanbulvitamin/backend/internal/config"
+	"github.com/i-3d/backend/internal/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

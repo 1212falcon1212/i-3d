@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
-	"github.com/istanbulvitamin/backend/internal/database"
-	"github.com/istanbulvitamin/backend/internal/integrations/aras"
-	"github.com/istanbulvitamin/backend/internal/integrations/bizimhesap"
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/database"
+	"github.com/i-3d/backend/internal/integrations/aras"
+	"github.com/i-3d/backend/internal/integrations/bizimhesap"
+	"github.com/i-3d/backend/internal/models"
 )
 
 // Start arka plan zamanlayıcısını başlatır ve periyodik işleri kaydeder.

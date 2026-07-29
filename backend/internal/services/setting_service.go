@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/istanbulvitamin/backend/internal/cache"
-	"github.com/istanbulvitamin/backend/internal/integrations/aras"
-	"github.com/istanbulvitamin/backend/internal/integrations/bizimhesap"
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/cache"
+	"github.com/i-3d/backend/internal/integrations/aras"
+	"github.com/i-3d/backend/internal/integrations/bizimhesap"
+	"github.com/i-3d/backend/internal/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

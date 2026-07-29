@@ -15,14 +15,14 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/istanbulvitamin/backend/internal/config"
-	"github.com/istanbulvitamin/backend/internal/database"
-	"github.com/istanbulvitamin/backend/internal/handlers"
-	"github.com/istanbulvitamin/backend/internal/integrations/aras"
-	"github.com/istanbulvitamin/backend/internal/middleware"
-	"github.com/istanbulvitamin/backend/internal/models"
-	"github.com/istanbulvitamin/backend/internal/scheduler"
-	"github.com/istanbulvitamin/backend/internal/services"
+	"github.com/i-3d/backend/internal/config"
+	"github.com/i-3d/backend/internal/database"
+	"github.com/i-3d/backend/internal/handlers"
+	"github.com/i-3d/backend/internal/integrations/aras"
+	"github.com/i-3d/backend/internal/middleware"
+	"github.com/i-3d/backend/internal/models"
+	"github.com/i-3d/backend/internal/scheduler"
+	"github.com/i-3d/backend/internal/services"
 )
 
 func main() {

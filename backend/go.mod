@@ -1,4 +1,4 @@
-module github.com/istanbulvitamin/backend
+module github.com/i-3d/backend
 
 go 1.25.6
 

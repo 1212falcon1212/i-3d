@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/istanbulvitamin/backend/internal/config"
-	"github.com/istanbulvitamin/backend/internal/database"
-	"github.com/istanbulvitamin/backend/internal/middleware"
-	"github.com/istanbulvitamin/backend/internal/services"
-	"github.com/istanbulvitamin/backend/internal/utils"
+	"github.com/i-3d/backend/internal/config"
+	"github.com/i-3d/backend/internal/database"
+	"github.com/i-3d/backend/internal/middleware"
+	"github.com/i-3d/backend/internal/services"
+	"github.com/i-3d/backend/internal/utils"
 )
 
 // Cookie adları — kullanıcı ve admin oturumları ayrı cookie'lerde tutulur

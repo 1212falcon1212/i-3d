@@ -3,7 +3,7 @@ package aras
 import (
 	"fmt"
 
-	"github.com/istanbulvitamin/backend/internal/models"
+	"github.com/i-3d/backend/internal/models"
 )
 
 // CalculateParcelCount sipariş kalemlerinden toplam ağırlığı çıkarıp

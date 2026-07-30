@@ -30,6 +30,20 @@
   --color-accent-amber: #ffc53d;
   --color-accent-sky: #3d9be9;
 
+  /* ------------------------------------------------------------
+   * Raftaki filament renkleri
+   *
+   * Bunlar uydurma bir palet değil: her biri katalogdaki gerçek bir
+   * `variation_values.color_hex` değeri. Ana sayfa yalnızca sipariş
+   * edebileceğin renklerle boyanıyor.
+   *
+   * Üçü de YENİ token. Bugün hiçbir yer kullanmadığı için mevcut ekranlarda
+   * hiçbir şey değişmiyor — global token DEĞERLERİ dokunulmadı.
+   * ------------------------------------------------------------ */
+  --color-accent-flame: #e8352e; /* Ateş Kırmızısı */
+  --color-accent-lime: #b7f32b; /* Neon Yeşil */
+  --color-accent-cobalt: #1f3a93; /* Gece Mavisi — tek derin ton */
+
   /* Baskı tablası yüzeyi — kartların ve görsel kutularının altındaki doku */
   --color-plate: #f4ece2;
 
@@ -198,18 +212,6 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-dark),
-    var(--color-primary),
-    var(--color-accent-amber)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
 
 /* ============================================================
  * İmza öğesi — katman dolumu
@@ -246,67 +248,83 @@ h1, h2, h3, h4, h5, h6 {
     repeating-linear-gradient(-60deg, rgba(255, 107, 44, 0.18) 0 1px, transparent 1px 9px);
 }
 
-/* Katman çizgisi ayracı — bölümler arası ritim */
-.layer-rule {
-  height: 6px;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--color-border) 0 2px,
-    transparent 2px 4px
-  );
+/* Bölümler arası ritmi artık filament teli kuruyor (aşağıya bkz.), noktalı
+ * ayraç değil — bu yüzden `.layer-rule` kaldırıldı. */
+
+/* ============================================================
+ * Konturlu harf — tek yeni display efekti
+ *
+ * Büyük başlıklarda TEK bir kelime içi boş, sadece konturlu çizilir. Sticker /
+ * çizgi roman enerjisi veriyor ve dördüncü bir yazı tipi gerektirmiyor.
+ * Baloo 2'nin italiği olmadığı için vurgu dili zaten renk ve ağırlık üzerinden
+ * kuruluyor; bu da aynı ailenin içinde kalan bir vurgu.
+ * ============================================================ */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-text-primary);
+}
+
+@media (min-width: 768px) {
+  .text-outline {
+    -webkit-text-stroke-width: 3px;
+  }
+}
+
+/* Kontur desteklenmiyorsa kelime GÖRÜNMEZ olurdu — düz renge dön. */
+@supports not (-webkit-text-stroke: 1px currentColor) {
+  .text-outline {
+    color: var(--color-text-primary);
+    -webkit-text-stroke: 0;
+  }
+}
+
+/* ============================================================
+ * İmza öğesi — tek filament teli
+ *
+ * Sayfa boyunca inen tek sürekli stroke. Uzunluğu ve ilerlemesi JS'te
+ * ölçülüp inline `stroke-dasharray` / `stroke-dashoffset` olarak yazılıyor
+ * (path uzunluğu ancak DOM'da bilinir). Buradaki iş sadece görünüş.
+ *
+ * `stroke` geçişi bilerek uzun: tel bir bölümden diğerine geçerken rengi
+ * yavaşça değişiyor, filament değiştirilmiş gibi.
+ * ============================================================ */
+.filament-thread {
+  pointer-events: none;
+}
+
+.filament-thread path {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.7s linear;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .layer-print,
   .layer-print-slow,
   .animate-float,
-  .animate-marquee,
-  .animate-shimmer {
+  .animate-shimmer,
+  .animate-fade-in,
+  .animate-fade-in-left,
+  .animate-slide-down,
+  .animate-scale-in {
     animation: none !important;
   }
   .layer-print,
   .layer-print-slow {
     clip-path: none;
   }
+  /* Tel tamamen çizili dursun — animasyon yok, ama öğe kaybolmasın. */
+  .filament-thread path {
+    stroke-dashoffset: 0 !important;
+    transition: none;
+  }
 }
 
-/* ============ Homepage specific ============ */
-
-/* Marquee animation */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-  display: flex;
-  width: max-content;
-}
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
-
-/* Gradient zeminler — hepsi token türevi */
-.bg-hero-gradient {
-  background: linear-gradient(160deg, var(--color-primary-soft) 0%, var(--color-bg-primary) 100%);
-}
-.bg-dark-gradient {
-  background: linear-gradient(110deg, var(--color-bg-footer) 0%, #23304a 55%, var(--color-primary-dark) 100%);
-}
-.bg-dual-left {
-  background: linear-gradient(135deg, var(--color-primary-soft) 0%, var(--color-accent-amber) 140%);
-}
-.bg-dual-right {
-  background: linear-gradient(135deg, var(--color-bg-footer) 0%, #23304a 100%);
-}
+/* `bg-bg-footer` @theme'den zaten üretiliyor; buradaki kopya tanım onu source
+ * sırasıyla eziyordu. `bg-footer` ise elle yazılmış tek kullanımlı bir ad. */
 .bg-footer { background-color: var(--color-bg-footer); }
-.bg-bg-footer { background-color: var(--color-bg-footer); }
-
-/* Magnetic hover base */
-.magnetic-wrap {
-  display: inline-block;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
 
 /* Text clamp utilities */
 .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }

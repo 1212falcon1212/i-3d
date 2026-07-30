@@ -44,6 +44,11 @@
   --color-accent-lime: #b7f32b; /* Neon Yeşil */
   --color-accent-cobalt: #1f3a93; /* Gece Mavisi — tek derin ton */
 
+  /* Hero sahnesinin zemini. Serin bir not: krem zemin üstünde Kar Beyazı ve
+     Şeffaf filamentler kayboluyordu, ayrıca sayfadaki sıcak turuncu yığınını
+     kırıyor. Değer hem canvas'ta hem kabın CSS'inde kullanılıyor. */
+  --color-stage: #e9f3fb;
+
   /* Baskı tablası yüzeyi — kartların ve görsel kutularının altındaki doku */
   --color-plate: #f4ece2;
 
@@ -259,23 +264,50 @@ h1, h2, h3, h4, h5, h6 {
  * Baloo 2'nin italiği olmadığı için vurgu dili zaten renk ve ağırlık üzerinden
  * kuruluyor; bu da aynı ailenin içinde kalan bir vurgu.
  * ============================================================ */
+/*
+ * Varsayılan DOLU renk; kontur ancak destekleniyorsa açılıyor.
+ *
+ * Sıra bilerek böyle: `color: transparent` + desteklenmeyen bir
+ * `-webkit-text-stroke` kelimeyi tamamen GÖRÜNMEZ bırakır. Bu, projede daha önce
+ * `whileInView`'in bölümleri `opacity: 0`'da bırakmasıyla aynı hata sınıfı —
+ * yanlış tarafa düşen bir varsayılan içeriği yok ediyor.
+ */
 .text-outline {
-  color: transparent;
-  -webkit-text-stroke: 2px var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--color-text-primary);
+  }
 }
 
 @media (min-width: 768px) {
-  .text-outline {
-    -webkit-text-stroke-width: 3px;
+  @supports (-webkit-text-stroke: 1px currentColor) {
+    .text-outline {
+      -webkit-text-stroke-width: 3px;
+    }
   }
 }
 
-/* Kontur desteklenmiyorsa kelime GÖRÜNMEZ olurdu — düz renge dön. */
-@supports not (-webkit-text-stroke: 1px currentColor) {
-  .text-outline {
-    color: var(--color-text-primary);
-    -webkit-text-stroke: 0;
+/*
+ * SVG yedeğindeki katmanların alttan yukarı belirmesi. Gecikmeler bileşende
+ * inline veriliyor, burada sadece hareketin kendisi var.
+ */
+@keyframes print-layer {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.print-layer {
+  animation: print-layer 0.42s ease-out both;
 }
 
 /* ============================================================
@@ -308,8 +340,10 @@ h1, h2, h3, h4, h5, h6 {
   .animate-fade-in,
   .animate-fade-in-left,
   .animate-slide-down,
-  .animate-scale-in {
+  .animate-scale-in,
+  .print-layer {
     animation: none !important;
+    opacity: 1;
   }
   .layer-print,
   .layer-print-slow {

@@ -1,202 +1,354 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import type { Pt } from "@/lib/print-shapes";
 
 /**
- * Hero'daki 3D sahne: bir baskı katman katman oluşur, sonra yavaşça döner.
+ * Hero'nun 3D sahnesi: seçilen figür, seçilen renkle katman katman basılır.
  *
- * Geometri prosedürel — henüz gerçek .glb dosyamız yok. Model dosyaları
- * hazırlandığında bu bileşenin içindeki `PrintedObject` değiştirilir, sahnenin
- * geri kalanı (tabla, nozul, ışık, kamera) aynı kalır.
+ * Neden bu mimari:
  *
- * Performans: render döngüsü yalnızca sahne görünürken çalışır (bkz. PrintScene),
- * mobilde ve reduced-motion'da bu dosya hiç indirilmez.
+ * - **Figür ayakta, açılış bir klip düzlemiyle.** Katmanları ayrı ayrı mesh
+ *   yapmak (ya da InstancedMesh'e koymak) bir siluet için işe yaramıyor: dairesel
+ *   kesitli vazoda her katman ölçeklenmiş bir daireydi, ama bir dinozorun her
+ *   katmanı siluetin farklı bir YATAY DİLİMİ — bacaklar gibi kopuk parçalar dahil.
+ *   Tek `ExtrudeGeometry` + dünya uzayında yükselen bir klip düzlemi bunu bedavaya
+ *   çözüyor: tek geometri, tek draw call, kare başına matris yazımı yok.
+ *
+ * - **Klip düzlemi katman yüksekliğine yuvarlanıyor.** Düzgün bir silme "baskı"
+ *   değil "perde" gibi okunuyordu. Basamaklı olunca katmanlar sayılabiliyor —
+ *   `globals.css`'teki `.layer-print`'in `steps()` kullanmasıyla aynı gerekçe.
+ *
+ * - **Nozul, o katmanın GERÇEK genişliğinde geziniyor.** `spans` her katman için
+ *   siluetin en sol/en sağ x'ini tutuyor; uç ince kuyrukta kısa, geniş karında
+ *   uzun yol alıyor. Baskı hissini veren asıl ayrıntı bu, ve bir silme efekti
+ *   bunu taklit edemez.
+ *
+ * - **İlerleme birikimli `delta` ile, `clock.elapsedTime` ile DEĞİL.** R3F
+ *   `setFrameloop` içinde `clock.stop()`/`start()` çağırıyor
+ *   (events-b389eeca.esm.js:1091) ve `THREE.Clock.start()` `elapsedTime`'ı
+ *   sıfırlıyor. Görünürlük duraklatması her tetiklendiğinde baskı baştan
+ *   başlıyordu; kullanıcı seçimi de aynı değeri sıfırlayınca iki kaynak
+ *   birbiriyle kavga ederdi.
+ *
+ * - **Işıklar nötr, tone mapping kapalı.** Renkli dolgu ışıkları nesneyi
+ *   çocuğun seçtiği swatch'tan başka bir tona kaydırıyordu; seçim yalan olurdu.
+ *   ACES ise katalog renklerini soluklaştırıyor, o yüzden `NoToneMapping`.
+ *
+ * - **Sahnenin kendi zemini var, sayfa kremi değil.** Krem üstünde Kar Beyazı ve
+ *   Şeffaf filamentler kayboluyordu. Serin bir sahne tonu (`--color-stage`) hem
+ *   bunu çözüyor hem sayfadaki sıcak turuncu yığınını kırıyor. Kabın CSS'i aynı
+ *   değeri kullanıyor: WebGL yüklenirken ya da hiç yüklenmediğinde geçiş flaşı
+ *   olmuyor.
+ *
+ * - **`preserveDrawingBuffer` şart.** Baskı bitince render döngüsünü durduruyoruz;
+ *   bu bayrak olmadan çizim tamponu boşalıp hero boş bir kutuya dönüşüyor.
  */
 
-const ORANGE = "#ff6b2c";
-const AMBER = "#ffc53d";
-const TEAL = "#12b5a5";
-const NAVY = "#141a26";
-const PLATE = "#20293b";
-
 const LAYERS = 54;
-const LAYER_H = 0.075;
-const PRINT_SECONDS = 4.2;
+/** Siluet normalize (x ∈ [-1,1]); sahnede bu kadar büyütülüyor. */
+const S = 1.5;
+const DEPTH = 0.45;
+const PRINT_SECONDS = 3.2;
+/** Baskı bitince kaç saniye sonra render döngüsü uyusun. */
+const SLEEP_AFTER = 1.5;
+/** Tablanın dünya y'si — klip düzlemi dünya uzayında çalışıyor, sabit şart. */
+const GROUND_Y = -1.35;
 
-/** Vazo siluetı: yüksekliğe göre yarıçap. */
-function radiusAt(t: number) {
-  return 0.62 + 0.34 * Math.sin(t * Math.PI * 1.15) - 0.18 * t;
+const INK = "#141a26";
+const PLATE = "#e3d3ba";
+const PLATE_LINE = "#c2ad8c";
+/** globals.css'teki --color-stage ile aynı değer; kabın CSS'i de bunu kullanıyor. */
+const STAGE = "#e9f3fb";
+
+/** Verilen yükseklikte siluetin en sol ve en sağ x'i. */
+function spanAt(pts: readonly THREE.Vector2[], y: number): [number, number] {
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i];
+    const b = pts[(i + 1) % pts.length];
+    // Kenar bu yüksekliği kesmiyorsa atla.
+    if ((a.y - y) * (b.y - y) > 0) continue;
+    const dy = b.y - a.y;
+    const x = Math.abs(dy) < 1e-6 ? a.x : a.x + (b.x - a.x) * ((y - a.y) / dy);
+    if (x < lo) lo = x;
+    if (x > hi) hi = x;
+  }
+  return lo === Infinity ? [0, 0] : [lo, hi];
 }
 
-function PrintedObject({ started }: { started: number }) {
-  const group = useRef<THREE.Group>(null);
-  const nozzle = useRef<THREE.Group>(null);
+interface Figure {
+  geo: THREE.ExtrudeGeometry;
+  height: number;
+  layerH: number;
+  spans: [number, number][];
+}
 
-  // Katmanlar tek bir InstancedMesh'te: 54 ayrı mesh yerine tek draw call.
-  const geometry = useMemo(
-    () => new THREE.CylinderGeometry(1, 1, LAYER_H, 48, 1, true),
+function buildFigure(points: readonly Pt[]): Figure {
+  const shape = new THREE.Shape(
+    points.map(([x, y]) => new THREE.Vector2(x * S, y * S))
+  );
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    depth: DEPTH,
+    bevelEnabled: false,
+    steps: 1,
+    curveSegments: 1,
+  });
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox!;
+  const cx = (bb.min.x + bb.max.x) / 2;
+  const minY = bb.min.y;
+  // Taban tam y=0'a otursun, x ve z ortalı olsun: klip düzlemi ve tabla
+  // hizası buna bağlı.
+  geo.translate(-cx, -minY, -DEPTH / 2);
+  geo.computeVertexNormals();
+
+  const height = bb.max.y - bb.min.y;
+  const layerH = height / LAYERS;
+
+  // Aynı dönüşümü uygulanmış noktalar üzerinden katman açıklıkları.
+  const pts = points.map(
+    ([x, y]) => new THREE.Vector2(x * S - cx, y * S - minY)
+  );
+  const spans = Array.from({ length: LAYERS }, (_, i) =>
+    spanAt(pts, ((i + 0.5) / LAYERS) * height)
+  );
+
+  return { geo, height, layerH, spans };
+}
+
+/** Yumuşak temas gölgesi dokusu — drei ContactShadows olmadığı için elde. */
+function makeShadowTexture(): THREE.Texture {
+  const c = document.createElement("canvas");
+  c.width = 128;
+  c.height = 128;
+  const g = c.getContext("2d")!;
+  const rg = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  // Gri değil kobalt: aydınlık krem zeminde gölge ölü değil canlı duruyor.
+  rg.addColorStop(0, "rgba(31,58,147,0.38)");
+  rg.addColorStop(0.6, "rgba(31,58,147,0.12)");
+  rg.addColorStop(1, "rgba(31,58,147,0)");
+  g.fillStyle = rg;
+  g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+interface StageProps {
+  points: readonly Pt[];
+  colorHex: string;
+  /** Şekil değişince baskı baştan başlar. Renk değişimi baskıyı SIFIRLAMAZ. */
+  printKey: string;
+  onSettled: () => void;
+}
+
+function Stage({ points, colorHex, printKey, onSettled }: StageProps) {
+  const clip = useMemo(
+    () => new THREE.Plane(new THREE.Vector3(0, -1, 0), GROUND_Y),
     []
   );
-  const material = useMemo(
+
+  const figure = useMemo(() => buildFigure(points), [points]);
+  useEffect(() => () => figure.geo.dispose(), [figure]);
+
+  const bodyMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        // Beyaz taban: renk instanceColor'dan geliyor. Turuncu taban ile
-        // çarpılınca gradyan koyu kırmızıya düşüp okunmaz oluyordu.
-        color: "#ffffff",
-        roughness: 0.42,
-        metalness: 0.05,
-        side: THREE.DoubleSide,
+        color: colorHex,
+        roughness: 0.55,
+        metalness: 0,
+        flatShading: true,
+        clippingPlanes: [clip],
       }),
-    []
+    // Renk aşağıdaki effect ile güncelleniyor; materyal yeniden kurulmuyor.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [clip]
+  );
+  /**
+   * Sert offset gölge — kontur yerine bu.
+   *
+   * Önce geometriyi merkezden büyütüp `BackSide` çizerek kontur denedim: kalınlık
+   * merkezden uzaklıkla arttığı için düzensiz çıkıyordu, bir kenarda kalın bir
+   * bant, başka kenarda hiç yok. Aynı geometriyi mürekkep renginde sağ-aşağı
+   * kaydırmak hem tanım gereği eşit kalınlıkta, hem de sayfadaki her kartın
+   * `shadow-toy`'uyla (0 4px 0 0) birebir aynı dili konuşuyor.
+   */
+  const shadeMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: INK,
+        clippingPlanes: [clip],
+      }),
+    [clip]
+  );
+  useEffect(
+    () => () => {
+      bodyMat.dispose();
+      shadeMat.dispose();
+    },
+    [bodyMat, shadeMat]
   );
 
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const mesh = useRef<THREE.InstancedMesh>(null);
-  const colors = useMemo(() => {
-    const arr = new Float32Array(LAYERS * 3);
-    const a = new THREE.Color(ORANGE);
-    const b = new THREE.Color(AMBER);
-    const c = new THREE.Color(TEAL);
-    for (let i = 0; i < LAYERS; i++) {
-      const t = i / (LAYERS - 1);
-      // Alt üçte bir turuncu → sarı, üst kısımda turkuaza doğru bir kayma:
-      // tek renk filamentin ısıyla değişen tonu gibi okunuyor.
-      const col = t < 0.55 ? a.clone().lerp(b, t / 0.55) : b.clone().lerp(c, (t - 0.55) / 0.45);
-      arr.set([col.r, col.g, col.b], i * 3);
-    }
-    return arr;
-  }, []);
+  // Renk değişimi anında uygulanıyor ve baskıyı yeniden başlatmıyor: çocuk
+  // swatch'lara hızla basınca baskı hiç bitmez ve nesne hiç görünmez olurdu.
+  // Şekil değişmek baskıyı gerektiriyor, renk değişmek gerektirmiyor.
+  useEffect(() => {
+    bodyMat.color.set(colorHex);
+  }, [bodyMat, colorHex]);
 
-  // İlerleme bilerek state değil ref: her karede setState çağırmak saniyede
-  // 60 React render'ı demek olurdu.
-  useFrame((state) => {
-    const elapsed = state.clock.elapsedTime - started;
-    const p = Math.min(1, Math.max(0, elapsed / PRINT_SECONDS));
+  const nozzle = useRef<THREE.Group>(null);
+  const shadow = useRef<THREE.Mesh>(null);
 
-    const visible = Math.floor(p * LAYERS);
-    if (mesh.current) {
-      for (let i = 0; i < LAYERS; i++) {
-        const t = i / (LAYERS - 1);
-        const r = radiusAt(t);
-        const shown = i < visible;
-        // Yeni inen katman hafifçe oturuyormuş gibi: ölçek 0'dan 1'e.
-        const grow = i === visible ? (p * LAYERS) % 1 : shown ? 1 : 0;
-        dummy.position.set(0, i * LAYER_H + LAYER_H / 2, 0);
-        dummy.rotation.y = t * Math.PI * 0.9; // hafif burgu
-        dummy.scale.set(r * grow, 1, r * grow);
-        dummy.updateMatrix();
-        mesh.current.setMatrixAt(i, dummy.matrix);
-      }
-      mesh.current.instanceMatrix.needsUpdate = true;
-    }
+  const p = useRef(0);
+  const idle = useRef(0);
+  const settled = useRef(false);
 
-    // Nozul: basılan katmanın hemen üstünde daire çizerek ilerler,
-    // baskı bitince yukarı çekilir.
+  // printKey değişince baskıyı sıfırla. Render sırasında ref karşılaştırması:
+  // effect'e bırakmak bir kare eski ilerlemeyi gösterirdi.
+  const lastKey = useRef(printKey);
+  if (lastKey.current !== printKey) {
+    lastKey.current = printKey;
+    p.current = 0;
+    idle.current = 0;
+    settled.current = false;
+  }
+
+  useFrame((state, delta) => {
+    // Sekme arka plandan dönerken biriken büyük delta ilerlemeyi sıçratmasın.
+    const d = Math.min(delta, 1 / 30);
+    p.current = Math.min(1, p.current + d / PRINT_SECONDS);
+
+    const done = Math.floor(p.current * LAYERS);
+    clip.constant =
+      GROUND_Y + Math.min(done * figure.layerH, figure.height);
+
     if (nozzle.current) {
-      const done = p >= 1;
-      const a = state.clock.elapsedTime * 2.4;
-      const r = radiusAt(Math.min(0.999, p));
+      const printing = p.current < 1;
+      const [lo, hi] = figure.spans[Math.min(done, LAYERS - 1)];
+      // Uç, o katmanın açıklığı boyunca gidip geliyor.
+      const sweep = (Math.sin(state.clock.elapsedTime * 6.5) + 1) / 2;
+      // Konum GRUBA GÖRE yerel: grup zaten GROUND_Y'de duruyor, buraya bir daha
+      // eklemek nozulu tablanın altına gömüyordu.
       nozzle.current.position.set(
-        done ? 0 : Math.cos(a) * r,
-        done ? LAYERS * LAYER_H + 1.2 : p * LAYERS * LAYER_H + 0.42,
-        done ? 0 : Math.sin(a) * r
+        printing ? lo + (hi - lo) * sweep : 0,
+        printing ? done * figure.layerH : figure.height + 0.7,
+        0
       );
+      nozzle.current.visible = printing;
     }
 
-    // Baskı bitince yavaş dönüş.
-    if (group.current) {
-      group.current.rotation.y =
-        p < 1 ? -0.2 : -0.2 + (state.clock.elapsedTime - started - PRINT_SECONDS) * 0.22;
+    // Gölge, basılan yüksekliğe göre hafifçe koyulaşıyor.
+    if (shadow.current) {
+      const m = shadow.current.material as THREE.MeshBasicMaterial;
+      m.opacity = 0.35 + 0.65 * p.current;
+    }
+
+    // Baskı bitti ve bir süre geçtiyse döngüyü uyut.
+    if (p.current >= 1 && !settled.current) {
+      idle.current += d;
+      if (idle.current >= SLEEP_AFTER) {
+        settled.current = true;
+        onSettled();
+      }
     }
   });
 
+  const shadowTex = useMemo(makeShadowTexture, []);
+  useEffect(() => () => shadowTex.dispose(), [shadowTex]);
+
   return (
-    <group ref={group} position={[0, -1.05, 0]}>
-      <instancedMesh
-        ref={mesh}
-        args={[geometry, material, LAYERS]}
-        castShadow
-        receiveShadow
-      >
-        <instancedBufferAttribute attach="instanceColor" args={[colors, 3]} />
-      </instancedMesh>
+    <group position={[0, GROUND_Y, 0]}>
+      {/* Tabla: aydınlık ama krem zeminden ayrılan orta ton. Ölçü bilerek küçük —
+          büyük bir düzlem kareyi kaplayıp figürü ezmişti. Izgara, yüzeyin bir
+          baskı tablası olduğunu okutan asıl ipucu. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[7, 7]} />
+        <meshStandardMaterial color={PLATE} roughness={0.95} metalness={0} />
+      </mesh>
+      <gridHelper
+        args={[7, 14, PLATE_LINE, PLATE_LINE]}
+        position={[0, 0.004, 0]}
+      />
+
+      <mesh ref={shadow} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.006, 0]}>
+        <planeGeometry args={[4.4, 2.6]} />
+        <meshBasicMaterial map={shadowTex} transparent depthWrite={false} />
+      </mesh>
+
+      {/* dispose={null}: geometri bizde tutuluyor, R3F ayrılırken atmasın. */}
+      <mesh
+        geometry={figure.geo}
+        material={shadeMat}
+        position={[0.06, -0.08, -0.06]}
+        dispose={null}
+        renderOrder={-1}
+      />
+      <mesh geometry={figure.geo} material={bodyMat} dispose={null} />
 
       <group ref={nozzle}>
-        <mesh position={[0, 0.34, 0]} castShadow>
-          <boxGeometry args={[0.34, 0.42, 0.34]} />
-          <meshStandardMaterial color={NAVY} roughness={0.35} metalness={0.6} />
+        <mesh position={[0, 0.4, 0]}>
+          <boxGeometry args={[0.24, 0.3, 0.24]} />
+          <meshStandardMaterial color={INK} roughness={0.35} metalness={0.55} />
         </mesh>
-        <mesh position={[0, 0.03, 0]} castShadow>
-          <coneGeometry args={[0.16, 0.28, 16]} />
-          <meshStandardMaterial color="#8a8f9c" roughness={0.25} metalness={0.85} />
+        <mesh position={[0, 0.16, 0]}>
+          <coneGeometry args={[0.1, 0.19, 14]} />
+          <meshStandardMaterial color="#8a8f9c" roughness={0.25} metalness={0.8} />
         </mesh>
       </group>
     </group>
   );
 }
 
-/** Baskı tablası: ızgaralı koyu yüzey. */
-function BuildPlate() {
-  return (
-    <group position={[0, -1.1, 0]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[9, 9]} />
-        <meshStandardMaterial color={PLATE} roughness={0.9} metalness={0.1} />
-      </mesh>
-      <gridHelper args={[9, 18, ORANGE, "#3a4560"]} position={[0, 0.01, 0]} />
-    </group>
-  );
+interface PrintSceneCanvasProps {
+  paused: boolean;
+  points: readonly Pt[];
+  colorHex: string;
+  printKey: string;
+  onSettled: () => void;
 }
 
-function Rig({ children }: { children: React.ReactNode }) {
-  const group = useRef<THREE.Group>(null);
-  useFrame((state) => {
-    if (!group.current) return;
-    // İmleç takibi — çok hafif, baş döndürmeyecek kadar.
-    const { x, y } = state.pointer;
-    group.current.rotation.y += (x * 0.22 - group.current.rotation.y) * 0.04;
-    group.current.rotation.x += (-y * 0.1 - group.current.rotation.x) * 0.04;
-  });
-  return <group ref={group}>{children}</group>;
-}
-
-export default function PrintSceneCanvas({ paused }: { paused: boolean }) {
+export default function PrintSceneCanvas({
+  paused,
+  points,
+  colorHex,
+  printKey,
+  onSettled,
+}: PrintSceneCanvasProps) {
   return (
     <Canvas
       frameloop={paused ? "never" : "always"}
-      shadows
-      dpr={[1, 1.8]}
-      camera={{ position: [7.4, 5.2, 8.6], fov: 34 }}
+      dpr={[1, 1.6]}
+      camera={{ position: [1.75, 0.85, 5.5], fov: 34 }}
       gl={{
         antialias: true,
-        powerPreference: "high-performance",
-        // ACES tone mapping marka renklerini soluklaştırıyordu.
+        // Klip düzlemi materyal seviyesinde çalışıyor; bu bayrak şart.
+        localClippingEnabled: true,
+        // ACES tone mapping katalog renklerini soluklaştırıyordu.
         toneMapping: THREE.NoToneMapping,
+        // Baskı bitince render döngüsünü durduruyoruz (bkz. PrintStudio). Bu
+        // olmadan çizim tamponu bir daha çizilmediği anda boşalabiliyor ve hero
+        // boş bir kutuya dönüşüyor — doğrulamada tam bu yaşandı.
+        preserveDrawingBuffer: true,
       }}
     >
-      <color attach="background" args={[NAVY]} />
-      <fog attach="fog" args={[NAVY, 14, 30]} />
+      <color attach="background" args={[STAGE]} />
 
-      <ambientLight intensity={0.9} />
-      <directionalLight
-        position={[5, 9, 5]}
-        intensity={2.6}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
+      {/* Nötr ışık: seçilen renk swatch'takiyle aynı görünmeli. Renkli dolgu
+          ışıkları nesneyi çocuğun seçtiği tondan kaydırıyordu. */}
+      <hemisphereLight args={["#ffffff", PLATE, 0.8]} />
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[4, 7, 6]} intensity={1.3} />
+
+      <Stage
+        points={points}
+        colorHex={colorHex}
+        printKey={printKey}
+        onSettled={onSettled}
       />
-      {/* Arkadan turkuaz kenar ışığı: nesnenin silueti koyu zeminden ayrılsın */}
-      <pointLight position={[-5, 3.5, -4]} intensity={70} color={TEAL} distance={18} />
-      <pointLight position={[4, 2, 4]} intensity={45} color={ORANGE} distance={14} />
-
-      {/* Sahne sağa kaydırılmış: hero metni solda nefes alsın. */}
-      <group position={[1.6, -0.5, 0]} scale={1.18}>
-        <Rig>
-          <BuildPlate />
-          <PrintedObject started={0} />
-        </Rig>
-      </group>
     </Canvas>
   );
 }

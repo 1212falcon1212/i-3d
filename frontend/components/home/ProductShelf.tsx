@@ -83,7 +83,11 @@ export default function ProductShelf({
             key={product.id}
             className="snap-start shrink-0 w-[68vw] sm:w-64 md:w-[19rem]"
           >
-            <ProductCard product={product} />
+            {/* variant ŞART: ProductCard varsayılan olarak "horizontal" —
+                geniş bir grid için tasarlanmış 50/50 görsel-solda kart. 19rem'lik
+                bir rafta metni taşıyor ve oyuncak kart muamelesini
+                (border-2 + shadow-toy) hiç almıyordu. */}
+            <ProductCard product={product} variant="vertical" />
           </li>
         ))}
       </ul>

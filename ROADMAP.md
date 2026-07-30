@@ -121,12 +121,12 @@ hero'da gerçek WebGL sahnesi, sayfanın geri kalanında CSS 3D transform.
 
 - [x] S0 — 14 ölü bileşenin silinmesi (~1100 satır)
 - [x] S1 — marka kimliği: logo/wordmark SVG, favicon, `components/brand/Logo.tsx`
-- [ ] **S2 — ortak atomlar.** `ui/{Card,Badge,PillButton,SectionLabel,Spinner,Pagination}` +
+- [x] **S2 — ortak atomlar.** `ui/{Card,Badge,PillButton,SectionLabel,Spinner,Pagination}` +
       `ProductCard`. Kart artık düz kutu değil: baskı tablası karesi üzerinde durur,
       hover'da `rotate3d` ile hafifçe kalkar ve offset gölgesi kapanır ("eline alma"
       hissi). `SectionLabel`'ın kullanılmayan `number` prop'u gerçekten uygulanır —
       ama yalnızca gerçekten sıralı olan içerikte (nasıl basılıyor adımları).
-- [ ] **S3 — chrome.** Header (mega menü, mobil çekmece, arama önizlemesi), Footer,
+- [x] **S3 — chrome.** Header (mega menü, mobil çekmece, arama önizlemesi), Footer,
       Breadcrumb, CartDrawer. Ücretsiz kargo eşiği `useSettings().min_free_shipping`'e
       bağlanır (backend #2 ile eş).
 - [x] **S4 — anasayfa (yeni kurgu).** Bölüm sırası ve yeni bileşenler:
@@ -145,13 +145,13 @@ hero'da gerçek WebGL sahnesi, sayfanın geri kalanında CSS 3D transform.
   - [x] `BrandSpotlight.tsx` — yerinde restyle.
   - [x] `app/page.tsx` — kompozisyon yeniden yazılır; bölümler arası `layer-rule`
         ritmi, tam genişlik koyu bloklar ve `max-w-7xl` alanlar dönüşümlü.
-- [ ] **S5 — katalog + ürün detay.** `ProductListing` (dört sayfayı birden besliyor)
+- [x] **S5 — katalog + ürün detay.** `ProductListing` (dört sayfayı birden besliyor)
       yerinde stillenir. PDP'de malzeme/katman/süre çipleri `product_tags` ve varyasyon
       değerlerinden render edilir; renk seçimi gerçek `color_hex` swatch'larıyla.
-- [ ] **S6 — sepet, ödeme, sipariş sonucu**
-- [ ] **S7 — auth (AuthShell baştan: kozmetik şişe illüstrasyonu → izometrik atölye) + hesabım**
-- [ ] **S8 — CMS tipografisi** (`.cms-content`)
-- [ ] **S9 — admin panel kontrast geçişi** (opsiyonel)
+- [x] **S6 — sepet, ödeme, sipariş sonucu**
+- [x] **S7 — auth (AuthShell baştan: kozmetik şişe illüstrasyonu → izometrik atölye) + hesabım**
+- [x] **S8 — CMS tipografisi** (`.cms-content`) — ürün açıklamaları da buna bağlandı
+- [x] **S9 — admin panel kontrast geçişi**
 
 Sonraki adım (bu fazın dışında, gerçek model dosyaları geldiğinde): PDP'de
 döndürülebilir `.glb` görüntüleyici. `PrintScene` bileşeni bunun için hazır kurgulanır.
@@ -170,6 +170,7 @@ Ayrıntı: [docs/BACKEND-BUGS.md](docs/BACKEND-BUGS.md)
 - [x] #15 ilk siparişten sonra sipariş oluşturulamıyor (aras unique index)
 - [x] #16 kupon indirimi iki kez düşülüyor
 - [x] #17 KDV, KDV dahil fiyatların üstüne ekleniyor
+- [x] #19 panel düşük stok kartı rastgele ürün gösteriyor
 - [ ] istanbulvitamin'e geri taşıma (tek batch, en sonda)
 
 ---

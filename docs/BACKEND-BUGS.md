@@ -224,3 +224,26 @@ Model `enum('credit_card','bank_transfer')`, migration `VARCHAR(50)` diyordu.
 Prod'da (AutoMigrate kapalı) kolon serbest metin kalıyordu. `030` ile hizalandı.
 Yan not: geçersiz bir değer gönderildiğinde API doğrulama hatası değil genel
 "sipariş oluşturulurken bir hata oluştu" döndürüyor — küçük bir iyileştirme fırsatı.
+
+### [x] #19 Panelde "Düşük Stok" kartı rastgele ürün gösteriyor
+**Geri taşı: evet**
+
+Yönetim paneli `/admin/products?low_stock=true&per_page=5` çağırıyor ama
+`low_stock` parametresi backend'de hiç okunmuyordu (`product_handler.go` AdminList).
+Sonuç: kart, stoğu 38 olan bir ürünü "eşik altındaki ürünler" başlığı altında
+listeliyordu — stok uyarısına güvenilemiyordu.
+
+**Düzeltme:** `ProductListParams.LowStockOnly` + `stock <= low_stock_threshold`
+filtresi. Eşik ürün başına tanımlı olduğu için sabit sayıyla karşılaştırma
+yapılmıyor. Doğrulama: panel artık yalnızca 2/5 ve 4/5 gibi gerçek düşük stokları
+listeliyor.
+
+### [x] #20 Ürün varyantlarının renk bilgisi API'de dönmüyordu
+Model `ProductVariant.Values` ilişkisini tanımlıyor ama ürün sorguları bu ilişkiyi
+preload etmiyordu; `color_hex` hiç dışa çıkmıyor, ürün detayında gerçek filament
+rengi gösterilemiyordu. `Preload("Variants.Values")` eklendi.
+
+### [x] #21 Ürün açıklaması biçimlenmiyordu
+`ProductDetailsTabs` açıklamayı `prose prose-sm` sınıflarıyla render ediyordu ama
+projede `@tailwindcss/typography` yüklü değil — sınıflar hiçbir şey yapmıyordu,
+başlık ve listeler düz metin gibi akıyordu. `.cms-content` kullanılıyor.

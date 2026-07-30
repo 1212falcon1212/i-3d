@@ -11,6 +11,7 @@ import {
 import { api } from "./api";
 import type { User, Admin, AuthResponse } from "@/types";
 import React from "react";
+import { apiBase } from "./api-base";
 
 interface AuthContextType {
   user: User | null;
@@ -50,7 +51,7 @@ async function mergeGuestCart() {
     if (!sessionId) return;
     const token = localStorage.getItem(USER_TOKEN);
     await fetch(
-      (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1") +
+      apiBase() +
         "/cart/merge",
       {
         method: "POST",

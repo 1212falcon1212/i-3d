@@ -1,7 +1,8 @@
 import type { APIResponse, PaginatedResponse } from "@/types";
+import { apiBase } from "./api-base";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+  apiBase();
 
 type RequestOptions = {
   method?: string;

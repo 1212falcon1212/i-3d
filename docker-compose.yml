@@ -154,8 +154,10 @@ services:
       - backend
     environment:
       NODE_ENV: development
-      # Tarayıcıdan görünen adres
-      NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8180}/api/v1
+      # Tarayıcı API'yi Next.js origin'i üzerinden çağırır (göreli yol).
+      # Böylece siteye hangi adresten girilirse girilsin çalışır; 8180 portunun
+      # tarayıcıdan erişilebilir olmasına bağlı değil.
+      NEXT_PUBLIC_API_URL: /api/v1
       NEXT_PUBLIC_SITE_URL: http://localhost:${FRONTEND_PORT:-3200}
       # Sadece sunucu tarafı (server component'ler) — bkz. lib/api-base.ts
       API_URL_INTERNAL: http://backend:8080/api/v1
@@ -221,14 +223,22 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8180}/api/v1
+        NEXT_PUBLIC_API_URL: /api/v1
         NEXT_PUBLIC_SITE_URL: http://localhost:${FRONTEND_PORT:-3200}
+        # Build anında ŞART: Next `rewrites()`'i build sırasında değerlendirip
+        # routes-manifest'e yazar, `next start` yeniden hesaplamaz. Sadece
+        # runtime environment'ında verilirse /api/v1 ve /uploads proxy'lenmez.
+        API_URL_INTERNAL: http://backend-prod:8080/api/v1
+        # Yalnızca yerel prova: Host 127.0.0.1 olduğu için next/image'ın SSRF
+        # koruması /uploads görsellerini bloklar. Gerçek deploy'da set EDİLMEZ.
+        ALLOW_LOCAL_IMAGE_HOSTS: "true"
     restart: unless-stopped
     depends_on:
       - backend-prod
     environment:
       NODE_ENV: production
       API_URL_INTERNAL: http://backend-prod:8080/api/v1
+      ALLOW_LOCAL_IMAGE_HOSTS: "true"
     ports:
       - "127.0.0.1:${FRONTEND_PORT:-3200}:3000"
 

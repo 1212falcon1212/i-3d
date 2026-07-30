@@ -7,9 +7,10 @@ import { api } from "@/lib/api";
 import { cn, resolveImageUrl } from "@/lib/utils";
 import { useSettings } from "@/lib/settings";
 import type { Setting } from "@/types";
+import { apiBase } from "@/lib/api-base";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+  apiBase();
 
 async function uploadSettingsImage(file: File, purpose?: string): Promise<string> {
   const fd = new FormData();

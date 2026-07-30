@@ -6,9 +6,10 @@ import AdminShell from "@/components/admin/AdminShell";
 import { api } from "@/lib/api";
 import { cn, resolveImageUrl } from "@/lib/utils";
 import type { Banner } from "@/types";
+import { apiBase } from "@/lib/api-base";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+  apiBase();
 
 async function uploadBannerImage(file: File): Promise<string> {
   const fd = new FormData();

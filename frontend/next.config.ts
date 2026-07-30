@@ -12,9 +12,36 @@ const deploymentId =
   String(Date.now());
 
 // Sunucu tarafı backend adresi: compose içinde servis adı, dışında localhost.
-const INTERNAL_API_ORIGIN = (
-  process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8180/api/v1"
+//
+// DİKKAT — bu değer BUILD anında okunur. Next.js `rewrites()`'i build sırasında
+// değerlendirip `.next/routes-manifest.json`'a yazar; `next start` onu yeniden
+// hesaplamaz. Yani `API_URL_INTERNAL` sadece runtime `environment`'ında verilirse
+// üretim build'i onu hiç görmez.
+//
+// Eskiden bu ifade `NEXT_PUBLIC_API_URL`'e düşüyordu; o değer artık göreli
+// (`/api/v1`) olduğu için regex onu BOŞ stringe indiriyor ve destination
+// source'un aynısı oluyordu: `/api/v1/:path*` → `/api/v1/:path*`. Böyle bir
+// kural hiçbir şey yapmaz, istek catch-all route'a düşer ve 404 sayfası döner —
+// üstelik stream başladığı için HTTP 200 ile. Prod profilinde bütün API
+// çağrıları ve `/uploads` görselleri tam bu yüzden sessizce kırılmıştı.
+const RAW_INTERNAL_ORIGIN = (
+  process.env.API_URL_INTERNAL || process.env.API_URL || ""
 ).replace(/\/api\/v1\/?$/, "");
+
+/** Rewrite hedefi ancak mutlak bir origin ise anlamlı. */
+const INTERNAL_API_ORIGIN = /^https?:\/\/[^/]+$/.test(RAW_INTERNAL_ORIGIN)
+  ? RAW_INTERNAL_ORIGIN
+  : "";
+
+if (!INTERNAL_API_ORIGIN) {
+  // Sessizce no-op kural üretmek yerine bağır. Üretimde bu yolu nginx
+  // proxy'liyorsa uyarı beklenen durumdur; compose prod provasında değildir.
+  console.warn(
+    "[next.config] API_URL_INTERNAL build anında yok ya da mutlak bir origin değil — " +
+      "/api/v1 ve /uploads rewrite'ları YAZILMADI. Bu yolları nginx proxy'lemiyorsa " +
+      "istemci istekleri ve yüklenen görseller 404 döner."
+  );
+}
 
 const nextConfig: NextConfig = {
   deploymentId,
@@ -36,7 +63,20 @@ const nextConfig: NextConfig = {
   // Aynı URL hem tarayıcıda hem sunucuda (next/image optimizasyonu) geçerli
   // olur; üretimde nginx de aynı yolu backend'e proxy'liyor.
   async rewrites() {
+    // Mutlak bir hedef yoksa hiç kural üretme — source ile aynı destination
+    // yazmak kuralı no-op'a çevirir ve arızayı görünmez kılar (bkz. yukarıdaki
+    // not). Üretimde bu iki yolu nginx proxy'liyor.
+    if (!INTERNAL_API_ORIGIN) return [];
+
     return [
+      // API aynı origin üzerinden: tarayıcı /api/v1/... çağırır, burada
+      // backend'e taşınır. Böylece siteye hangi adresten girilirse girilsin
+      // (localhost, LAN IP, alan adı) istemci tarafı istekler çalışır; ayrı
+      // bir portun tarayıcıdan erişilebilir olmasına bağlı kalmaz.
+      {
+        source: "/api/v1/:path*",
+        destination: `${INTERNAL_API_ORIGIN}/api/v1/:path*`,
+      },
       {
         source: "/uploads/:path*",
         destination: `${INTERNAL_API_ORIGIN}/uploads/:path*`,
@@ -44,10 +84,19 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    // Next 16 SSRF korumasi: dev'de local backend'den (localhost:8180 ya da
-    // compose ici backend:8080) gelen gorsellerin optimize edilebilmesi icin
-    // sadece dev'de aciyoruz.
-    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
+    // Next 16 SSRF koruması: optimizer'ın yerel/özel adreslerden görsel
+    // çekmesini engelliyor.
+    //
+    // `/uploads/...` göreli bir yol olduğu için optimizer onu isteğin Host'una
+    // göre çözer. Gerçek üretimde Host public alan adıdır (i-3d.com.tr) ve
+    // koruma devreye girmez. Ama compose prod PROVASINDA Host 127.0.0.1:3200
+    // olur, yani yerel adres — ve panelden yüklenen bütün görseller 400 döner.
+    //
+    // Bu yüzden NODE_ENV'e değil açık bir opt-in'e bağlı: provada bilinçli
+    // açılır, gerçek deploy'da ASLA set edilmez.
+    dangerouslyAllowLocalIP:
+      process.env.NODE_ENV !== "production" ||
+      process.env.ALLOW_LOCAL_IMAGE_HOSTS === "true",
     // Seed katalogundaki urun gorselleri SVG. Bu bayrak olmadan next/image
     // onlari sessizce bos render eder — hata da vermez.
     dangerouslyAllowSVG: true,

@@ -275,3 +275,66 @@ tekrar uygulandığında varyant sayısı artmıyor.
 **Kural:** bundan sonra migration ile eklenen her index/unique key, ilgili Go
 modelinde de aynı adla bildirilmeli. Aksi halde dev'de sessizce kaybolur ve
 üretimle dev şemaları ayrışır.
+
+### [x] #23 Üretim build'inde `/api/v1` ve `/uploads` proxy'si hiç çalışmıyordu
+**Geri taşı: evet — istanbulvitamin de aynı deseni kullanıyor**
+
+Belirti: prod profilinde site açılıyor, sunucu tarafı içerik geliyor, ama panelden
+yüklenen **bütün görseller boş** ve istemci tarafı istekler (sepet, ayarlar,
+kategori şeridi) veri alamıyor.
+
+Kök neden: Next.js `rewrites()`'i **build sırasında** değerlendirip
+`.next/routes-manifest.json`'a yazar; `next start` onu yeniden hesaplamaz.
+`API_URL_INTERNAL` yalnızca compose'un `environment:` bloğunda verildiği için
+build anında tanımsızdı. `next.config.ts` o durumda `NEXT_PUBLIC_API_URL`'e
+düşüyordu — ama o değer artık göreli (`/api/v1`), ve
+
+    "/api/v1".replace(/\/api\/v1\/?$/, "")  →  ""
+
+olduğu için destination source'un aynısı oluyordu:
+
+    { "source": "/api/v1/:path*",  "destination": "/api/v1/:path*"  }
+    { "source": "/uploads/:path*", "destination": "/uploads/:path*" }
+
+Böyle bir kural hiçbir şey yapmaz. İstek `app/[...categorySlug]` catch-all'ına
+düşüp 404 sayfası döndürüyordu.
+
+**Düzeltme:**
+- `frontend/next.config.ts` — hedef mutlak bir origin (`^https?://host$`) değilse
+  rewrite **hiç yazılmıyor** ve `console.warn` ile bağırıyor. Sessizce no-op kural
+  üretmek arızayı görünmez kılan şeydi.
+- `frontend/Dockerfile` — `API_URL_INTERNAL` artık `ARG`/`ENV` olarak build
+  aşamasında da mevcut.
+- `docker-compose.yml` — `frontend-prod.build.args` içine eklendi.
+
+### [x] #24 404 sayfası HTTP 200 ile dönüyor — status'a bakan doğrulama yanıltıyor
+`app/[...categorySlug]` catch-all'ı bulunamayan yolda `notFound()` çağırıyor, ama
+RSC stream'i çoktan başladığı için yanıt **200 text/html** olarak kapanıyor;
+gövdede "Sayfa Bulunamadı" var.
+
+Pratik sonucu: `curl -o /dev/null -w '%{http_code}'` ile yapılan duman testleri
+**kırık bir kurulumda da geçiyor**. #23 tam bu yüzden "doğrulanmış" sayılmıştı.
+
+**Kural:** bu projede hiçbir doğrulama yalnızca status koduna bakmaz. Gövde
+assert edilir:
+
+    curl -s .../api/v1/health | grep -q '"success":true'
+    curl -s -o /dev/null -w '%{content_type}' .../uploads/x.jpg   # image/jpeg
+
+### [x] #25 `next/image`, prod provasında yüklenen görselleri 400'lüyordu
+`resolveImageUrl()` backend görsellerini göreli yol (`/uploads/...`) olarak
+veriyor; optimizer bunu isteğin Host'una göre çözüyor. Gerçek üretimde Host public
+alan adı olduğu için sorun yok, ama **yerel prod provasında** Host `127.0.0.1:3200`
+oluyor ve Next 16'nın SSRF koruması (`dangerouslyAllowLocalIP`, production'da
+kapalı) isteği reddediyor → her görsel için 400.
+
+`NODE_ENV`'e bağlı bayrak yerine açık opt-in: `ALLOW_LOCAL_IMAGE_HOSTS=true`.
+Yalnızca compose prod provasında set edilir, **gerçek deploy'da asla**.
+
+### [x] #26 Kategori şeridi kendi başına yanlış bir API adresi kuruyordu
+`components/layout/Header.tsx` kategori ağacını
+`process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1"` ile çekiyordu.
+8080 bu projede backend'in portu değil (8180) ve bu, `lib/api-base.ts`'teki tek
+kaynaktan farklı bir stratejiydi. Env verilmediği anda şerit **sessizce boş**
+kalıyordu — `fetchCategoryTree()` her hatayı boş diziye çevirdiği için hata da
+görünmüyordu. Artık `apiBase()` kullanıyor.

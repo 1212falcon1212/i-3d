@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { apiBase } from "@/lib/api-base";
 import { useCart } from "@/lib/cart";
 import { useCartDrawer } from "@/lib/cart-drawer";
 import { useSettings } from "@/lib/settings";
@@ -111,12 +112,14 @@ function ChevronRightIcon({ className }: { className?: string }) {
 // API
 // ---------------------------------------------------------------------------
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
-
+// Taban adresi tek kaynaktan gelir. Burada eskiden kendi başına
+// `NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1"` kuruluyordu; 8080
+// bu projede backend'in portu değil (8180), dolayısıyla env verilmediği anda
+// kategori şeridi sessizce boş kalıyordu — hata da vermiyordu, çünkü
+// fetchCategoryTree() her hatayı boş diziye çeviriyor.
 async function fetchCategoryTree(): Promise<Category[]> {
   try {
-    const res = await fetch(`${API_BASE}/categories/tree`);
+    const res = await fetch(`${apiBase()}/categories/tree`);
     if (!res.ok) return [];
     const json = await res.json();
     if (json.success && json.data?.categories) {
@@ -403,7 +406,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             >
               <UserIcon className="w-5 h-5" />
               <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-text-primary text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                Hesabim
+                Hesabım
               </span>
             </Link>
 
@@ -713,7 +716,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-text-secondary hover:text-primary hover:bg-primary-soft transition-colors"
           >
             <UserIcon className="w-5 h-5" />
-            Hesabim
+            Hesabım
           </Link>
           <Link
             href="/hesabim/favorilerim"

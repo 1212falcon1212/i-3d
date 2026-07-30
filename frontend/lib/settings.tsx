@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { apiBase } from "./api-base";
 
 /**
  * Site settings — backend `settings` tablosundan key-value olarak gelir.
@@ -47,7 +48,7 @@ interface SettingsContextValue {
 const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+  apiBase();
 
 async function fetchSettings(): Promise<SiteSettings> {
   try {

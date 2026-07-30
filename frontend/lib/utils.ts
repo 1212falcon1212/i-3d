@@ -154,20 +154,17 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
- * Backend'den dönen göreli `/uploads/...` path'ini tam URL'e çevirir.
- * Diğer göreli path'ler (Next.js public assets) olduğu gibi kalır.
+ * Backend görsel yollarını olduğu gibi bırakır.
+ *
+ * `/uploads/...` bilerek GÖRELİ kalıyor: next.config.ts'teki rewrite bu yolu
+ * Next.js origin'i üzerinden backend'e taşıyor. Böylece aynı URL hem tarayıcı
+ * hem de sunucu tarafı (next/image optimizasyonu) için geçerli oluyor.
+ *
+ * Eskiden burada API origin'i (localhost:8180) başa ekleniyordu; o adres
+ * container içindeki Next sunucusundan erişilemediği için panelden yüklenen
+ * görseller optimizasyon aşamasında sessizce kırılıyordu.
  */
 export function resolveImageUrl(url?: string | null): string {
   if (!url) return "";
-  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:") || url.startsWith("blob:")) {
-    return url;
-  }
-  // Sadece backend uploads'ını origin'e bağla; /banners, /placeholder gibi
-  // frontend public/ altındaki dosyalar Next.js tarafından servis edilir.
-  if (url.startsWith("/uploads/")) {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
-    const origin = apiBase.replace(/\/api\/v1\/?$/, "");
-    return origin + url;
-  }
   return url;
 }

@@ -3,25 +3,25 @@ package models
 import "time"
 
 type Product struct {
-	ID                uint64    `gorm:"primaryKey;autoIncrement" json:"id"`
-	BrandID           *uint64   `gorm:"index" json:"brand_id"`
-	SKU               string    `gorm:"type:varchar(100);uniqueIndex;not null" json:"sku"`
-	Barcode           string    `gorm:"type:varchar(50)" json:"barcode,omitempty"`
-	Name              string    `gorm:"type:varchar(500);not null" json:"name"`
-	Slug              string    `gorm:"type:varchar(550);uniqueIndex;not null" json:"slug"`
-	ShortDescription  string    `gorm:"type:text" json:"short_description,omitempty"`
-	Description       string    `gorm:"type:longtext" json:"description,omitempty"`
-	Price             float64   `gorm:"type:decimal(10,2);not null" json:"price"`
-	ComparePrice      *float64  `gorm:"type:decimal(10,2)" json:"compare_price,omitempty"`
-	CostPrice         *float64  `gorm:"type:decimal(10,2)" json:"cost_price,omitempty"`
-	Currency          string    `gorm:"type:varchar(3);default:'TRY'" json:"currency"`
-	Stock             int       `gorm:"default:0" json:"stock"`
-	LowStockThreshold int       `gorm:"default:5" json:"low_stock_threshold"`
-	Weight            *float64  `gorm:"type:decimal(8,2)" json:"weight,omitempty"`
-	IsActive          bool      `gorm:"default:true;index:idx_active_featured" json:"is_active"`
-	IsFeatured        bool      `gorm:"default:false;index:idx_active_featured" json:"is_featured"`
-	IsCampaign        bool      `gorm:"default:false" json:"is_campaign"`
-	TaxRate           float64   `gorm:"type:decimal(5,2);default:20.00" json:"tax_rate"`
+	ID                uint64   `gorm:"primaryKey;autoIncrement" json:"id"`
+	BrandID           *uint64  `gorm:"index" json:"brand_id"`
+	SKU               string   `gorm:"type:varchar(100);uniqueIndex;not null" json:"sku"`
+	Barcode           string   `gorm:"type:varchar(50)" json:"barcode,omitempty"`
+	Name              string   `gorm:"type:varchar(500);not null" json:"name"`
+	Slug              string   `gorm:"type:varchar(550);uniqueIndex;not null" json:"slug"`
+	ShortDescription  string   `gorm:"type:text" json:"short_description,omitempty"`
+	Description       string   `gorm:"type:longtext" json:"description,omitempty"`
+	Price             float64  `gorm:"type:decimal(10,2);not null" json:"price"`
+	ComparePrice      *float64 `gorm:"type:decimal(10,2)" json:"compare_price,omitempty"`
+	CostPrice         *float64 `gorm:"type:decimal(10,2)" json:"cost_price,omitempty"`
+	Currency          string   `gorm:"type:varchar(3);default:'TRY'" json:"currency"`
+	Stock             int      `gorm:"default:0" json:"stock"`
+	LowStockThreshold int      `gorm:"default:5" json:"low_stock_threshold"`
+	Weight            *float64 `gorm:"type:decimal(8,2)" json:"weight,omitempty"`
+	IsActive          bool     `gorm:"default:true;index:idx_active_featured" json:"is_active"`
+	IsFeatured        bool     `gorm:"default:false;index:idx_active_featured" json:"is_featured"`
+	IsCampaign        bool     `gorm:"default:false" json:"is_campaign"`
+	TaxRate           float64  `gorm:"type:decimal(5,2);default:20.00" json:"tax_rate"`
 
 	// Marketplace
 	TrendyolID      string `gorm:"type:varchar(100)" json:"trendyol_id,omitempty"`
@@ -80,10 +80,14 @@ func (ProductImage) TableName() string {
 }
 
 type ProductVariant struct {
-	ID           uint64   `gorm:"primaryKey;autoIncrement" json:"id"`
-	ProductID    uint64   `gorm:"not null;index" json:"product_id"`
-	Name         string   `gorm:"type:varchar(200);not null" json:"name"`
-	SKU          string   `gorm:"type:varchar(100)" json:"sku,omitempty"`
+	ID        uint64 `gorm:"primaryKey;autoIncrement" json:"id"`
+	ProductID uint64 `gorm:"not null;index" json:"product_id"`
+	Name      string `gorm:"type:varchar(200);not null" json:"name"`
+	// uniqueIndex adı migration'daki (037) index adıyla aynı olmak ZORUNDA:
+	// modelde bildirilmeyen bir index'i AutoMigrate dev'de düşürüyor. Bu index
+	// düştüğünde seed'lerdeki ON DUPLICATE KEY UPDATE eşleşecek anahtar
+	// bulamıyor ve varyantları çoğaltıyordu.
+	SKU          string   `gorm:"type:varchar(100);uniqueIndex:uk_product_variants_sku" json:"sku,omitempty"`
 	Barcode      string   `gorm:"type:varchar(50)" json:"barcode,omitempty"`
 	Price        float64  `gorm:"type:decimal(10,2);not null" json:"price"`
 	ComparePrice *float64 `gorm:"type:decimal(10,2)" json:"compare_price,omitempty"`

@@ -156,6 +156,14 @@ hero'da gerçek WebGL sahnesi, sayfanın geri kalanında CSS 3D transform.
 Sonraki adım (bu fazın dışında, gerçek model dosyaları geldiğinde): PDP'de
 döndürülebilir `.glb` görüntüleyici. `PrintScene` bileşeni bunun için hazır kurgulanır.
 
+### Faz 7 — Gerçek katalog verisi
+- [x] Serbest lisanslı (CC BY / CC BY-SA) gerçek fotoğraflarla 14 figür/dekor ürünü
+      (`036_i3d_figures.sql`); künyeler [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md)
+- [x] Görseller `backend/uploads` altında; `/uploads/*` Next.js origin'i üzerinden
+      servis ediliyor (rewrite) — panelden yüklenen görseller de aynı yoldan geçer
+- [ ] Gerçek ürün fotoğraflarınız hazır olduğunda panelden değiştirin ve künye
+      tablosunu boşaltın
+
 ### Faz 6 — Backend bug'ları
 Ayrıntı: [docs/BACKEND-BUGS.md](docs/BACKEND-BUGS.md)
 - [x] #1 ayar grupları panelle hizalandı
@@ -170,6 +178,7 @@ Ayrıntı: [docs/BACKEND-BUGS.md](docs/BACKEND-BUGS.md)
 - [x] #15 ilk siparişten sonra sipariş oluşturulamıyor (aras unique index)
 - [x] #16 kupon indirimi iki kez düşülüyor
 - [x] #17 KDV, KDV dahil fiyatların üstüne ekleniyor
+- [x] #22 AutoMigrate, modelde bildirilmeyen index'leri düşürüyor (varyant çoğalması)
 - [x] #19 panel düşük stok kartı rastgele ürün gösteriyor
 - [ ] istanbulvitamin'e geri taşıma (tek batch, en sonda)
 

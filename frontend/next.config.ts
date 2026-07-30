@@ -11,6 +11,11 @@ const deploymentId =
   process.env.VERCEL_GIT_COMMIT_SHA ||
   String(Date.now());
 
+// Sunucu tarafı backend adresi: compose içinde servis adı, dışında localhost.
+const INTERNAL_API_ORIGIN = (
+  process.env.API_URL_INTERNAL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8180/api/v1"
+).replace(/\/api\/v1\/?$/, "");
+
 const nextConfig: NextConfig = {
   deploymentId,
   // Dev sunucusu container içinde çalışıyor; tarayıcı isteği docker-proxy
@@ -27,6 +32,17 @@ const nextConfig: NextConfig = {
     "10.255.255.254",
     "172.27.225.173",
   ],
+  // Backend'in yüklediği görseller Next.js origin'i üzerinden servis edilir.
+  // Aynı URL hem tarayıcıda hem sunucuda (next/image optimizasyonu) geçerli
+  // olur; üretimde nginx de aynı yolu backend'e proxy'liyor.
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: `${INTERNAL_API_ORIGIN}/uploads/:path*`,
+      },
+    ];
+  },
   images: {
     // Next 16 SSRF korumasi: dev'de local backend'den (localhost:8180 ya da
     // compose ici backend:8080) gelen gorsellerin optimize edilebilmesi icin

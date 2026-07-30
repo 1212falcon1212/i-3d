@@ -247,3 +247,31 @@ rengi gösterilemiyordu. `Preload("Variants.Values")` eklendi.
 `ProductDetailsTabs` açıklamayı `prose prose-sm` sınıflarıyla render ediyordu ama
 projede `@tailwindcss/typography` yüklü değil — sınıflar hiçbir şey yapmıyordu,
 başlık ve listeler düz metin gibi akıyordu. `.cms-content` kullanılıyor.
+
+### [x] #22 AutoMigrate, modelde bildirilmeyen index'leri düşürüyor
+**Geri taşı: evet — bu bir hata sınıfı, tek bir satır değil**
+
+Migration ile eklenen bir index, Go modelinde `gorm` etiketiyle bildirilmemişse
+geliştirme ortamında backend her açılışta onu **düşürüyor** (AutoMigrate yalnızca
+`APP_ENV != production` iken çalışıyor).
+
+Somut sonuç: `033` seed'i `product_variants.sku` üzerine unique index ekliyordu,
+backend açılışında index düşüyor, ardından seed yeniden uygulandığında
+`INSERT ... ON DUPLICATE KEY UPDATE` eşleşecek anahtar bulamıyor ve **varyantları
+çoğaltıyordu** — ürün detayında aynı renk iki kez listeleniyordu (85 tekil sku
+için 125 satır).
+
+**Düzeltme:**
+- `037_variant_sku_unique.sql` — önce kopyaları temizler (en küçük id korunur,
+  bağlı `product_variant_values` satırları da), sonra index'i ekler. Sıra önemli:
+  dolu bir tabloda ALTER doğrudan hata verir.
+- `models/product.go` — `ProductVariant.SKU` artık
+  `uniqueIndex:uk_product_variants_sku` bildiriyor; index adı migration'daki adla
+  birebir aynı, aksi halde AutoMigrate ikinci bir index açar.
+
+Doğrulama: backend yeniden başlatıldıktan sonra index yerinde kalıyor; seed
+tekrar uygulandığında varyant sayısı artmıyor.
+
+**Kural:** bundan sonra migration ile eklenen her index/unique key, ilgili Go
+modelinde de aynı adla bildirilmeli. Aksi halde dev'de sessizce kaybolur ve
+üretimle dev şemaları ayrışır.

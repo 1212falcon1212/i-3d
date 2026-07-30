@@ -78,7 +78,7 @@ export default function FooterNewsletter() {
         <button
           type="submit"
           disabled={submitting}
-          className="bg-primary text-white text-sm font-semibold rounded px-4 py-2 hover:bg-primary/90 transition disabled:opacity-60"
+          className="bg-primary text-text-primary text-sm font-semibold rounded px-4 py-2 hover:bg-primary/90 transition disabled:opacity-60"
         >
           {submitting ? "Gönderiliyor..." : "Abone Ol"}
         </button>

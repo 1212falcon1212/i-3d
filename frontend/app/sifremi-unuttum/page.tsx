@@ -57,7 +57,7 @@ export default function SifremiUnuttumPage() {
       >
         <Link
           href="/giris-yap"
-          className="inline-flex items-center justify-center w-full h-12 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition"
+          className="inline-flex items-center justify-center w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition"
         >
           Giriş sayfasına dön
         </Link>
@@ -122,7 +122,7 @@ export default function SifremiUnuttumPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+          className="w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
         >
           {loading ? (
             <>

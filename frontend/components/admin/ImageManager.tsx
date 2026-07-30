@@ -219,7 +219,7 @@ export default function ImageManager({
               type="button"
               disabled={uploading}
               onClick={() => fileInputRef.current?.click()}
-              className="h-9 px-4 bg-primary text-white rounded-lg text-xs font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+              className="h-9 px-4 bg-primary text-text-primary rounded-lg text-xs font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
             >
               Dosya Seç
             </button>

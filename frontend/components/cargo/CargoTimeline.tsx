@@ -73,7 +73,7 @@ export default function CargoTimeline({
                     className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[11px] font-medium",
                       reached
-                        ? "border-primary bg-primary text-white"
+                        ? "border-primary bg-primary text-text-primary"
                         : "border-gray-300 bg-white text-text-secondary",
                       isCurrent && "ring-2 ring-primary/30"
                     )}

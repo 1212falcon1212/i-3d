@@ -162,7 +162,7 @@ export default function AdreslerimPage() {
         <h1 className="font-display text-3xl text-text-primary">Adreslerim</h1>
         <button
           onClick={openAddForm}
-          className="px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors"
+          className="px-4 py-2.5 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors"
         >
           Yeni Adres Ekle
         </button>
@@ -347,7 +347,7 @@ export default function AdreslerimPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 h-10 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  className="flex-1 h-10 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
                 >
                   {saving ? "Kaydediliyor..." : editingId ? "Guncelle" : "Kaydet"}
                 </button>

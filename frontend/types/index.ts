@@ -75,6 +75,17 @@ export interface ProductImage {
   is_primary: boolean;
 }
 
+export interface VariationValue {
+  id: number;
+  variation_type_id: number;
+  value: string;
+  slug: string;
+  /** Renk varyasyonlarında gerçek swatch rengi. */
+  color_hex?: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
 export interface ProductVariant {
   id: number;
   product_id: number;
@@ -86,6 +97,8 @@ export interface ProductVariant {
   stock: number;
   is_active: boolean;
   sort_order: number;
+  /** Bu varyantın karşılık geldiği varyasyon değerleri (renk, boyut…). */
+  values?: VariationValue[];
 }
 
 export interface ProductTag {

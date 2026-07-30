@@ -87,7 +87,7 @@ export default function AramaPage({ searchParams }: AramaPageProps) {
               />
               <button
                 type="submit"
-                className="absolute right-1.5 top-1.5 w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors"
+                className="absolute right-1.5 top-1.5 w-9 h-9 rounded-full bg-primary text-text-primary flex items-center justify-center hover:bg-primary-dark transition-colors"
                 aria-label="Ara"
               >
                 <svg

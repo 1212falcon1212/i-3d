@@ -259,7 +259,7 @@ export default function PaymentForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-3.5 bg-primary text-white rounded-xl font-medium text-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3.5 bg-primary text-text-primary rounded-xl font-medium text-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Isleniyor..." : "Siparisi Tamamla"}
       </button>

@@ -34,7 +34,7 @@ type createProductRequest struct {
 	ComparePrice      *float64                  `json:"compare_price"`
 	CostPrice         *float64                  `json:"cost_price"`
 	Stock             int                       `json:"stock"`
-	LowStockThreshold int                      `json:"low_stock_threshold"`
+	LowStockThreshold int                       `json:"low_stock_threshold"`
 	Weight            *float64                  `json:"weight"`
 	IsActive          *bool                     `json:"is_active"`
 	IsFeatured        bool                      `json:"is_featured"`
@@ -188,6 +188,12 @@ func (h *ProductHandler) AdminList(c *fiber.Ctx) error {
 		PerPage: perPage,
 		SortBy:  c.Query("sort"),
 		Search:  strings.TrimSpace(c.Query("search")),
+	}
+
+	// low_stock=true: panel "Düşük Stok" kartı bunu gönderiyordu ama parametre
+	// hiç okunmuyordu; liste rastgele ilk N ürünü "düşük stok" diye gösteriyordu.
+	if v := c.Query("low_stock"); v == "true" || v == "1" {
+		params.LowStockOnly = true
 	}
 
 	// Admin is_active filtresini opsiyonel kullanir

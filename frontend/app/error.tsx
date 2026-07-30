@@ -36,7 +36,7 @@ export default function GlobalError({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={reset}
-            className="flex-1 h-11 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition"
+            className="flex-1 h-11 rounded-xl bg-primary text-text-primary font-semibold hover:bg-primary-hover transition"
           >
             Tekrar Dene
           </button>

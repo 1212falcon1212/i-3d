@@ -136,7 +136,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-hover transition disabled:opacity-50"
+              className="px-5 py-2 rounded-lg bg-primary text-text-primary text-sm font-medium hover:bg-primary-hover transition disabled:opacity-50"
             >
               {submitting ? "Gönderiliyor…" : "Yorum Yap"}
             </button>

@@ -229,7 +229,7 @@ export default function ProductListing({
     <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
       {/* Sidebar */}
       <aside className="lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-        <div className="bg-white border border-border rounded-2xl p-5 space-y-6">
+        <div className="bg-card-bg border border-border rounded-3xl p-5 space-y-6 shadow-toy-soft">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-base text-text-primary">Filtrele</h2>
             {hasActiveFilters && (
@@ -270,7 +270,7 @@ export default function ProductListing({
                 placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
+                className="w-full px-3 py-2 font-mono text-sm border border-border rounded-xl bg-bg-primary focus:outline-none focus:border-primary"
               />
               <span className="text-text-secondary">—</span>
               <input
@@ -279,7 +279,7 @@ export default function ProductListing({
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary"
+                className="w-full px-3 py-2 font-mono text-sm border border-border rounded-xl bg-bg-primary focus:outline-none focus:border-primary"
               />
             </div>
           </FilterSection>
@@ -352,21 +352,21 @@ export default function ProductListing({
       <div className="min-w-0">
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-4 gap-3">
-          <p className="text-sm text-text-secondary">
+          <p className="font-mono text-xs text-text-secondary">
             {products.length > 0
-              ? `${products.length} ürün görüntüleniyor`
+              ? `${products.length} ürün`
               : loading
                 ? "Yükleniyor..."
                 : ""}
           </p>
           <div className="flex items-center gap-2">
-            <label className="text-xs text-text-secondary hidden sm:block">
+            <label className="font-mono text-[10px] uppercase tracking-wider text-text-secondary hidden sm:block">
               Sırala
             </label>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="px-3 py-2 text-sm border border-border rounded-lg bg-white focus:outline-none focus:border-primary"
+              className="px-3 py-2 text-sm border-2 border-text-primary rounded-full bg-card-bg focus:outline-none focus:border-primary"
             >
               {(Object.keys(SORT_LABELS) as SortOption[]).map((k) => (
                 <option key={k} value={k}>
@@ -378,7 +378,7 @@ export default function ProductListing({
         </div>
 
         {/* Grid */}
-        <div className="bg-white/60 border border-border rounded-3xl p-4 md:p-6">
+        <div className="build-plate border border-border rounded-3xl p-4 md:p-6">
           {products.length === 0 && !loading ? (
             <div className="py-16 text-center text-text-secondary">
               Bu kriterlere uygun ürün bulunamadı.

@@ -116,7 +116,7 @@ export default function CartDrawer() {
           <div className="flex items-center gap-2">
             <h2 className="font-display text-xl text-text-primary">Sepetiniz</h2>
             {itemCount > 0 && (
-              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-primary text-white text-xs font-bold">
+              <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-primary text-text-primary text-xs font-bold">
                 {itemCount}
               </span>
             )}
@@ -189,7 +189,7 @@ export default function CartDrawer() {
               <Link
                 href="/magaza"
                 onClick={close}
-                className="inline-flex items-center justify-center h-11 px-6 bg-primary text-white rounded-xl font-medium hover:bg-primary-hover transition"
+                className="inline-flex items-center justify-center h-11 px-6 bg-primary text-text-primary rounded-xl font-medium hover:bg-primary-hover transition"
               >
                 Alışverişe Başla
               </Link>
@@ -327,7 +327,7 @@ export default function CartDrawer() {
                     type="button"
                     onClick={handleApplyCoupon}
                     disabled={couponLoading || !coupon.trim()}
-                    className="px-3 h-10 bg-primary text-white text-xs font-medium rounded-lg hover:bg-primary-hover transition disabled:opacity-50"
+                    className="px-3 h-10 bg-primary text-text-primary text-xs font-medium rounded-lg hover:bg-primary-hover transition disabled:opacity-50"
                   >
                     {couponLoading ? "…" : "Uygula"}
                   </button>
@@ -351,7 +351,7 @@ export default function CartDrawer() {
             <Link
               href="/odeme"
               onClick={close}
-              className="block w-full h-12 rounded-xl bg-primary text-white font-semibold text-center leading-[48px] hover:bg-primary-hover transition-colors"
+              className="block w-full h-12 rounded-xl bg-primary text-text-primary font-semibold text-center leading-[48px] hover:bg-primary-hover transition-colors"
             >
               Alışverişi Tamamla
             </Link>

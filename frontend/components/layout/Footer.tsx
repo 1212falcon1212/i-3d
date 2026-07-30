@@ -193,7 +193,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="w-9 h-9 rounded-full bg-white/8 hover:bg-primary text-white/80 hover:text-white inline-flex items-center justify-center transition-all hover:scale-105"
+                    className="w-9 h-9 rounded-full bg-white/8 hover:bg-primary text-text-primary/80 hover:text-white inline-flex items-center justify-center transition-all hover:scale-105"
                   >
                     {s.icon}
                   </a>

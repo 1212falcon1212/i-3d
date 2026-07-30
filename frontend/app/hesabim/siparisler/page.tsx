@@ -123,7 +123,7 @@ export default function SiparislerPage() {
           </p>
           <Link
             href="/magaza"
-            className="mt-4 inline-block px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors"
+            className="mt-4 inline-block px-6 py-2.5 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors"
           >
             Alisverise Basla
           </Link>

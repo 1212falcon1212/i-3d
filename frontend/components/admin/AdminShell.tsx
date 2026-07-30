@@ -143,7 +143,7 @@ export default function AdminShell({ title, children }: AdminShellProps) {
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-text-secondary hover:text-text-primary"
-            aria-label="Menuyu kapat"
+            aria-label="Menüyü kapat"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -195,7 +195,7 @@ export default function AdminShell({ title, children }: AdminShellProps) {
             <button
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden text-text-secondary hover:text-text-primary"
-              aria-label="Menuyu ac"
+              aria-label="Menüyü aç"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -216,7 +216,7 @@ export default function AdminShell({ title, children }: AdminShellProps) {
               onClick={handleLogout}
               className="text-sm text-text-secondary hover:text-red-500 transition-colors"
             >
-              Cikis Yap
+              Çıkış Yap
             </button>
           </div>
         </header>

@@ -151,7 +151,7 @@ export default function CancellationModal({
           <button
             onClick={submit}
             disabled={submitting || !reason}
-            className="flex-1 h-10 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            className="flex-1 h-10 bg-primary text-text-primary rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
             {submitting ? "Gönderiliyor…" : "Talebi Gönder"}
           </button>

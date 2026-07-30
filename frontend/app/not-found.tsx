@@ -14,7 +14,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/"
-            className="flex-1 h-11 inline-flex items-center justify-center rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover transition"
+            className="flex-1 h-11 inline-flex items-center justify-center rounded-xl bg-primary text-text-primary font-semibold hover:bg-primary-hover transition"
           >
             Ana Sayfa
           </Link>

@@ -33,7 +33,7 @@ export default function ProductDetailsTabs({ product }: ProductDetailsTabsProps)
         {tab === "description" ? (
           product.description ? (
             <div
-              className="prose prose-sm max-w-none text-text-secondary leading-relaxed"
+              className="cms-content"
               dangerouslySetInnerHTML={{
                 __html: sanitizeHtml(product.description),
               }}

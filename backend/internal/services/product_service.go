@@ -20,6 +20,8 @@ type ProductListParams struct {
 	SortBy     string
 	Search     string
 	IsActive   *bool
+	// LowStockOnly true ise stok, ürünün kendi eşiğinin altında olanlar döner.
+	LowStockOnly bool
 }
 
 type ProductService struct {
@@ -51,6 +53,11 @@ func (s *ProductService) List(params ProductListParams) ([]models.Product, int64
 
 	if params.MaxPrice != nil {
 		query = query.Where("products.price <= ?", *params.MaxPrice)
+	}
+
+	if params.LowStockOnly {
+		// Eşik ürün başına tanımlı; sabit bir sayı ile karşılaştırmak yanlış olurdu.
+		query = query.Where("products.stock <= products.low_stock_threshold")
 	}
 
 	if params.Search != "" {
@@ -147,6 +154,9 @@ func (s *ProductService) GetBySlug(slug string) (*models.Product, error) {
 		Preload("Variants", func(db *gorm.DB) *gorm.DB {
 			return db.Order("product_variants.sort_order ASC")
 		}).
+		// Varyant değerleri (renk, boyut…) ürün detayında gerçek renk
+		// swatch'ı çizmek için gerekli: color_hex buradan geliyor.
+		Preload("Variants.Values").
 		Preload("Tags").
 		First(&product).Error
 	if err != nil {
@@ -175,6 +185,9 @@ func (s *ProductService) GetByID(id uint64) (*models.Product, error) {
 		Preload("Variants", func(db *gorm.DB) *gorm.DB {
 			return db.Order("product_variants.sort_order ASC")
 		}).
+		// Varyant değerleri (renk, boyut…) ürün detayında gerçek renk
+		// swatch'ı çizmek için gerekli: color_hex buradan geliyor.
+		Preload("Variants.Values").
 		Preload("Tags").
 		First(&product, id).Error
 	if err != nil {

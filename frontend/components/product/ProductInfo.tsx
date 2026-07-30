@@ -113,14 +113,23 @@ export default function ProductInfo({
                   }
                   disabled={variant.stock <= 0}
                   className={cn(
-                    "px-4 py-2 rounded-xl border text-sm transition-colors",
+                    "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm transition-all",
                     selectedVariant?.id === variant.id
-                      ? "border-primary bg-primary-soft text-primary font-medium"
+                      ? "border-text-primary bg-primary-soft text-text-primary font-medium shadow-toy"
                       : variant.stock <= 0
-                        ? "border-border text-text-secondary opacity-50 cursor-not-allowed"
-                        : "border-border text-text-primary hover:border-primary hover:text-primary"
+                        ? "border-border text-text-secondary opacity-50 cursor-not-allowed line-through"
+                        : "border-border text-text-primary hover:border-text-primary"
                   )}
                 >
+                  {variant.values?.find((v) => v.color_hex) && (
+                    <span
+                      className="w-4 h-4 rounded-full border border-text-primary/25 shrink-0"
+                      style={{
+                        backgroundColor: variant.values.find((v) => v.color_hex)!.color_hex,
+                      }}
+                      aria-hidden
+                    />
+                  )}
                   {variant.name}
                   {variant.price !== product.price && (
                     <span className="ml-1 text-xs text-text-secondary">
@@ -166,7 +175,7 @@ export default function ProductInfo({
         <button
           onClick={() => onAddToCart?.(quantity, selectedVariant?.id)}
           disabled={outOfStock}
-          className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-primary text-text-primary font-display text-lg shadow-toy transition-all hover:translate-y-1 hover:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -242,7 +251,7 @@ export default function ProductInfo({
             {product.tags.map((tag) => (
               <span
                 key={tag.id}
-                className="px-2.5 py-0.5 rounded-full bg-primary-soft text-primary text-xs"
+                className="inline-flex items-center px-2.5 py-1 rounded-md border border-border bg-plate font-mono text-[11px] text-text-primary"
               >
                 {tag.tag}
               </span>

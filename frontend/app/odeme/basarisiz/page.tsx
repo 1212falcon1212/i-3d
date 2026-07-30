@@ -76,7 +76,7 @@ function BasarisizInner() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/odeme"
-                  className="flex-1 h-12 inline-flex items-center justify-center bg-primary text-white rounded-xl font-medium hover:bg-primary-hover transition-colors"
+                  className="flex-1 h-12 inline-flex items-center justify-center bg-primary text-text-primary rounded-xl font-medium hover:bg-primary-hover transition-colors"
                 >
                   Tekrar Dene
                 </Link>

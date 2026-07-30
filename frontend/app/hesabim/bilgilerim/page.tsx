@@ -186,7 +186,7 @@ export default function BilgilerimPage() {
           <button
             type="submit"
             disabled={profileSaving}
-            className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            className="h-10 px-6 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
             {profileSaving ? "Kaydediliyor..." : "Bilgileri Guncelle"}
           </button>
@@ -250,7 +250,7 @@ export default function BilgilerimPage() {
           <button
             type="submit"
             disabled={passwordSaving}
-            className="h-10 px-6 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
+            className="h-10 px-6 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
             {passwordSaving ? "Degistiriliyor..." : "Sifreyi Degistir"}
           </button>

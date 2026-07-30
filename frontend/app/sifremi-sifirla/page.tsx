@@ -66,7 +66,7 @@ export default function SifremiSifirlaPage({ searchParams }: Props) {
       >
         <Link
           href="/giris-yap"
-          className="inline-flex items-center justify-center w-full h-12 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition"
+          className="inline-flex items-center justify-center w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition"
         >
           Giriş Yap
         </Link>
@@ -139,7 +139,7 @@ export default function SifremiSifirlaPage({ searchParams }: Props) {
         <button
           type="submit"
           disabled={loading || !token}
-          className="w-full h-12 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+          className="w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
         >
           {loading ? (
             <>

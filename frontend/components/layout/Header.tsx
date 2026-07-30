@@ -375,7 +375,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
               />
               <button
                 type="submit"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-hover transition-colors"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary text-text-primary flex items-center justify-center hover:bg-primary-hover transition-colors"
                 aria-label="Ara"
               >
                 <SearchIcon className="w-4 h-4" />
@@ -629,7 +629,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             />
             <button
               type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary text-text-primary flex items-center justify-center"
               aria-label="Ara"
             >
               <SearchIcon className="w-4 h-4" />

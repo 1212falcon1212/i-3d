@@ -714,7 +714,7 @@ export default function OdemePage() {
                   </button>
                   <button
                     onClick={() => setStep("payment")}
-                    className="h-11 px-8 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition"
+                    className="h-11 px-8 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition"
                   >
                     Ödemeye Geç
                   </button>

@@ -127,7 +127,7 @@ export default function GirisYapPage({ searchParams }: GirisYapPageProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+          className="w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
         >
           {loading ? (
             <>

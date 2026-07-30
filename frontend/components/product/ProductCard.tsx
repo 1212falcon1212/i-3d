@@ -196,7 +196,7 @@ export default function ProductCard({
             className={cn(
               "mt-2 w-full py-1.5 rounded-lg text-xs font-medium transition-all",
               product.stock > 0
-                ? "bg-primary text-white hover:bg-primary-hover active:scale-[0.98]"
+                ? "bg-primary text-text-primary hover:bg-primary-hover active:scale-[0.98]"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             )}
           >
@@ -284,7 +284,7 @@ export default function ProductCard({
               className={cn(
                 "flex-1 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all",
                 product.stock > 0
-                  ? "bg-primary text-white hover:bg-primary-hover active:scale-[0.98]"
+                  ? "bg-primary text-text-primary hover:bg-primary-hover active:scale-[0.98]"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               )}
             >

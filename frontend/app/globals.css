@@ -23,7 +23,9 @@
   --color-border: #eadfd3;
   --color-card-bg: #ffffff;
 
-  --color-accent-rose: #f2465b;
+  /* Beyaz metinle 4.6:1, krem zeminde metin olarak 4.9:1 — indirim
+     rozetleri ve hata metinleri ikisinde de okunur olmalı. */
+  --color-accent-rose: #d92b45;
   --color-accent-emerald: #12b5a5;
   --color-accent-amber: #ffc53d;
   --color-accent-sky: #3d9be9;

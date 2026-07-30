@@ -52,7 +52,7 @@ export default function SiparislerPage() {
       setOrders(Array.isArray(res.data) ? res.data : []);
       setPagination(res.pagination);
     } catch {
-      setError("Siparisler yuklenirken bir hata olustu.");
+      setError("Siparişler yüklenirken bir hata oluştu.");
       setOrders([]);
     } finally {
       setLoading(false);

@@ -81,7 +81,7 @@ export default function AramaPage({ searchParams }: AramaPageProps) {
                 type="search"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Urun, marka veya kategori ara..."
+                placeholder="Ürün, marka veya kategori ara..."
                 className="w-full h-12 pl-5 pr-14 rounded-full border border-border bg-card-bg text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors text-base"
                 autoFocus
               />

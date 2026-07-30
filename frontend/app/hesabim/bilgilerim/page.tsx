@@ -53,7 +53,7 @@ export default function BilgilerimPage() {
       setProfileSuccess(true);
       setTimeout(() => setProfileSuccess(false), 3000);
     } catch {
-      setProfileError("Bilgiler guncellenirken bir hata olustu.");
+      setProfileError("Bilgiler güncellenirken bir hata oluştu.");
     } finally {
       setProfileSaving(false);
     }
@@ -94,7 +94,7 @@ export default function BilgilerimPage() {
       setConfirmPassword("");
       setTimeout(() => setPasswordSuccess(false), 3000);
     } catch {
-      setPasswordError("Sifre degistirilirken bir hata olustu. Mevcut sifrenizi kontrol ediniz.");
+      setPasswordError("Şifre değiştirilirken bir hata oluştu. Mevcut şifrenizi kontrol ediniz.");
     } finally {
       setPasswordSaving(false);
     }
@@ -252,7 +252,7 @@ export default function BilgilerimPage() {
             disabled={passwordSaving}
             className="h-10 px-6 bg-primary text-text-primary rounded-xl text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
-            {passwordSaving ? "Degistiriliyor..." : "Sifreyi Degistir"}
+            {passwordSaving ? "Değiştiriliyor..." : "Şifreyi Değiştir"}
           </button>
         </form>
       </div>

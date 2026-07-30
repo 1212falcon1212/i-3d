@@ -399,7 +399,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             <Link
               href="/giris-yap"
               className="relative group inline-flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-primary hover:bg-primary-soft transition-colors"
-              aria-label="Hesabim"
+              aria-label="Hesabım"
             >
               <UserIcon className="w-5 h-5" />
               <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-text-primary text-white text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
@@ -611,7 +611,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
           <button
             onClick={() => setMobileOpen(false)}
             className="inline-flex items-center justify-center w-9 h-9 rounded-full text-text-secondary hover:text-primary hover:bg-primary-soft transition-colors"
-            aria-label="Menuyu kapat"
+            aria-label="Menüyü kapat"
           >
             <CloseIcon className="w-5 h-5" />
           </button>
@@ -624,7 +624,7 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Urun, marka veya kategori ara..."
+              placeholder="Ürün, marka veya kategori ara..."
               className="w-full h-10 pl-4 pr-10 rounded-full border border-border bg-bg-primary text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
             />
             <button

@@ -17,7 +17,7 @@ interface DashboardStats {
 const QUICK_LINKS = [
   {
     href: "/hesabim/siparisler",
-    label: "Siparislerim",
+    label: "Siparişlerim",
     description: "Siparis gecmisinizi goruntuleyin",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -38,7 +38,7 @@ const QUICK_LINKS = [
   },
   {
     href: "/hesabim/kartlarim",
-    label: "Kartlarim",
+    label: "Kartlarım",
     description: "Kayitli kartlarinizi yonetin",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -101,7 +101,7 @@ export default function HesabimPage() {
           favoriteCount: favorites.length,
         });
       } catch {
-        setError("Veriler yuklenirken bir hata olustu.");
+        setError("Veriler yüklenirken bir hata oluştu.");
       } finally {
         setLoading(false);
       }

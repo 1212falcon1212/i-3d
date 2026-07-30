@@ -56,7 +56,6 @@ export default function BrandSpotlight({ spotlight }: BrandSpotlightProps) {
           <div className="bg-footer text-white p-8 md:p-10 flex flex-col justify-between">
             <div>
               <SectionLabel
-                number="004"
                 title="MARKA SPOTLIGHT"
                 className="text-white/50"
               />

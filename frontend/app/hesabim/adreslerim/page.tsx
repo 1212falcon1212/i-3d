@@ -51,7 +51,7 @@ export default function AdreslerimPage() {
       const res = await api.get<Address[]>("/addresses");
       setAddresses(Array.isArray(res.data) ? res.data : []);
     } catch {
-      setError("Adresler yuklenirken bir hata olustu.");
+      setError("Adresler yüklenirken bir hata oluştu.");
     } finally {
       setLoading(false);
     }
@@ -113,7 +113,7 @@ export default function AdreslerimPage() {
       closeForm();
       await fetchAddresses();
     } catch {
-      setFormError("Adres kaydedilirken bir hata olustu.");
+      setFormError("Adres kaydedilirken bir hata oluştu.");
     } finally {
       setSaving(false);
     }
@@ -125,7 +125,7 @@ export default function AdreslerimPage() {
       setDeleteConfirmId(null);
       await fetchAddresses();
     } catch {
-      setError("Adres silinirken bir hata olustu.");
+      setError("Adres silinirken bir hata oluştu.");
     }
   }
 

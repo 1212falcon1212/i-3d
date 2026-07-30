@@ -7,7 +7,7 @@ import Breadcrumb from "@/components/layout/Breadcrumb";
 import ProductGrid from "@/components/product/ProductGrid";
 
 export const metadata: Metadata = {
-  title: "One Cikan Urunler",
+  title: "Öne Çıkan Ürünler",
   description:
     "i-3d one cikan 3D baski urunleri. En cok tercih edilen figurler, dekor parcalari ve filamentler.",
 };
@@ -24,10 +24,10 @@ export default async function OneCikanlarPage() {
 
       <main className="flex-1">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <Breadcrumb items={[{ label: "One Cikan Urunler" }]} />
+          <Breadcrumb items={[{ label: "Öne Çıkan Ürünler" }]} />
 
           <h1 className="font-display text-3xl text-text-primary mb-8">
-            One Cikan Urunler
+            Öne Çıkan Ürünler
           </h1>
 
           {products.length === 0 ? (

@@ -96,7 +96,7 @@ export default function ProductGallery({ images, productName = "" }: ProductGall
                 )
               }
               className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm border border-border flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-colors"
-              aria-label="Onceki gorsel"
+              aria-label="Önceki görsel"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />

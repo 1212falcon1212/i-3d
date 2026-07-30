@@ -13,6 +13,20 @@ const deploymentId =
 
 const nextConfig: NextConfig = {
   deploymentId,
+  // Dev sunucusu container içinde çalışıyor; tarayıcı isteği docker-proxy
+  // üzerinden geldiği için Next.js bunu "cross-origin" sayıp /_next dev
+  // kaynaklarını (HMR dahil) engelliyordu. Engellenince istemci paketleri
+  // tamamlanmıyor, hydration yarıda kalıyor: menü boş kalıyor ve scroll ile
+  // açılması gereken bölümler görünmez oluyordu.
+  //
+  // Yalnızca geliştirmeyi etkiler; üretim build'inde kullanılmaz.
+  allowedDevOrigins: [
+    "localhost",
+    "127.0.0.1",
+    // WSL2 arayüz adresleri — Windows tarayıcısından erişimde bunlar görünür.
+    "10.255.255.254",
+    "172.27.225.173",
+  ],
   images: {
     // Next 16 SSRF korumasi: dev'de local backend'den (localhost:8180 ya da
     // compose ici backend:8080) gelen gorsellerin optimize edilebilmesi icin

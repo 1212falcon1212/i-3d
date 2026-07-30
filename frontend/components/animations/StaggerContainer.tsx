@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 
 // ----------------------------------------------------------------
@@ -40,18 +41,68 @@ interface ContainerProps {
   style?: CSSProperties;
 }
 
+/** Görünür alana girişi izler; bir kez açılır, kapanmaz. */
+function useRevealed<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (revealed) return;
+
+    // IntersectionObserver yoksa içeriği doğrudan göster.
+    if (typeof IntersectionObserver === "undefined") {
+      setRevealed(true);
+      return;
+    }
+
+    const el = ref.current;
+    let io: IntersectionObserver | undefined;
+    if (el) {
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setRevealed(true);
+            io?.disconnect();
+          }
+        },
+        { rootMargin: "0px 0px -8% 0px" }
+      );
+      io.observe(el);
+    }
+
+    // Güvenlik ağı: gözlemci herhangi bir sebeple tetiklenmezse (hydration
+    // yarıda kaldı, sekme arka planda açıldı, tarayıcı tuhaflığı) içerik
+    // KALICI olarak görünmez kalmasın. Ekran dışındaki bir bölümün burada
+    // açılması kullanıcıya görünmez; ekranda olan bir bölümün hiç açılmaması
+    // ise sayfayı boş gösterir — tercih net.
+    const failsafe = window.setTimeout(() => setRevealed(true), 2500);
+
+    return () => {
+      io?.disconnect();
+      window.clearTimeout(failsafe);
+    };
+  }, [revealed]);
+
+  return { ref, revealed };
+}
+
 /**
- * Wraps a list of <StaggerItem> children and orchestrates
- * the staggered entrance animation when the container
- * enters the viewport.
+ * <StaggerItem> çocuklarını sırayla açar.
+ *
+ * Not: framer-motion'ın `whileInView`'ı yerine kendi IntersectionObserver'ı
+ * kullanılıyor. Sebep: `whileInView` tetiklenmediğinde öğeler `opacity: 0`'da
+ * takılı kalıyor ve bölüm tamamen boş görünüyordu — birincil içerik bir
+ * animasyonun çalışmasına bağlı olmamalı.
  */
 export default function StaggerContainer({ children, className, style }: ContainerProps) {
+  const { ref, revealed } = useRevealed<HTMLDivElement>();
+
   return (
     <motion.div
+      ref={ref}
       variants={staggerContainer}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      animate={revealed ? "visible" : "hidden"}
       className={className}
       style={style}
     >
@@ -60,10 +111,7 @@ export default function StaggerContainer({ children, className, style }: Contain
   );
 }
 
-/**
- * Individual item inside a <StaggerContainer>.
- * Each item animates in sequence with a stagger offset.
- */
+/** <StaggerContainer> içindeki tek öğe. */
 export function StaggerItem({ children, className, style }: ContainerProps) {
   return (
     <motion.div variants={staggerItem} className={className} style={style}>

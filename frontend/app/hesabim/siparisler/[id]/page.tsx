@@ -46,7 +46,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         setOrder(o);
       }
     } catch {
-      setError("Siparis detaylari yuklenirken bir hata olustu.");
+      setError("Sipariş detayları yüklenirken bir hata oluştu.");
     } finally {
       setLoading(false);
     }

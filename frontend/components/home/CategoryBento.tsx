@@ -85,7 +85,7 @@ export default function CategoryBento({ categories }: CategoryBentoProps) {
         {/* Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <SectionLabel number="002" title="KATEGORİLER" />
+            <SectionLabel title="KATEGORİLER" />
             <DisplayHeading size="md" className="mt-2">
               Favori <em>kategorini</em> bul.
             </DisplayHeading>

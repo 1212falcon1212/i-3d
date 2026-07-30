@@ -33,7 +33,7 @@ export default function FavorilerimPage() {
       setPagination(res.pagination);
       setFavoriteIds(new Set(favs.map((f) => f.product_id)));
     } catch {
-      setError("Favoriler yuklenirken bir hata olustu.");
+      setError("Favoriler yüklenirken bir hata oluştu.");
       setFavorites([]);
     } finally {
       setLoading(false);

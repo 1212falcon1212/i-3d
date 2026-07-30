@@ -66,6 +66,7 @@ func (h *PaymentHandler) StartPayment(c *fiber.Ctx) error {
 		Installment:    req.Installment,
 		SaveCard:       req.SaveCard,
 		CardToken:      req.CardToken,
+		UserIP:         c.IP(),
 	}
 
 	result, err := h.service.StartPayment(req.OrderID, cardData)

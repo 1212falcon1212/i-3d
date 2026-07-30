@@ -3,12 +3,12 @@ package models
 import "time"
 
 type Order struct {
-	ID                 uint64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	OrderNumber        string     `gorm:"type:varchar(20);uniqueIndex;not null" json:"order_number"`
-	UserID             *uint64    `gorm:"index" json:"user_id"`
-	Source             string     `gorm:"type:enum('web','trendyol','hepsiburada');default:'web';index" json:"source"`
-	MarketplaceOrderID string     `gorm:"type:varchar(100)" json:"marketplace_order_id,omitempty"`
-	Status             string     `gorm:"type:enum('pending','shipped','delivered','cancelled','refunded');default:'pending';index" json:"status"`
+	ID                 uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
+	OrderNumber        string  `gorm:"type:varchar(20);uniqueIndex;not null" json:"order_number"`
+	UserID             *uint64 `gorm:"index" json:"user_id"`
+	Source             string  `gorm:"type:enum('web','trendyol','hepsiburada');default:'web';index" json:"source"`
+	MarketplaceOrderID string  `gorm:"type:varchar(100)" json:"marketplace_order_id,omitempty"`
+	Status             string  `gorm:"type:enum('pending','shipped','delivered','cancelled','refunded');default:'pending';index" json:"status"`
 
 	// Prices
 	Subtotal       float64 `gorm:"type:decimal(10,2);not null" json:"subtotal"`
@@ -50,7 +50,11 @@ type Order struct {
 	DeliveredAt    *time.Time `json:"delivered_at,omitempty"`
 
 	// Aras Kargo (SOAP entegrasyonu)
-	ArasIntegrationCode   string     `gorm:"type:varchar(32);uniqueIndex" json:"aras_integration_code,omitempty"`
+	// Pointer olması şart: kolonda UNIQUE index var ve henüz kargolanmamış
+	// siparişlerde değer yok. Düz string olduğunda GORM boş string yazıyor,
+	// ikinci sipariş "Duplicate entry ''" ile patlıyordu — yani sistem ilk
+	// siparişten sonra hiç sipariş alamıyordu. NULL'lar unique index'i etkilemez.
+	ArasIntegrationCode   *string    `gorm:"type:varchar(32);uniqueIndex" json:"aras_integration_code,omitempty"`
 	ArasStatusCode        *int       `gorm:"type:tinyint" json:"aras_status_code,omitempty"`
 	ArasStatusText        string     `gorm:"type:varchar(64)" json:"aras_status_text,omitempty"`
 	ArasStatusCheckedAt   *time.Time `json:"aras_status_checked_at,omitempty"`
@@ -77,8 +81,8 @@ type Order struct {
 	UpdatedAt time.Time `json:"updated_at"`
 
 	// Relations
-	User          *User              `gorm:"foreignKey:UserID" json:"user,omitempty"`
-	Items         []OrderItem        `gorm:"foreignKey:OrderID" json:"items,omitempty"`
+	User          *User                `gorm:"foreignKey:UserID" json:"user,omitempty"`
+	Items         []OrderItem          `gorm:"foreignKey:OrderID" json:"items,omitempty"`
 	StatusHistory []OrderStatusHistory `gorm:"foreignKey:OrderID" json:"status_history,omitempty"`
 }
 

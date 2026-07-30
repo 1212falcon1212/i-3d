@@ -16,25 +16,27 @@ interface PillButtonProps {
   type?: "button" | "submit";
 }
 
+// primary'de metin beyaz değil mürekkep lacivert: turuncu üstünde beyaz
+// 3.0:1'de kalıyor (WCAG AA için 4.5 gerekiyor), lacivert 7.4:1 veriyor.
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary-dark active:bg-primary-dark",
+    "bg-primary text-text-primary shadow-toy hover:translate-y-1 hover:shadow-none active:translate-y-1",
   outline:
-    "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white",
+    "border-2 border-text-primary text-text-primary bg-transparent hover:bg-primary-soft",
   white:
-    "bg-white text-text-primary hover:bg-primary-soft",
+    "bg-card-bg text-text-primary shadow-toy hover:translate-y-1 hover:shadow-none",
   ghost:
-    "text-primary bg-transparent hover:underline underline-offset-2",
+    "text-primary-dark bg-transparent hover:underline underline-offset-2",
 };
 
 const sizeClasses: Record<Size, string> = {
   sm: "px-4 py-1.5 text-xs",
   md: "px-6 py-2.5 text-sm",
-  lg: "px-8 py-3 text-base",
+  lg: "px-8 py-3 text-base font-display",
 };
 
 const BASE =
-  "inline-flex items-center justify-center rounded-full font-body font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center rounded-full font-body font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
 export default function PillButton({
   href,

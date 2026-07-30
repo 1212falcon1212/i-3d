@@ -45,8 +45,12 @@ func main() {
 
 	// Create Fiber app
 	app := fiber.New(fiber.Config{
-		AppName:      "i-3d API",
-		BodyLimit:    int(cfg.MaxUploadSize),
+		AppName:   "i-3d API",
+		BodyLimit: int(cfg.MaxUploadSize),
+		// Nginx arkasında çalışıyoruz: c.IP() olmadan her istek proxy'nin
+		// adresini döndürür. PayTR'ye gönderilen müşteri IP'si ve rate
+		// limiter'ın doğru çalışması buna bağlı.
+		ProxyHeader: fiber.HeaderXForwardedFor,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,

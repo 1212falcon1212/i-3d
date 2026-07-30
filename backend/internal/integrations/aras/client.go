@@ -22,6 +22,19 @@ type Client struct {
 }
 
 // NewClient hazır bir Client döndürür.
+// IntegrationCode Aras gönderi kodunu üretir.
+//
+// aras.integration_prefix ayarı okunuyordu ama hiçbir yerde uygulanmıyordu:
+// aynı Aras hesabını iki site paylaştığında sipariş numaraları çakışıp gönderi
+// oluşturma hata veriyordu. Ön ek boşsa davranış değişmez.
+func (c *Client) IntegrationCode(base string) string {
+	prefix := strings.TrimSpace(c.cfg.IntegrationPrefix)
+	if prefix == "" {
+		return base
+	}
+	return prefix + base
+}
+
 func NewClient(cfg Config) *Client {
 	r := resty.New().
 		SetTimeout(DefaultTimeout).

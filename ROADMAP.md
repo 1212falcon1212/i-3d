@@ -162,11 +162,14 @@ Ayrıntı: [docs/BACKEND-BUGS.md](docs/BACKEND-BUGS.md)
 - [x] #5 şema drift (11 kolon + kargo kolon adı)
 - [x] #9 commit'lenmiş sırlar
 - [x] #10 Meili index adı tek kaynak
-- [ ] #2 sipariş kargo ücreti hiç hesaplanmıyor
-- [ ] #7 başarısız siparişte kupon kullanımı yakılıyor
-- [ ] #3 PayTR `user_ip` sabit `127.0.0.1`
-- [ ] #4 `aras.integration_prefix` uygulanmıyor
-- [ ] #8 import/marketplace sahte başarı döndürüyor → dürüst 501
+- [x] #2 sipariş kargo ücreti hiç hesaplanmıyor
+- [x] #7 başarısız siparişte kupon kullanımı yakılıyor
+- [x] #3 PayTR `user_ip` sabit `127.0.0.1`
+- [x] #4 `aras.integration_prefix` uygulanmıyor
+- [x] #8 import/marketplace sahte başarı döndürüyor → dürüst 501
+- [x] #15 ilk siparişten sonra sipariş oluşturulamıyor (aras unique index)
+- [x] #16 kupon indirimi iki kez düşülüyor
+- [x] #17 KDV, KDV dahil fiyatların üstüne ekleniyor
 - [ ] istanbulvitamin'e geri taşıma (tek batch, en sonda)
 
 ---

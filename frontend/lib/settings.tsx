@@ -30,6 +30,10 @@ export interface SiteSettings {
   facebook?: string;
   twitter?: string;
   youtube?: string;
+  /** Kargo bedava eşiği (TL). Panelde Ayarlar → Kargo Ücreti. */
+  min_free_shipping?: string;
+  /** Eşiğin altındaki siparişlerde uygulanan kargo ücreti (TL). */
+  default_cargo_fee?: string;
   [key: string]: string | undefined;
 }
 

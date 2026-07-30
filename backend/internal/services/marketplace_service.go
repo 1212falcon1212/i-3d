@@ -57,21 +57,26 @@ func (s *MarketplaceService) CreateSyncLog(log *models.SyncLog) error {
 	return nil
 }
 
-// TriggerSync belirtilen pazaryeri ve tur icin senkronizasyon baslatir (placeholder).
+// TriggerSync pazaryeri senkronizasyonunu başlatır — henüz uygulanmadı.
+//
+// Eskiden bu fonksiyon hiçbir şey senkronize etmeden sync_logs'a Status:"success"
+// satırı yazıyordu. Panelde "başarılı" görünen ama hiç çalışmamış senkronlar
+// bırakıyordu. Trendyol/Hepsiburada istemcileri yazılana kadar açıkça hata
+// döndürüyor ve logu "failed" olarak işaretliyoruz.
 func (s *MarketplaceService) TriggerSync(marketplace, syncType string) error {
 	now := time.Now()
+	msg := "senkronizasyon henüz uygulanmadı"
 	log := &models.SyncLog{
-		Marketplace: marketplace,
-		SyncType:    syncType,
-		Status:      "success",
-		TotalItems:  0,
-		StartedAt:   now,
-		CompletedAt: &now,
+		Marketplace:  marketplace,
+		SyncType:     syncType,
+		Status:       "failed",
+		ErrorCount:   1,
+		ErrorDetails: `{"error":"` + msg + `"}`,
+		TotalItems:   0,
+		StartedAt:    now,
+		CompletedAt:  &now,
 	}
+	_ = s.db.Create(log).Error
 
-	if err := s.db.Create(log).Error; err != nil {
-		return errors.New("senkronizasyon başlatılırken bir hata oluştu")
-	}
-
-	return nil
+	return errors.New(msg)
 }

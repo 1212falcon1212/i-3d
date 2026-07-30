@@ -9,11 +9,16 @@ import { formatPrice, cn } from "@/lib/utils";
 import Spinner from "@/components/ui/Spinner";
 import { api } from "@/lib/api";
 import { productImage } from "@/lib/placeholder-image";
+import { useSettings } from "@/lib/settings";
 
-const FREE_SHIPPING_THRESHOLD = 500;
+// Ayar okunana kadar kullanılacak değer. Gerçek eşik panelden yönetiliyor
+// (Ayarlar → Kargo Ücreti → min_free_shipping); burada sabit tutmak, eşiği
+// değiştirdiğinde vitrinin eski sayıyı göstermesine yol açıyordu.
+const FALLBACK_FREE_SHIPPING = 750;
 
 export default function CartDrawer() {
   const { isOpen, close } = useCartDrawer();
+  const { settings } = useSettings();
   const { items, subtotal, itemCount, isLoading, updateItem, removeItem } =
     useCart();
 
@@ -22,6 +27,11 @@ export default function CartDrawer() {
   const [couponApplied, setCouponApplied] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState("");
+
+  const freeShippingThreshold =
+    Number(settings.min_free_shipping) > 0
+      ? Number(settings.min_free_shipping)
+      : FALLBACK_FREE_SHIPPING;
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -42,9 +52,9 @@ export default function CartDrawer() {
 
   const remainingForFreeShipping = Math.max(
     0,
-    FREE_SHIPPING_THRESHOLD - subtotal
+    freeShippingThreshold - subtotal
   );
-  const progress = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
+  const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const total = Math.max(0, subtotal - couponDiscount);
 
   async function handleApplyCoupon() {
@@ -134,7 +144,7 @@ export default function CartDrawer() {
               <p className="text-xs text-text-primary leading-relaxed">
                 {remainingForFreeShipping > 0 ? (
                   <>
-                    <strong>{formatPrice(FREE_SHIPPING_THRESHOLD)}</strong> ve
+                    <strong>{formatPrice(freeShippingThreshold)}</strong> ve
                     üzeri ücretsiz kargodan yararlanmak için sepete eklemeniz
                     gereken tutar{" "}
                     <strong className="text-primary">

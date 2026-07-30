@@ -76,3 +76,14 @@ CALL drift_ensure_index('categories', 'idx_categories_showcase',
     '(`is_showcase`, `showcase_sort_order`)');
 
 DROP PROCEDURE drift_ensure_index;
+
+-- Mevcut boş string'leri NULL'a çevir: aras_integration_code üzerinde UNIQUE
+-- index var, model ise (düzeltilmeden önce) boş string yazıyordu. Bir tabloda
+-- ikinci boş değer duplicate hatası veriyor, yani ilk siparişten sonra sipariş
+-- oluşturulamıyordu. NULL'lar unique index'i etkilemez.
+UPDATE `orders` SET `aras_integration_code` = NULL WHERE `aras_integration_code` = '';
+
+-- payment_method: model enum, migration VARCHAR(50) diyordu. Prod'da AutoMigrate
+-- kapalı olduğu için tip farklı kalıyordu.
+ALTER TABLE `orders`
+  MODIFY COLUMN `payment_method` ENUM('credit_card','bank_transfer') DEFAULT 'credit_card';

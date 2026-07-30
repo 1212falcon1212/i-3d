@@ -144,7 +144,7 @@ func (s *Service) CreateShipment(ctx context.Context, orderID uint64) error {
 		First(&order, orderID).Error; err != nil {
 		return errors.New("sipariş bulunamadı")
 	}
-	if order.Status != "pending" && order.ArasIntegrationCode != "" {
+	if order.Status != "pending" && order.ArasIntegrationCode != nil && *order.ArasIntegrationCode != "" {
 		return ErrAlreadyShipped
 	}
 	phone, err := NormalizePhoneTR(firstNonEmpty(order.ShippingPhone, order.BillingPhone))
@@ -160,7 +160,7 @@ func (s *Service) CreateShipment(ctx context.Context, orderID uint64) error {
 	}
 
 	parcelCount := CalculateParcelCount(order.Items, c.cfg.ParcelKgLimit)
-	integrationCode := order.OrderNumber
+	integrationCode := c.IntegrationCode(order.OrderNumber)
 	totalWeight := 0.0
 	for _, it := range order.Items {
 		if it.Product != nil && it.Product.Weight != nil {
@@ -274,7 +274,10 @@ func (s *Service) CancelShipment(ctx context.Context, orderID uint64) error {
 	if err := s.db.First(&order, orderID).Error; err != nil {
 		return errors.New("sipariş bulunamadı")
 	}
-	code := order.ArasIntegrationCode
+	code := ""
+	if order.ArasIntegrationCode != nil {
+		code = *order.ArasIntegrationCode
+	}
 	if code == "" {
 		code = order.OrderNumber
 	}
@@ -353,7 +356,10 @@ func (s *Service) BarcodesFor(orderID uint64) (*LabelData, error) {
 	if order.ArasParcelCount != nil && *order.ArasParcelCount > 0 {
 		parcelCount = *order.ArasParcelCount
 	}
-	integ := order.ArasIntegrationCode
+	integ := ""
+	if order.ArasIntegrationCode != nil {
+		integ = *order.ArasIntegrationCode
+	}
 	if integ == "" {
 		integ = order.OrderNumber
 	}
@@ -417,7 +423,7 @@ func (s *Service) CreateReturnShipment(ctx context.Context, cancellationID uint6
 		return fmt.Errorf("contact.phone geçersiz: %w", err)
 	}
 
-	integrationCode := fmt.Sprintf("IADE-%s-%d", order.OrderNumber, cancellation.ID)
+	integrationCode := c.IntegrationCode(fmt.Sprintf("IADE-%s-%d", order.OrderNumber, cancellation.ID))
 	pieces := BarcodesFromIntegrationCode(integrationCode, 1)
 	parcels := []PieceDetail{{BarcodeNumber: pieces[0].BarcodeNumber, Description: "İade gönderimi"}}
 

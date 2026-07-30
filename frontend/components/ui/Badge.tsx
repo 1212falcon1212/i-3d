@@ -8,12 +8,14 @@ interface BadgeProps {
   className?: string;
 }
 
+// Renkler token'lardan: sıcak krem zeminde ham Tailwind paleti (bg-green-50 vb.)
+// yeterli kontrast vermiyordu.
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-primary-soft text-primary",
-  success: "bg-green-50 text-green-700",
-  warning: "bg-yellow-50 text-yellow-700",
-  danger: "bg-red-50 text-red-700",
-  info: "bg-blue-50 text-blue-700",
+  default: "bg-primary-soft text-primary-dark",
+  success: "bg-accent-emerald/12 text-accent-emerald",
+  warning: "bg-accent-amber/20 text-[#8a6300]",
+  danger: "bg-accent-rose/12 text-accent-rose",
+  info: "bg-accent-sky/12 text-accent-sky",
 };
 
 export default function Badge({

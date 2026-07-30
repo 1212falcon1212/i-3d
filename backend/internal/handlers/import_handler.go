@@ -56,25 +56,15 @@ func (h *ImportHandler) ImportProducts(c *fiber.Ctx) error {
 		return utils.BadRequest(c, "Dosyada ürün bulunamadı")
 	}
 
-	// Placeholder: gercek import islemi burada yapilacak
-	imported := 0
-	skipped := 0
-	var errors []string
-
-	for _, item := range items {
-		if item.Name == "" || item.SKU == "" {
-			skipped++
-			errors = append(errors, "SKU veya isim eksik: "+item.SKU)
-			continue
-		}
-		imported++
-	}
-
-	return utils.SuccessResponse(c, fiber.Map{
-		"total":    len(items),
-		"imported": imported,
-		"skipped":  skipped,
-		"errors":   errors,
+	// Bu uç henüz gerçekten içe aktarma yapmıyor. Eskiden dosyayı doğrulayıp
+	// "imported: N" döndürüyordu — yani panel "42 ürün aktarıldı" diyor, veritabanına
+	// tek satır yazılmıyordu. Uygulanana kadar dürüst cevap veriyoruz.
+	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
+		"success": false,
+		"error":   "Ürün içe aktarma henüz uygulanmadı. Dosya doğrulandı ancak kaydedilmedi.",
+		"data": fiber.Map{
+			"total": len(items),
+		},
 	})
 }
 

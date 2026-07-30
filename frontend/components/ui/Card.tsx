@@ -1,7 +1,12 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-// shadcn-benzeri minimal Card primitifleri — projenin mevcut design token'larıyla.
+// shadcn-benzeri minimal Card primitifleri — projenin design token'larıyla.
+//
+// Not: kalın çerçeve + kalın offset gölge (shadow-toy) bilerek burada değil.
+// Card yönetim panelinde de kullanılıyor; oradaki tablo/panel yoğunluğunda
+// o ağırlık okunmayı zorlaştırıyor. Vitrindeki "oyuncak" ağırlığı ProductCard
+// ve UseCases gibi tek tek bileşenlerde uygulanıyor.
 
 export const Card = React.forwardRef<
   HTMLDivElement,
@@ -10,7 +15,7 @@ export const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl bg-white border border-border shadow-sm",
+      "rounded-2xl bg-card-bg border border-border shadow-toy-soft",
       className
     )}
     {...props}

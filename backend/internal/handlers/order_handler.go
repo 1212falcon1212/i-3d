@@ -197,6 +197,9 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 	}
 
 	// Kupon dogrulama
+	// Sipariş başarıyla oluşursa artırılacak kupon (bkz. aşağıdaki not).
+	var appliedCouponID *uint64
+
 	if req.CouponCode != "" {
 		// Sepetten siparis tutarini hesapla (service icerisinde de yapilacak ama kupon dogrulamasi icin burada da lazim)
 		cartService := services.NewCartService(database.DB)
@@ -221,14 +224,23 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 
 		order.CouponCode = coupon.Code
 		order.CouponDiscount = discount
-		order.DiscountAmount = discount
-
-		// Kupon kullanimini artir
-		defer h.couponService.IncrementUsage(coupon.ID)
+		// DiscountAmount bilerek set EDİLMİYOR: Total hesabı hem DiscountAmount
+		// hem CouponDiscount'u düşüyor, ikisine de aynı değer yazıldığında 50 TL'lik
+		// kupon toplamdan 100 TL indiriyordu (fatura tarafında da aynı şekilde
+		// ikiye katlanıyordu). DiscountAmount kampanya/manuel indirim için ayrıldı.
+		appliedCouponID = &coupon.ID
 	}
 
 	if err := h.service.Create(order, req.CartID); err != nil {
 		return utils.BadRequest(c, err.Error())
+	}
+
+	// Kupon kullanımı yalnızca sipariş gerçekten oluştuktan sonra artar.
+	// Eskiden bu satır `defer` ile yazılmıştı; defer fonksiyondan çıkan HER
+	// yolda çalıştığı için sipariş oluşturma hata verdiğinde de müşterinin
+	// kuponu yanıyordu.
+	if appliedCouponID != nil {
+		h.couponService.IncrementUsage(*appliedCouponID)
 	}
 
 	// Tam siparis bilgilerini getir

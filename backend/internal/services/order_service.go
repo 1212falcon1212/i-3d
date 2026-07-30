@@ -3,6 +3,9 @@ package services
 import (
 	"errors"
 	"fmt"
+	"math"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/i-3d/backend/internal/models"
@@ -23,6 +26,49 @@ func NewOrderService(db *gorm.DB) *OrderService {
 // main.go içinde Bizimhesap orchestrator'a yönlendirmek için kullanılır.
 func (s *OrderService) SetInvoiceTrigger(fn func(orderID uint64)) {
 	s.invoiceTrigger = fn
+}
+
+// round2 para tutarlarını kuruşa yuvarlar.
+func round2(v float64) float64 {
+	return math.Round(v*100) / 100
+}
+
+// shippingCostFor ara toplama göre kargo ücretini döner.
+//
+// Ayarlar panelden yönetilir (Ayarlar → Kargo Ücreti):
+// min_free_shipping bu tutar ve üzerinde kargo ücretsiz,
+// default_cargo_fee altında uygulanan ücret.
+// Ayar okunamazsa ücret 0 döner: müşteriye beklemediği bir tutar yansıtmak
+// yerine kargoyu üstlenmek daha az zararlı.
+func shippingCostFor(tx *gorm.DB, subtotal float64) float64 {
+	var rows []models.Setting
+	if err := tx.Where("`key` IN ?", []string{"min_free_shipping", "default_cargo_fee"}).
+		Find(&rows).Error; err != nil {
+		return 0
+	}
+
+	var threshold, fee float64
+	for _, r := range rows {
+		v, convErr := strconv.ParseFloat(strings.TrimSpace(r.Value), 64)
+		if convErr != nil {
+			continue
+		}
+		switch r.Key {
+		case "min_free_shipping":
+			threshold = v
+		case "default_cargo_fee":
+			fee = v
+		}
+	}
+
+	if fee <= 0 {
+		return 0
+	}
+	// Eşik tanımlı değilse her siparişte ücret uygulanır.
+	if threshold > 0 && subtotal >= threshold {
+		return 0
+	}
+	return fee
 }
 
 // Create yeni siparis olusturur. Sepet ogelerini siparis kalemlerine kopyalar, stok duser, sepet temizlenir.
@@ -63,19 +109,54 @@ func (s *OrderService) Create(order *models.Order, cartID uint64) error {
 		}
 		order.Subtotal = subtotal
 
-		// Vergi hesapla
+		// Kargo ücreti. Daha önce bu alan hiçbir yerde atanmıyordu: Total
+		// hesabında kullanılıyor ama hep 0 kalıyordu, yani vitrin kargo ücreti
+		// gösterse bile sipariş ücretsiz kaydediliyordu.
+		//
+		// Çağıran açıkça bir ücret verdiyse (ör. panelden manuel sipariş)
+		// dokunmuyoruz.
+		if order.ShippingCost == 0 {
+			order.ShippingCost = shippingCostFor(tx, subtotal)
+		}
+
+		// KDV.
+		//
+		// Ürün fiyatları vitrinde KDV DAHİL gösteriliyor (TR perakende kuralı).
+		// Bu yüzden tax_amount toplama EKLENMEZ; ara toplamın içinde zaten bulunan
+		// KDV'yi fatura ve raporlama için ayrıştırır.
+		//
+		// Eskiden fiyatın %20'si toplamın üstüne ekleniyordu: vitrin 139 TL
+		// gösterirken sipariş 166,80 TL olarak kaydediliyor, PayTR'ye de bu tutar
+		// gidiyordu — müşterinin onayladığı tutardan fazlası.
 		var taxAmount float64
 		for _, item := range cart.Items {
 			price := item.Product.Price
 			if item.Variant != nil {
 				price = item.Variant.Price
 			}
-			taxAmount += price * float64(item.Quantity) * item.Product.TaxRate / 100
+			gross := price * float64(item.Quantity)
+			rate := item.Product.TaxRate
+			if rate <= 0 {
+				continue
+			}
+			taxAmount += gross * rate / (100 + rate)
 		}
-		order.TaxAmount = taxAmount
 
-		// Toplam
-		order.Total = order.Subtotal + order.ShippingCost - order.DiscountAmount - order.CouponDiscount + order.TaxAmount
+		discounts := order.DiscountAmount + order.CouponDiscount
+		if discounts > subtotal {
+			discounts = subtotal
+		}
+		// İndirim ürün bedelinden düştüğü için içindeki KDV de aynı oranda düşer.
+		if subtotal > 0 && discounts > 0 {
+			taxAmount *= 1 - discounts/subtotal
+		}
+		// Kargo ücreti de KDV dahil (%20).
+		taxAmount += order.ShippingCost * 20 / 120
+
+		order.TaxAmount = round2(taxAmount)
+
+		// Toplam. tax_amount bilerek eklenmiyor (yukarıdaki nota bakın).
+		order.Total = round2(order.Subtotal + order.ShippingCost - order.DiscountAmount - order.CouponDiscount)
 
 		if order.Status == "" {
 			order.Status = "pending"
@@ -278,8 +359,9 @@ func (s *OrderService) List(userID uint64, page, perPage int) ([]models.Order, i
 
 // AdminList tum siparisleri sayfalanmis ve filtrelenmis olarak dondurur.
 // invoiced nil değilse Bizimhesap fatura durumuna göre filtreler:
-//   true  -> bizim_hesap_invoice_id dolu
-//   false -> bizim_hesap_invoice_id boş
+//
+//	true  -> bizim_hesap_invoice_id dolu
+//	false -> bizim_hesap_invoice_id boş
 func (s *OrderService) AdminList(page, perPage int, status, source string, invoiced *bool) ([]models.Order, int64, error) {
 	var orders []models.Order
 	var total int64

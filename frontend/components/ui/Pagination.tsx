@@ -48,12 +48,12 @@ export default function Pagination({ pagination, onPageChange }: PaginationProps
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
         className={cn(
-          "inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm transition-colors",
+          "inline-flex items-center justify-center w-9 h-9 rounded-xl text-sm transition-colors",
           page <= 1
             ? "text-border cursor-not-allowed"
-            : "text-text-secondary hover:bg-primary-soft hover:text-primary"
+            : "text-text-secondary hover:bg-primary-soft hover:text-primary-dark"
         )}
-        aria-label="Onceki sayfa"
+        aria-label="Önceki sayfa"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -70,10 +70,10 @@ export default function Pagination({ pagination, onPageChange }: PaginationProps
             key={p}
             onClick={() => onPageChange(p)}
             className={cn(
-              "inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-colors",
+              "inline-flex items-center justify-center w-9 h-9 rounded-xl font-mono text-sm transition-colors",
               p === page
-                ? "bg-primary text-white shadow-sm"
-                : "text-text-secondary hover:bg-primary-soft hover:text-primary"
+                ? "bg-primary text-text-primary border-2 border-text-primary"
+                : "text-text-secondary hover:bg-primary-soft hover:text-primary-dark"
             )}
             aria-current={p === page ? "page" : undefined}
           >
@@ -86,10 +86,10 @@ export default function Pagination({ pagination, onPageChange }: PaginationProps
         onClick={() => onPageChange(page + 1)}
         disabled={page >= total_pages}
         className={cn(
-          "inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm transition-colors",
+          "inline-flex items-center justify-center w-9 h-9 rounded-xl text-sm transition-colors",
           page >= total_pages
             ? "text-border cursor-not-allowed"
-            : "text-text-secondary hover:bg-primary-soft hover:text-primary"
+            : "text-text-secondary hover:bg-primary-soft hover:text-primary-dark"
         )}
         aria-label="Sonraki sayfa"
       >

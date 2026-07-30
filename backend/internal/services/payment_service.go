@@ -24,6 +24,10 @@ type CardPaymentData struct {
 	Installment    int    `json:"installment"`
 	SaveCard       bool   `json:"save_card"`
 	CardToken      string `json:"card_token"`
+	// UserIP handler tarafından c.IP() ile doldurulur; PayTR hash'inin
+	// parçası ve sahtekârlık skorlamasında kullanılıyor. İstemciden
+	// alınmıyor — yoksa taklit edilebilirdi.
+	UserIP string `json:"-"`
 }
 
 type PaymentResult struct {
@@ -124,7 +128,13 @@ func (s *PaymentService) StartPayment(orderID uint64, cardData CardPaymentData) 
 
 	// Hash olustur: merchantID + userIP + merchantOid + email + paymentAmount + userBasket + noInstallment + maxInstallment + currency + testMode
 	merchantOID := order.OrderNumber
-	userIP := "127.0.0.1" // Handler tarafindan set edilebilir
+	// Eskiden burada sabit "127.0.0.1" yazıyordu: PayTR her ödemeyi
+	// localhost'tan geliyormuş gibi skorluyordu. Değer hash'in içinde olduğu
+	// için tutarlıydı, bu yüzden hata vermiyor ama risk analizini bozuyordu.
+	userIP := strings.TrimSpace(cardData.UserIP)
+	if userIP == "" {
+		userIP = "127.0.0.1"
+	}
 	email := ""
 	if order.UserID != nil {
 		var user models.User

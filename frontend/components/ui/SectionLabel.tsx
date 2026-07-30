@@ -1,25 +1,29 @@
 import { cn } from "@/lib/utils";
 
 interface SectionLabelProps {
-  /** Zero-padded section number, e.g. "001" */
-  number: string;
-  /** Section title in uppercase, e.g. "KATEGORİ" */
+  /** Sıfır dolgulu bölüm numarası, ör. "001". Verilmezse yalnızca başlık çıkar. */
+  number?: string;
+  /** Bölüm adı, ör. "KATEGORİLER" */
   title: string;
   className?: string;
 }
 
 /**
- * Editorial section label rendered as:
- *   N° 001 — BÖLÜM ADI
+ * Bölüm etiketi:  001 / KATEGORİLER
+ *
+ * Numara opsiyonel ve bilerek öyle: yalnızca içerik gerçekten sıralıysa
+ * (adımlar, süreç) numara verilir. Sırasız bir listeye numara koymak bilgi
+ * taşımaz, sadece süsler.
  */
-export default function SectionLabel({ number: _number, title, className }: SectionLabelProps) {
+export default function SectionLabel({ number, title, className }: SectionLabelProps) {
   return (
     <p
       className={cn(
-        "text-[10px] uppercase tracking-[0.2em] text-text-secondary font-body font-medium select-none",
+        "font-mono text-[10px] uppercase tracking-[0.18em] text-text-secondary select-none",
         className
       )}
     >
+      {number && <span className="text-primary">{number} / </span>}
       {title}
     </p>
   );

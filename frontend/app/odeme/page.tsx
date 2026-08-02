@@ -1,25 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import { useCart } from "@/lib/cart";
 import { api } from "@/lib/api";
-import type { Address, SavedCard } from "@/types";
+import type { Address } from "@/types";
 import AddressForm from "@/components/checkout/AddressForm";
-import PaymentForm from "@/components/checkout/PaymentForm";
 import Spinner from "@/components/ui/Spinner";
-import { cn, formatPrice, resolveImageUrl } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { useSettings } from "@/lib/settings";
 import { productImage } from "@/lib/placeholder-image";
 import Logo from "@/components/brand/Logo";
+import { useCartDrawer } from "@/lib/cart-drawer";
 
-const FREE_SHIPPING_THRESHOLD = 500;
-const SHIPPING_COST = 39.9;
-
-type Step = "address" | "shipping" | "payment";
+type Step = "address" | "payment";
 
 interface ShippingData {
   title: string;
@@ -33,29 +30,31 @@ interface ShippingData {
   postal_code: string;
 }
 
-interface ShippingMethod {
-  id: string;
-  label: string;
-  desc: string;
-  duration: string;
-  price: number;
-}
-
 export default function OdemePage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const { cartId, items, subtotal, updateItem, removeItem } = useCart();
+  const { user, isLoading: authLoading } = useAuth();
+  const isCustomerAuthenticated = Boolean(user);
+  const { close: closeCartDrawer } = useCartDrawer();
+  const {
+    cartId,
+    items,
+    subtotal,
+    isLoading: cartLoading,
+    updateItem,
+    removeItem,
+  } = useCart();
   const { settings } = useSettings();
   const siteName = settings.site_name || "i-3d";
 
   const [step, setStep] = useState<Step>("address");
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
-  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
   const [showNewAddress, setShowNewAddress] = useState(false);
   const [shippingData, setShippingData] = useState<ShippingData | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   // Fatura adresi — varsayılan "kargo ile aynı"
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
@@ -69,52 +68,27 @@ export default function OdemePage() {
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
-  const shippingMethods: ShippingMethod[] = useMemo(
-    () => [
-      {
-        id: "standard",
-        label: "Standart Kargo",
-        desc: "Yurtiçi Kargo ile teslimat",
-        duration: "2-3 iş günü",
-        price: subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST,
-      },
-      {
-        id: "express",
-        label: "Hızlı Kargo",
-        desc: "Aynı gün kargoya verilir",
-        duration: "1 iş günü",
-        price: 59.9,
-      },
-    ],
-    [subtotal]
-  );
-  const [selectedShipping, setSelectedShipping] = useState<string>("standard");
-  const shippingCost = useMemo(
-    () => shippingMethods.find((s) => s.id === selectedShipping)?.price ?? 0,
-    [selectedShipping, shippingMethods]
-  );
-
-  const total = Math.max(0, subtotal - couponDiscount) + shippingCost;
+  const total = Math.max(0, subtotal - couponDiscount);
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.replace("/giris-yap?redirect=/odeme");
+    closeCartDrawer();
+  }, [closeCartDrawer]);
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!isCustomerAuthenticated) {
+      setLoadingData(false);
+      return;
     }
-  }, [authLoading, isAuthenticated, router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
     (async () => {
       setLoadingData(true);
       try {
-        const [addrRes, cardRes] = await Promise.all([
-          api.get<Address[]>("/addresses").catch(() => ({ data: [] })),
-          api.get<SavedCard[]>("/cards").catch(() => ({ data: [] })),
-        ]);
+        const addrRes = await api
+          .get<Address[]>("/addresses")
+          .catch(() => ({ data: [] }));
         const addrs = Array.isArray(addrRes.data) ? addrRes.data : [];
-        const cards = Array.isArray(cardRes.data) ? cardRes.data : [];
         setSavedAddresses(addrs);
-        setSavedCards(cards);
+        setCustomerEmail(user?.email ?? "");
         const def = addrs.find((a) => a.is_default);
         if (def) {
           setSelectedAddressId(def.id);
@@ -134,13 +108,19 @@ export default function OdemePage() {
         setLoadingData(false);
       }
     })();
-  }, [isAuthenticated]);
+  }, [authLoading, isCustomerAuthenticated, user?.email]);
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated && !loadingData && items.length === 0) {
+    if (!authLoading && !loadingData && !cartLoading && items.length === 0) {
       router.replace("/magaza");
     }
-  }, [authLoading, isAuthenticated, loadingData, items.length, router]);
+  }, [authLoading, loadingData, cartLoading, items.length, router]);
+
+  function hasValidEmail() {
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim());
+    setEmailError(valid ? "" : "Geçerli bir e-posta adresi girin");
+    return valid;
+  }
 
   function addrToShippingData(addr: Address): ShippingData {
     return {
@@ -201,15 +181,9 @@ export default function OdemePage() {
     }
   }
 
-  async function handlePaymentSubmit(paymentData: {
-    card_number: string;
-    expiry: string;
-    cvv: string;
-    holder_name: string;
-    save_card: boolean;
-    saved_card_id?: number;
-  }) {
+  async function handleOrderSubmit() {
     if (!shippingData) return;
+    if (!hasValidEmail()) return;
     setIsSubmitting(true);
 
     try {
@@ -229,6 +203,7 @@ export default function OdemePage() {
         "/orders",
         {
           cart_id: cartId,
+          customer_email: customerEmail.trim(),
           shipping_first_name: shippingData.first_name,
           shipping_last_name: shippingData.last_name,
           shipping_phone: shippingData.phone,
@@ -243,10 +218,15 @@ export default function OdemePage() {
           billing_district: billing.district,
           billing_address: billingAddressLine,
           invoice_type: "individual",
-          payment_method: "credit_card",
+          payment_method: "cash_on_delivery",
           customer_note: "",
           installment_count: 1,
-          shipping_method: selectedShipping,
+          shipping_method: "pickup",
+        },
+        {
+          headers: {
+            "X-Session-ID": localStorage.getItem("cart_session_id") ?? "",
+          },
         }
       );
 
@@ -255,33 +235,26 @@ export default function OdemePage() {
         rawOrder && "order" in rawOrder ? rawOrder.order : (rawOrder as OrderPayload | undefined);
 
       if (order?.id) {
-        await api.post("/payments/start", {
-          order_id: order.id,
-          ...paymentData,
-          installment_count: 1,
-        });
         router.push(`/odeme/basarili?order=${order.order_number}`);
       } else {
         throw new Error("Sipariş oluşturulamadı");
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Bilinmeyen hata";
-      console.error("[checkout] sipariş/ödeme hatası:", err);
+      console.error("[checkout] sipariş oluşturma hatası:", err);
       router.push(`/odeme/basarisiz?reason=${encodeURIComponent(msg)}`);
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  if (authLoading || loadingData) {
+  if (authLoading || loadingData || cartLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
   }
-  if (!isAuthenticated) return null;
-
   return (
     <div className="min-h-screen flex flex-col bg-bg-primary">
       <main className="flex-1">
@@ -307,22 +280,17 @@ export default function OdemePage() {
               </button>
               <Chevron />
               {[
-                { key: "address", label: "Adres" },
-                { key: "shipping", label: "Kargo" },
-                { key: "payment", label: "Ödeme" },
+                { key: "address", label: "Teslim alacak kişi" },
+                { key: "payment", label: "Sipariş onayı" },
               ].map((s, i, arr) => {
                 const active = step === (s.key as Step);
-                const done =
-                  (step === "shipping" && s.key === "address") ||
-                  (step === "payment" && s.key !== "payment");
+                const done = step === "payment" && s.key === "address";
                 return (
                   <div key={s.key} className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => {
                         if (s.key === "address") setStep("address");
-                        if (s.key === "shipping" && shippingData)
-                          setStep("shipping");
                       }}
                       disabled={!done && !active}
                       className={cn(
@@ -350,7 +318,7 @@ export default function OdemePage() {
                   <h1 className="font-display text-[28px] md:text-[32px] text-text-primary">
                     İletişim
                   </h1>
-                  {!user && (
+                  {!isCustomerAuthenticated && (
                     <Link
                       href="/giris-yap?redirect=/odeme"
                       className="text-sm text-primary hover:underline"
@@ -366,8 +334,14 @@ export default function OdemePage() {
                   </label>
                   <input
                     type="email"
-                    value={user?.email ?? ""}
-                    readOnly
+                    value={customerEmail}
+                    onChange={(e) => {
+                      setCustomerEmail(e.target.value);
+                      if (emailError) setEmailError("");
+                    }}
+                    readOnly={isCustomerAuthenticated}
+                    required
+                    autoComplete="email"
                     className="absolute inset-0 bg-transparent pl-4 pr-14 pt-6 pb-2 rounded-xl text-sm text-text-primary focus:outline-none"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 text-text-secondary">
@@ -378,11 +352,18 @@ export default function OdemePage() {
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </div>
                 </div>
+                {emailError && (
+                  <p className="text-xs text-accent-rose -mt-8 mb-8">{emailError}</p>
+                )}
 
-                {/* Kargo adresi */}
+                {/* Teslim alacak kişi */}
                 <h2 className="font-display text-[22px] md:text-[26px] text-text-primary mb-4">
-                  Kargo adresi
+                  Teslim alacak kişi ve iletişim bilgileri
                 </h2>
+                <p className="text-sm text-text-secondary -mt-2 mb-5">
+                  Ürününüz kargoya verilmeyecek; hazır olduğunda sizinle iletişime
+                  geçip elden teslim edeceğiz.
+                </p>
 
                 {savedAddresses.length > 0 && !showNewAddress && (
                   <div className="space-y-3 mb-4">
@@ -445,7 +426,7 @@ export default function OdemePage() {
                           className="w-4 h-4 accent-text-primary"
                         />
                         <span className="text-sm text-text-primary">
-                          Kargo adresi ile aynı
+                          Teslimat bilgileri ile aynı
                         </span>
                       </label>
 
@@ -569,9 +550,10 @@ export default function OdemePage() {
                       </Link>
                       <button
                         onClick={() => {
+                          if (!hasValidEmail()) return;
                           if (!selectedAddressId) return;
                           if (!billingSameAsShipping && !selectedBillingAddressId) return;
-                          setStep("shipping");
+                          setStep("payment");
                         }}
                         className="h-12 px-10 bg-text-primary text-white rounded-xl font-semibold hover:bg-black/90 transition disabled:opacity-50"
                         disabled={
@@ -597,12 +579,13 @@ export default function OdemePage() {
                     )}
                     <AddressForm
                       onSubmit={async (d) => {
+                        if (!hasValidEmail()) return;
                         const { save_info, ...shipping } = d;
                         setShippingData(shipping);
                         setSelectedAddressId(null);
                         setShowNewAddress(false);
                         // save_info işaretliyse /addresses'e kaydet — sonraki siparişlerde listede çıkar.
-                        if (save_info) {
+                        if (save_info && isCustomerAuthenticated) {
                           try {
                             await api.post<Address>("/addresses", {
                               title: shipping.title || "Teslimat",
@@ -626,7 +609,7 @@ export default function OdemePage() {
                             // Kaydedilemedi — siparişe devam et, kullanıcı sonradan ekler.
                           }
                         }
-                        setStep("shipping");
+                        setStep("payment");
                       }}
                       defaultValues={
                         user
@@ -637,6 +620,7 @@ export default function OdemePage() {
                             }
                           : undefined
                       }
+                      showSaveInfo={isCustomerAuthenticated}
                       submitLabel="Devam Et"
                       backLabel="Sepete geri dön"
                       onBack={() => router.push("/")}
@@ -646,93 +630,17 @@ export default function OdemePage() {
               </section>
             )}
 
-            {/* STEP 2 — Shipping */}
-            {step === "shipping" && (
-              <section>
-                <h1 className="font-display text-2xl md:text-3xl text-text-primary mb-6">
-                  Kargo seçimi
-                </h1>
-
-                {shippingData && (
-                  <div className="bg-bg-primary rounded-xl p-4 mb-6 flex items-start gap-3 text-sm">
-                    <span className="text-[10px] uppercase tracking-widest text-text-secondary shrink-0 mt-0.5">
-                      Teslimat
-                    </span>
-                    <div className="flex-1 text-text-primary">
-                      {shippingData.first_name} {shippingData.last_name},{" "}
-                      {shippingData.address_line}, {shippingData.district}/
-                      {shippingData.city}
-                    </div>
-                    <button
-                      onClick={() => setStep("address")}
-                      className="text-xs text-primary hover:underline"
-                    >
-                      Değiştir
-                    </button>
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  {shippingMethods.map((m) => (
-                    <label
-                      key={m.id}
-                      className={cn(
-                        "flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition",
-                        selectedShipping === m.id
-                          ? "border-primary bg-primary-soft/40"
-                          : "border-border hover:border-primary/50"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name="shipping"
-                        checked={selectedShipping === m.id}
-                        onChange={() => setSelectedShipping(m.id)}
-                        className="accent-primary"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-text-primary">
-                          {m.label}
-                        </p>
-                        <p className="text-xs text-text-secondary">
-                          {m.desc} • {m.duration}
-                        </p>
-                      </div>
-                      <span className="text-sm font-semibold text-text-primary">
-                        {m.price === 0 ? "Ücretsiz" : formatPrice(m.price)}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between mt-8">
-                  <button
-                    onClick={() => setStep("address")}
-                    className="text-sm text-text-secondary hover:text-primary inline-flex items-center gap-1 transition"
-                  >
-                    <ChevronLeft /> Adrese geri dön
-                  </button>
-                  <button
-                    onClick={() => setStep("payment")}
-                    className="h-11 px-8 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition"
-                  >
-                    Ödemeye Geç
-                  </button>
-                </div>
-              </section>
-            )}
-
-            {/* STEP 3 — Payment */}
+            {/* STEP 2 — Pickup and cash payment confirmation */}
             {step === "payment" && (
               <section>
                 <h1 className="font-display text-2xl md:text-3xl text-text-primary mb-6">
-                  Ödeme bilgileri
+                  Sipariş onayı
                 </h1>
 
                 {shippingData && (
                   <div className="bg-bg-primary rounded-xl p-4 mb-3 flex items-start gap-3 text-sm">
                     <span className="text-[10px] uppercase tracking-widest text-text-secondary shrink-0 mt-0.5">
-                      Teslimat
+                      Teslim alacak kişi
                     </span>
                     <div className="flex-1 text-text-primary">
                       {shippingData.first_name} {shippingData.last_name},{" "}
@@ -747,33 +655,37 @@ export default function OdemePage() {
                   </div>
                 )}
 
-                <div className="bg-bg-primary rounded-xl p-4 mb-6 flex items-start gap-3 text-sm">
-                  <span className="text-[10px] uppercase tracking-widest text-text-secondary shrink-0 mt-0.5">
-                    Kargo
-                  </span>
-                  <div className="flex-1 text-text-primary">
-                    {shippingMethods.find((s) => s.id === selectedShipping)?.label}
-                  </div>
-                  <button
-                    onClick={() => setStep("shipping")}
-                    className="text-xs text-primary hover:underline"
-                  >
-                    Değiştir
-                  </button>
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 mb-6">
+                  <p className="font-semibold text-emerald-900">Elden teslim</p>
+                  <p className="text-sm text-emerald-800 mt-1">
+                    Siparişiniz hazır olduğunda sizinle iletişime geçeceğiz. Kargo
+                    ücreti alınmayacaktır.
+                  </p>
                 </div>
 
-                <PaymentForm
-                  onSubmit={handlePaymentSubmit}
-                  savedCards={savedCards}
-                  isSubmitting={isSubmitting}
-                />
+                <div className="rounded-xl border border-border bg-white p-5 mb-6">
+                  <p className="font-semibold text-text-primary">Teslimatta nakit ödeme</p>
+                  <p className="text-sm text-text-secondary mt-1">
+                    Şimdi ödeme yapmayacaksınız. Toplam tutarı ürünü elden teslim
+                    alırken nakit olarak ödeyeceksiniz.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleOrderSubmit}
+                  disabled={isSubmitting}
+                  className="w-full h-12 bg-primary text-text-primary rounded-xl font-semibold hover:bg-primary-hover transition disabled:opacity-50"
+                >
+                  {isSubmitting ? "Sipariş oluşturuluyor…" : "Siparişi Onayla"}
+                </button>
 
                 <div className="mt-6">
                   <button
-                    onClick={() => setStep("shipping")}
+                    onClick={() => setStep("address")}
                     className="text-sm text-text-secondary hover:text-primary inline-flex items-center gap-1 transition"
                   >
-                    <ChevronLeft /> Kargoya geri dön
+                    <ChevronLeft /> Bilgilere geri dön
                   </button>
                 </div>
               </section>
@@ -932,17 +844,8 @@ export default function OdemePage() {
                   </div>
                 )}
                 <div className="flex items-baseline justify-between">
-                  <span className="text-text-primary inline-flex items-center gap-1">
-                    Kargo
-                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-text-secondary/50 text-[10px] text-text-secondary cursor-help" title="Kargo ücreti ödeme bölümünde belirlenir.">
-                      ?
-                    </span>
-                  </span>
-                  <span className="text-text-primary price">
-                    {shippingCost === 0
-                      ? "Ücretsiz"
-                      : formatPrice(shippingCost)}
-                  </span>
+                  <span className="text-text-primary">Teslimat</span>
+                  <span className="text-emerald-600">Elden teslim · Ücretsiz</span>
                 </div>
               </div>
 

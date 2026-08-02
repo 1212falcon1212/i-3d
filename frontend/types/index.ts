@@ -181,7 +181,7 @@ export interface Order {
   aras_parcel_count?: number | null;
   aras_cancel_attempted_at?: string;
   aras_cancel_succeeded?: boolean | null;
-  payment_method: "credit_card" | "bank_transfer";
+  payment_method: "credit_card" | "bank_transfer" | "cash_on_delivery";
   customer_note?: string;
   bizimhesap_invoice_id?: string;
   invoice_number?: string;

@@ -50,7 +50,7 @@ func main() {
 		// Nginx arkasında çalışıyoruz: c.IP() olmadan her istek proxy'nin
 		// adresini döndürür. PayTR'ye gönderilen müşteri IP'si ve rate
 		// limiter'ın doğru çalışması buna bağlı.
-		ProxyHeader: fiber.HeaderXForwardedFor,
+		ProxyHeader:  fiber.HeaderXForwardedFor,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,
@@ -314,7 +314,7 @@ func setupRoutes(app *fiber.App, cfg *config.Config, db interface{}, arasSvc *ar
 	// })
 	api.Get("/orders", requireAuth, orderHandler.List)
 	api.Get("/orders/:id", requireAuth, orderHandler.GetByID)
-	api.Post("/orders", requireAuth, orderHandler.Create)
+	api.Post("/orders", optionalAuth, orderHandler.Create)
 
 	// Cancellation/Return talebi (müşteri)
 	cancellationHandler := handlers.NewCancellationHandler(cancellationSvc)
@@ -323,8 +323,9 @@ func setupRoutes(app *fiber.App, cfg *config.Config, db interface{}, arasSvc *ar
 
 	// Payment (protected)
 	paymentHandler := handlers.NewPaymentHandler(cfg)
-	api.Post("/payments/start", requireAuth, paymentHandler.StartPayment)
-	api.Get("/payments/installments", requireAuth, paymentHandler.GetInstallments)
+	// Online ödeme ilk satış döneminde kapalıdır. Siparişler elden teslim ve
+	// teslimatta nakit ödeme olarak oluşturulur. Mevcut callback geçmişte
+	// başlatılmış işlemlerin güvenle sonuçlanabilmesi için açık kalır.
 	api.Post("/webhooks/paytr", paymentHandler.PayTRCallback)
 
 	// Reviews (public + auth)

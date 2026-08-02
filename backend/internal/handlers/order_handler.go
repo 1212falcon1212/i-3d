@@ -31,7 +31,8 @@ func (h *OrderHandler) Service() *services.OrderService {
 }
 
 type createOrderRequest struct {
-	CartID uint64 `json:"cart_id"`
+	CartID        uint64 `json:"cart_id"`
+	CustomerEmail string `json:"customer_email"`
 
 	// Shipping
 	ShippingFirstName  string `json:"shipping_first_name"`
@@ -115,10 +116,7 @@ func (h *OrderHandler) GetByID(c *fiber.Ctx) error {
 
 // Create yeni siparis olusturur.
 func (h *OrderHandler) Create(c *fiber.Ctx) error {
-	userID, ok := c.Locals("userID").(uint64)
-	if !ok {
-		return utils.Unauthorized(c)
-	}
+	userID, authenticated := c.Locals("userID").(uint64)
 
 	var req createOrderRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -127,6 +125,34 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 
 	if req.CartID == 0 {
 		return utils.BadRequest(c, "Sepet ID zorunludur")
+	}
+
+	req.CustomerEmail = strings.ToLower(strings.TrimSpace(req.CustomerEmail))
+	if authenticated {
+		var user models.User
+		if err := database.DB.Select("email").First(&user, userID).Error; err != nil {
+			return utils.Unauthorized(c)
+		}
+		req.CustomerEmail = user.Email
+	} else if !utils.IsValidEmail(req.CustomerEmail) {
+		return utils.BadRequest(c, "Geçerli bir e-posta adresi girin")
+	}
+
+	// Bir cart_id bilmek, başka bir ziyaretçinin sepetini siparişe çevirmeye
+	// yetmemeli. Giriş yapan kullanıcıda user_id, misafirde X-Session-ID eşleşir.
+	var cart models.Cart
+	cartQuery := database.DB.Where("id = ?", req.CartID)
+	if authenticated {
+		cartQuery = cartQuery.Where("user_id = ?", userID)
+	} else {
+		sessionID := strings.TrimSpace(c.Get("X-Session-ID"))
+		if sessionID == "" {
+			return utils.BadRequest(c, "Sepet oturumu bulunamadı")
+		}
+		cartQuery = cartQuery.Where("user_id IS NULL AND session_id = ?", sessionID)
+	}
+	if err := cartQuery.First(&cart).Error; err != nil {
+		return utils.BadRequest(c, "Sepet bulunamadı veya bu oturuma ait değil")
 	}
 
 	req.ShippingFirstName = strings.TrimSpace(req.ShippingFirstName)
@@ -165,12 +191,14 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 	if req.InvoiceType == "" {
 		req.InvoiceType = "individual"
 	}
-	if req.PaymentMethod == "" {
-		req.PaymentMethod = "credit_card"
-	}
+	// İlk satış döneminde tek akış: müşteri ürünü elden teslim alır ve
+	// teslim sırasında nakit öder. İstemciden gelen değerleri güven sınırı
+	// olarak kabul etmeyip sunucu tarafında sabitliyoruz.
+	req.PaymentMethod = "cash_on_delivery"
+	req.ShippingMethod = "pickup"
 
 	order := &models.Order{
-		UserID: &userID,
+		CustomerEmail: req.CustomerEmail,
 
 		ShippingFirstName:  req.ShippingFirstName,
 		ShippingLastName:   req.ShippingLastName,
@@ -195,6 +223,9 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 		CustomerNote:   strings.TrimSpace(req.CustomerNote),
 		ShippingMethod: normalizeShippingMethod(req.ShippingMethod),
 	}
+	if authenticated {
+		order.UserID = &userID
+	}
 
 	// Kupon dogrulama
 	// Sipariş başarıyla oluşursa artırılacak kupon (bkz. aşağıdaki not).
@@ -217,7 +248,11 @@ func (h *OrderHandler) Create(c *fiber.Ctx) error {
 			}
 		}
 
-		coupon, discount, err := h.couponService.Validate(req.CouponCode, orderAmount, &userID)
+		var couponUserID *uint64
+		if authenticated {
+			couponUserID = &userID
+		}
+		coupon, discount, err := h.couponService.Validate(req.CouponCode, orderAmount, couponUserID)
 		if err != nil {
 			return utils.BadRequest(c, err.Error())
 		}

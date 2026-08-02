@@ -9,16 +9,9 @@ import { formatPrice, cn } from "@/lib/utils";
 import Spinner from "@/components/ui/Spinner";
 import { api } from "@/lib/api";
 import { productImage } from "@/lib/placeholder-image";
-import { useSettings } from "@/lib/settings";
-
-// Ayar okunana kadar kullanılacak değer. Gerçek eşik panelden yönetiliyor
-// (Ayarlar → Kargo Ücreti → min_free_shipping); burada sabit tutmak, eşiği
-// değiştirdiğinde vitrinin eski sayıyı göstermesine yol açıyordu.
-const FALLBACK_FREE_SHIPPING = 750;
 
 export default function CartDrawer() {
   const { isOpen, close } = useCartDrawer();
-  const { settings } = useSettings();
   const { items, subtotal, itemCount, isLoading, updateItem, removeItem } =
     useCart();
 
@@ -28,10 +21,6 @@ export default function CartDrawer() {
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState("");
 
-  const freeShippingThreshold =
-    Number(settings.min_free_shipping) > 0
-      ? Number(settings.min_free_shipping)
-      : FALLBACK_FREE_SHIPPING;
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -50,11 +39,6 @@ export default function CartDrawer() {
     return () => window.removeEventListener("keydown", h);
   }, [isOpen, close]);
 
-  const remainingForFreeShipping = Math.max(
-    0,
-    freeShippingThreshold - subtotal
-  );
-  const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
   const total = Math.max(0, subtotal - couponDiscount);
 
   async function handleApplyCoupon() {
@@ -142,28 +126,9 @@ export default function CartDrawer() {
                 <circle cx="18" cy="19" r="2" />
               </svg>
               <p className="text-xs text-text-primary leading-relaxed">
-                {remainingForFreeShipping > 0 ? (
-                  <>
-                    <strong>{formatPrice(freeShippingThreshold)}</strong> ve
-                    üzeri ücretsiz kargodan yararlanmak için sepete eklemeniz
-                    gereken tutar{" "}
-                    <strong className="text-primary">
-                      {formatPrice(remainingForFreeShipping)}
-                    </strong>
-                  </>
-                ) : (
-                  <>
-                    <strong>Tebrikler!</strong> Siparişiniz ücretsiz kargo
-                    kapsamında.
-                  </>
-                )}
+                <strong>Elden teslim:</strong> Siparişiniz hazır olduğunda sizinle
+                iletişime geçeceğiz. Teslimat ücreti alınmayacaktır.
               </p>
-            </div>
-            <div className="mt-3 h-1 w-full rounded-full bg-white overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
             </div>
           </div>
         )}

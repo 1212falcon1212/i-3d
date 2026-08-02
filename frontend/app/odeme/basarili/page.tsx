@@ -48,8 +48,8 @@ export default function BasariliPage({ searchParams }: BasariliPageProps) {
                   Siparişiniz alındı!
                 </h1>
                 <p className="text-text-secondary max-w-md mx-auto">
-                  Siparişiniz başarıyla oluşturuldu. Hazırlık sürecine aldık ve
-                  hemen kargoya verilecek.
+                  Siparişiniz başarıyla oluşturuldu. Hazır olduğunda elden teslim
+                  için sizinle iletişime geçeceğiz.
                 </p>
 
                 {orderNumber && (
@@ -67,8 +67,8 @@ export default function BasariliPage({ searchParams }: BasariliPageProps) {
               <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
                 {[
                   { label: "Onay E-Postası", desc: "Birkaç dk içinde" },
-                  { label: "Kargo", desc: "1-3 iş günü teslimat" },
-                  { label: "Takip", desc: "Hesabımdan takip edin" },
+                  { label: "Teslimat", desc: "Elden teslim" },
+                  { label: "Ödeme", desc: "Teslimatta nakit" },
                 ].map((s) => (
                   <li
                     key={s.label}

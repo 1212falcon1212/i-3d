@@ -43,11 +43,11 @@ function BasarisizInner() {
                 </svg>
               </div>
               <h1 className="font-display text-3xl md:text-4xl text-text-primary mb-2">
-                Ödeme tamamlanamadı
+                Sipariş oluşturulamadı
               </h1>
               <p className="text-text-secondary max-w-md mx-auto">
-                Bir sorun oluştu ve işleminiz tamamlanamadı. Hesabınızdan ücret
-                tahsil edilmedi; tekrar deneyebilirsiniz.
+                Bir sorun oluştu ve siparişiniz kaydedilemedi. Herhangi bir ödeme
+                alınmadı; tekrar deneyebilirsiniz.
               </p>
             </div>
 
@@ -63,13 +63,12 @@ function BasarisizInner() {
 
               <div className="bg-bg-primary rounded-xl p-4 border border-border mb-6">
                 <p className="text-[11px] uppercase tracking-widest text-primary font-semibold mb-2">
-                  Olası nedenler
+                  Ne yapabilirsiniz?
                 </p>
                 <ul className="text-sm text-text-primary space-y-1.5">
-                  <li>• Kart bilgileri hatalı veya eksik olabilir</li>
-                  <li>• Yetersiz bakiye / limit sorunu</li>
-                  <li>• 3D doğrulama zaman aşımına uğramış olabilir</li>
-                  <li>• Bankanız işlemi reddetmiş olabilir</li>
+                  <li>• İletişim ve teslim alacak kişi bilgilerini kontrol edin</li>
+                  <li>• Sepetinizin hâlâ dolu olduğundan emin olun</li>
+                  <li>• Sayfayı yenileyip tekrar deneyin</li>
                 </ul>
               </div>
 

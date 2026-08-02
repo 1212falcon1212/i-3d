@@ -277,7 +277,11 @@ export default function OrderDetailPage() {
                 <p>
                   Ödeme:{" "}
                   <span className="text-text-primary">
-                    {order.payment_method === "credit_card" ? "Kredi Kartı" : "Havale/EFT"}
+                    {order.payment_method === "cash_on_delivery"
+                      ? "Teslimatta Nakit"
+                      : order.payment_method === "credit_card"
+                        ? "Kredi Kartı"
+                        : "Havale/EFT"}
                   </span>
                 </p>
               </div>

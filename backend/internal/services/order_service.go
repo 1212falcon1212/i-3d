@@ -115,7 +115,9 @@ func (s *OrderService) Create(order *models.Order, cartID uint64) error {
 		//
 		// Çağıran açıkça bir ücret verdiyse (ör. panelden manuel sipariş)
 		// dokunmuyoruz.
-		if order.ShippingCost == 0 {
+		if order.ShippingMethod == "pickup" {
+			order.ShippingCost = 0
+		} else if order.ShippingCost == 0 {
 			order.ShippingCost = shippingCostFor(tx, subtotal)
 		}
 

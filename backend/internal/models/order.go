@@ -6,6 +6,7 @@ type Order struct {
 	ID                 uint64  `gorm:"primaryKey;autoIncrement" json:"id"`
 	OrderNumber        string  `gorm:"type:varchar(20);uniqueIndex;not null" json:"order_number"`
 	UserID             *uint64 `gorm:"index" json:"user_id"`
+	CustomerEmail      string  `gorm:"type:varchar(255);index" json:"customer_email"`
 	Source             string  `gorm:"type:enum('web','trendyol','hepsiburada');default:'web';index" json:"source"`
 	MarketplaceOrderID string  `gorm:"type:varchar(100)" json:"marketplace_order_id,omitempty"`
 	Status             string  `gorm:"type:enum('pending','shipped','delivered','cancelled','refunded');default:'pending';index" json:"status"`
@@ -63,7 +64,7 @@ type Order struct {
 	ArasCancelSucceeded   *bool      `gorm:"type:tinyint(1)" json:"aras_cancel_succeeded,omitempty"`
 
 	// Payment
-	PaymentMethod string `gorm:"type:enum('credit_card','bank_transfer');default:'credit_card'" json:"payment_method"`
+	PaymentMethod string `gorm:"type:enum('credit_card','bank_transfer','cash_on_delivery');default:'cash_on_delivery'" json:"payment_method"`
 	PaymentID     string `gorm:"type:varchar(100)" json:"payment_id,omitempty"`
 
 	// Invoice

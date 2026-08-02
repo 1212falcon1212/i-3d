@@ -26,6 +26,7 @@ interface AddressFormProps {
   backHref?: string;
   backLabel?: string;
   onBack?: () => void;
+  showSaveInfo?: boolean;
 }
 
 export default function AddressForm({
@@ -35,6 +36,7 @@ export default function AddressForm({
   backLabel = "Sepete geri dön",
   backHref,
   onBack,
+  showSaveInfo = true,
 }: AddressFormProps) {
   const [form, setForm] = useState<AddressFormData>({
     title: defaultValues?.title || "Ev",
@@ -194,15 +196,17 @@ export default function AddressForm({
       />
 
       {/* Save info */}
-      <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer select-none pt-2">
-        <input
-          type="checkbox"
-          checked={saveInfo}
-          onChange={(e) => setSaveInfo(e.target.checked)}
-          className="w-4 h-4 accent-primary"
-        />
-        Bir sonraki işlem için bu bilgileri kaydet
-      </label>
+      {showSaveInfo && (
+        <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer select-none pt-2">
+          <input
+            type="checkbox"
+            checked={saveInfo}
+            onChange={(e) => setSaveInfo(e.target.checked)}
+            className="w-4 h-4 accent-primary"
+          />
+          Bir sonraki işlem için bu bilgileri kaydet
+        </label>
+      )}
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-6">

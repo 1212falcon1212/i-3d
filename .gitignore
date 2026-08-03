@@ -29,6 +29,8 @@ frontend/next-env.d.ts
 
 # --- misc ---
 node_modules/
+/data/
+/backups/
 
 # --- local tooling (not part of the project) ---
 .claude/

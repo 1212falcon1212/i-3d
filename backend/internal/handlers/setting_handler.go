@@ -38,7 +38,7 @@ type updateSettingsRequest struct {
 
 // GetAll tum ayarlari key-value map olarak dondurur (public).
 func (h *SettingHandler) GetAll(c *fiber.Ctx) error {
-	settings, err := h.service.GetAll()
+	settings, err := h.service.GetAllRedacted()
 	if err != nil {
 		return utils.InternalError(c)
 	}

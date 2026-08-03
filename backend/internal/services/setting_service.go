@@ -55,6 +55,23 @@ func (s *SettingService) GetAll() (map[string]string, error) {
 	})
 }
 
+// GetAllRedacted public uçlar için hassas ayar değerlerini gizler.
+func (s *SettingService) GetAllRedacted() (map[string]string, error) {
+	settings, err := s.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[string]string, len(settings))
+	for key, value := range settings {
+		if secretKeys[key] && value != "" {
+			out[key] = secretKeyMask
+			continue
+		}
+		out[key] = value
+	}
+	return out, nil
+}
+
 // GetByGroup belirli bir gruptaki ayarlari dondurur.
 // Sonuç 6 saat cache'lenir.
 func (s *SettingService) GetByGroup(group string) ([]models.Setting, error) {

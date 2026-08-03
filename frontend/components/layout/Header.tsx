@@ -344,9 +344,9 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
           <Link href="/" className="shrink-0 group" aria-label={siteName}>
             {settingsLoading ? (
               // Ayarlar yüklenirken wordmark flash etmesin diye boş alan tutuyoruz.
-              <span className="block h-10 lg:h-11 w-32" aria-hidden />
+              <span className="block h-14 w-14" aria-hidden />
             ) : (
-              <Logo height={30} className="group-hover:opacity-90 transition-opacity" />
+              <Logo height={56} className="group-hover:opacity-90 transition-opacity" />
             )}
           </Link>
 
@@ -606,9 +606,9 @@ export default function Header({ cartItemCount: cartItemCountProp }: HeaderProps
             aria-label={siteName}
           >
             {settingsLoading ? (
-              <span className="block h-8 w-24" aria-hidden />
+              <span className="block h-12 w-12" aria-hidden />
             ) : (
-              <Logo height={24} />
+              <Logo height={48} />
             )}
           </Link>
           <button

@@ -59,9 +59,9 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   icons: {
-    icon: [{ url: "/favicon.png?v=1", type: "image/png", sizes: "64x64" }],
-    shortcut: [{ url: "/favicon.png?v=1", type: "image/png" }],
-    apple: [{ url: "/favicon.png?v=1", type: "image/png", sizes: "64x64" }],
+    icon: [{ url: "/brand/i3d-icon-64.png?v=2", type: "image/png", sizes: "64x64" }],
+    shortcut: [{ url: "/brand/i3d-icon-64.png?v=2", type: "image/png" }],
+    apple: [{ url: "/brand/i3d-icon-180.png?v=2", type: "image/png", sizes: "180x180" }],
   },
 };
 

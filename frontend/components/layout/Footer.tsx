@@ -151,9 +151,9 @@ export default function Footer() {
           <div className="lg:col-span-4 space-y-5">
             <Link href="/" className="inline-block" aria-label={siteName}>
               {settingsLoading ? (
-                <span className="block h-12 w-40" aria-hidden />
+                <span className="block h-32 w-32" aria-hidden />
               ) : (
-                <Logo dark height={30} />
+                <Logo dark height={128} />
               )}
             </Link>
 

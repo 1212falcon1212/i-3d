@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSettings } from "@/lib/settings";
+import { resolveImageUrl } from "@/lib/utils";
 
 /**
  * Favicon'u kod deposundaki `public/favicon.png` dosyasından set eder.
@@ -13,31 +15,36 @@ import { useEffect } from "react";
  * yönlendiriyoruz ve en sona yönetilen linkleri ekliyoruz. Böylece settings veya
  * Next'in otomatik icon linkleri dosyadan okunan favicon'u ezemiyor.
  */
-const FAVICON_HREF = "/favicon.png?v=1";
+const FALLBACK_FAVICON = "/brand/i3d-icon-64.png?v=2";
 
 export default function FaviconInjector() {
+  const { settings } = useSettings();
+  const faviconHref = settings.site_favicon_url
+    ? resolveImageUrl(settings.site_favicon_url)
+    : FALLBACK_FAVICON;
+
   useEffect(() => {
     const probe = new window.Image();
     probe.onload = () => {
       document.head
         .querySelectorAll<HTMLLinkElement>('link[rel~="icon"], link[rel="apple-touch-icon"]')
         .forEach((link) => {
-          link.href = FAVICON_HREF;
+          link.href = faviconHref;
           link.type = "image/png";
           link.sizes.value = "64x64";
         });
 
-      ensureIconLink("icon");
-      ensureIconLink("shortcut icon");
-      ensureIconLink("apple-touch-icon");
+      ensureIconLink("icon", faviconHref);
+      ensureIconLink("shortcut icon", faviconHref);
+      ensureIconLink("apple-touch-icon", faviconHref);
     };
-    probe.src = FAVICON_HREF;
-  }, []);
+    probe.src = faviconHref;
+  }, [faviconHref]);
 
   return null;
 }
 
-function ensureIconLink(rel: string) {
+function ensureIconLink(rel: string, href: string) {
   let link = document.head.querySelector<HTMLLinkElement>(
     `link[rel="${rel}"][data-managed="favicon-injector"]`
   );
@@ -47,7 +54,7 @@ function ensureIconLink(rel: string) {
     link.setAttribute("data-managed", "favicon-injector");
     document.head.appendChild(link);
   }
-  link.href = FAVICON_HREF;
+  link.href = href;
   link.type = "image/png";
   link.sizes.value = "64x64";
 }

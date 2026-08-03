@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.production.example
 
 # --- backend (Go) ---
 backend/bin/
@@ -39,4 +40,3 @@ GEMINI.md
 
 # --- vendor reference docs (not needed at runtime) ---
 aras-kargo-entegrasyon/
-

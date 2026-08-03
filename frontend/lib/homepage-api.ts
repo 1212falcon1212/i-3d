@@ -34,9 +34,12 @@ export interface HomepageData {
 // Fetcher
 // ----------------------------------------------------------------
 
-async function safeFetch<T>(url: string, pagination = false): Promise<T | null> {
+async function safeFetch<T>(url: string, pagination = false, noStore = false): Promise<T | null> {
   try {
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(
+      url,
+      noStore ? { cache: "no-store" } : { next: { revalidate: 300 } },
+    );
     if (!res.ok) return null;
     const json = await res.json();
     // Toplam ürün sayısı data'da değil, yanındaki pagination bloğunda dönüyor.
@@ -61,7 +64,8 @@ export async function fetchHomepageData(): Promise<HomepageData> {
     safeFetch<UseCasesResponse>(`${API}/categories/use-cases`),
     safeFetch<ProductsResponse>(`${API}/products?sort=newest&per_page=9`),
     safeFetch<Brand[]>(`${API}/brands?limit=15`),
-    safeFetch<BannersResponse>(`${API}/banners`),
+    // Yönetim panelindeki banner değişiklikleri anasayfaya hemen yansısın.
+    safeFetch<BannersResponse>(`${API}/banners`, false, true),
     // Sadece toplam için: per_page=1, pagination.total okunuyor.
     safeFetch<{ total?: number }>(`${API}/products?per_page=1`, true),
   ]);
